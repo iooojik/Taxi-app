@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="i_am_in_whatsapp">Я есть в WhatsApp</string>
+    <string name="i_am_in_viber">Я есть в Viber</string>
+</resources>

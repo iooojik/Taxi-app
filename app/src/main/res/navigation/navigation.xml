@@ -3,11 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/naviagtion"
-    app:startDestination="@id/authProcessFragment">
+    app:startDestination="@id/authMessengersFragment">
 
     <fragment
-        android:id="@+id/authProcessFragment"
-        android:name="octii.app.taxiapp.ui.auth.AuthProcessFragment"
+        android:id="@+id/authMessengersFragment"
+        android:name="octii.app.taxiapp.ui.auth.AuthMessengersFragment"
         android:label="fragment_auth_process"
-        tools:layout="@layout/fragment_auth_process" />
+        tools:layout="@layout/fragment_auth_messengers" >
+        <action
+            android:id="@+id/action_authMessengersFragment_to_userInfoFragment"
+            app:destination="@id/userInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userInfoFragment"
+        android:name="octii.app.taxiapp.ui.auth.UserInfoFragment"
+        android:label="fragment_user_info"
+        tools:layout="@layout/fragment_user_info" >
+        <action
+            android:id="@+id/action_userInfoFragment_to_clienMapFragment"
+            app:destination="@id/clientMapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientMapFragment"
+        android:name="octii.app.taxiapp.ui.maps.ClientMapFragment"
+        android:label="fragment_client_map"
+        tools:layout="@layout/fragment_client_map" />
 </navigation>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whatsapp_or_viber_not_chosen">У вас должен быть установлен WhatsApp или Viber</string>
+</resources>

@@ -1,0 +1,23 @@
+<resources>
+    <!--
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=1B:A4:4B:D2:A2:C2:7F:F8:0E:FE:26:16:BC:A4:FF:8F:1A:E2:57:08%3Boctii.app.taxiapp.ui.maps
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    octii.app.taxiapp
+
+    SHA-1 certificate fingerprint:
+    1B:A4:4B:D2:A2:C2:7F:F8:0E:FE:26:16:BC:A4:FF:8F:1A:E2:57:08
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBmffXrcWcNgfeMFIzbeqoljXymwu-AG-c</string>
+</resources>
