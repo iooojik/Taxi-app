@@ -1,8 +1,11 @@
 package octii.app.taxiapp
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -41,9 +44,7 @@ class MainActivity : AppCompatActivity() {
         //val token = MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")
         //if (token != null && token.isNotEmpty())
             //findNavController(R.id.nav_host_fragment).navigate(R.id.chatRoomsFragment)
-        thread {
-            checkAuth()
-        }
+        checkAuth()
     }
 
     private fun checkAuth() {
@@ -52,7 +53,13 @@ class MainActivity : AppCompatActivity() {
 
         if (token.isNullOrEmpty()) runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.authMessengersFragment) }
         else {
-            val respModel = HttpHelper.USER_API.loginWithToken(UserModel(token = token)).execute()
+            runOnUiThread {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
+            }
+        }
+
+        thread {
+            val respModel = HttpHelper.USER_API.loginWithToken(UserModel(token = token!!)).execute()
             if (respModel.isSuccessful){
                 val model = respModel.body()
                 if (model != null && model.token.isNotEmpty()){
@@ -66,9 +73,11 @@ class MainActivity : AppCompatActivity() {
                         MyPreferences.saveToPreferences(
                             it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
                     }
-                    runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment) }
                 }
             } else HttpHelper.errorProcessing(binding.root, respModel.errorBody())
         }
+
+
     }
+
 }
