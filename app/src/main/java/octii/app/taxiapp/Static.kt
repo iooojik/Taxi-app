@@ -12,6 +12,8 @@ class Static {
         const val SHARED_PREFERENCES_USER_UUID = "USER PREFERENCES UUID"
         const val SHARED_PREFERENCES_USER_TOKEN = "USER PREFERENCES TOKEN"
         const val SHARED_PREFERENCES_APPLICATION = "APPLICATION PREFERENCES"
+        const val DRIVER_TYPE = "driver"
+        const val CLIENT_TYPE = "client"
         //var uuid : String = updateUUID()
         //@JvmStatic
         //val MAIN_TOPIC = "/topic/${uuid}"

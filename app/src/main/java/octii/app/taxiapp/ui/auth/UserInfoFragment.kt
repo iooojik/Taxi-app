@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.RadioGroup
+import android.widget.Switch
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.MyPreferences
@@ -22,7 +23,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class UserInfoFragment : Fragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+class UserInfoFragment : Fragment(), View.OnClickListener,
+    CompoundButton.OnCheckedChangeListener {
 
     lateinit var binding : FragmentUserInfoBinding
 
@@ -39,6 +41,7 @@ class UserInfoFragment : Fragment(), View.OnClickListener, CompoundButton.OnChec
         binding.loginButton.setOnClickListener(this)
         binding.iAmInWhatsapp.setOnCheckedChangeListener(this)
         binding.iAmInViber.setOnCheckedChangeListener(this)
+        binding.iAmDriver.setOnCheckedChangeListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -89,6 +92,10 @@ class UserInfoFragment : Fragment(), View.OnClickListener, CompoundButton.OnChec
             }
             R.id.i_am_in_viber -> {
                 UserModel.uIsViber = isChecked
+            }
+            R.id.i_am_driver -> {
+                if (isChecked) UserModel.uType = Static.DRIVER_TYPE
+                else UserModel.uType = Static.CLIENT_TYPE
             }
         }
     }
