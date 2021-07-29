@@ -11,17 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.internal.synchronized
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 
-class ClientMapFragment : Fragment() {
+class ClientMapFragment : Fragment(), View.OnClickListener {
 
     lateinit var binding: FragmentClientMapBinding
 
@@ -72,11 +67,20 @@ class ClientMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.callTaxi.setOnClickListener(this)
         setMap()
     }
 
     private fun setMap(){
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+    }
+
+    override fun onClick(v: View?) {
+        when(v!!.id){
+            R.id.call_taxi -> {
+
+            }
+        }
     }
 }
