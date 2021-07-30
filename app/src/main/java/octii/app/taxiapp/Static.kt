@@ -1,8 +1,5 @@
 package octii.app.taxiapp
 
-import octii.app.taxiapp.models.UserModel
-import java.util.*
-
 class Static {
     companion object{
         private const val SERVER_IP = "192.168.0.105"

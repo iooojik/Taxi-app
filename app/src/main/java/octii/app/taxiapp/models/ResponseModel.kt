@@ -1,4 +1,4 @@
-package octii.app.messenger.models
+package octii.app.taxiapp.models
 
 data class ResponseModel(
     var type: MessageType? = null,

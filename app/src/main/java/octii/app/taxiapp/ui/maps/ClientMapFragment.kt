@@ -15,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
+import octii.app.taxiapp.web.SocketHelper
 
 class ClientMapFragment : Fragment(), View.OnClickListener {
 
@@ -78,7 +79,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when(v!!.id){
             R.id.call_taxi -> {
-
+                SocketHelper.makeOrder()
             }
         }
     }

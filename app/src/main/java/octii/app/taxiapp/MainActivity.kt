@@ -1,24 +1,16 @@
 package octii.app.taxiapp
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import octii.app.taxiapp.databinding.ActivityMainBinding
-import octii.app.taxiapp.models.UserModel
-import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.HttpHelper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.concurrent.thread
 
 

@@ -1,4 +1,4 @@
-package octii.app.taxiapp.models
+package octii.app.taxiapp.models.user
 
 import retrofit2.Call
 import retrofit2.http.*

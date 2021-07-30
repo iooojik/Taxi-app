@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.Static
-import octii.app.taxiapp.models.UserApi
+import octii.app.taxiapp.models.user.UserApi
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Retrofit

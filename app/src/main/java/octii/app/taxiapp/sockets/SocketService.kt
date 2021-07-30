@@ -10,16 +10,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import octii.app.taxiapp.web.SocketHelper
-import octii.app.messenger.models.MessageType
-import octii.app.messenger.models.ResponseModel
-import octii.app.taxiapp.MyPreferences
-import octii.app.taxiapp.Static
-import octii.app.taxiapp.models.UserModel
+import octii.app.taxiapp.models.MessageType
+import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.ResponseModel
+import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
 import ua.naiksoftware.stomp.dto.StompMessage
 import java.util.*
-
 
 class SocketService : Service() {
 
@@ -29,14 +27,7 @@ class SocketService : Service() {
         @JvmStatic
         val updateTimer = Timer()
         @JvmStatic
-        val userInfoUpdate = SocketConnection()
-        @JvmStatic
         val handler = Handler()
-        @JvmStatic
-        fun socketMaintenance(){
-            //if (!MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "").isNullOrEmpty())
-            //    SocketHelper.authorization()
-        }
     }
 
     private val gson = Gson()
@@ -63,6 +54,11 @@ class SocketService : Service() {
         //SocketHelper.mStompClient.send("/messenger/chat.addUser.public", "{\"sender\": \"user\", \"type\": \"JOIN\"}").subscribe()
     }
 
+    fun socketMaintenance(){
+        //if (!MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "").isNullOrEmpty())
+        //    SocketHelper.authorization()
+    }
+
     private fun connectToMainTopic(){
         /**
          * Если пользователь не залогинен, то подключаемся к новому топику по рандомно созданному UUID
@@ -70,6 +66,7 @@ class SocketService : Service() {
          * и слушаем события об авторизации каждые N секунд, и обновляем данные
          */
         //Static.updateUUID()
+
         logInfo(mainTopic)
         topic(mainTopic)
     }
@@ -79,10 +76,53 @@ class SocketService : Service() {
         topic = SocketHelper.mStompClient.topic(path).subscribeOn(Schedulers.io()).observeOn(
             AndroidSchedulers.mainThread()).subscribe({ topicMessage : StompMessage ->
             val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
+            logError(responseModel)
+
             when(responseModel.type){
 
-                MessageType.AUTHORIZATION -> {
+                MessageType.ORDER_ACCEPT -> {
+                    val order = responseModel.body as OrdersModel
+                    OrdersModel.mId = order.id
+                    OrdersModel.mDriverID = order.driverID
+                    OrdersModel.mCustomerID = order.customerID
+                    OrdersModel.mUuid = order.uuid
+                    OrdersModel.mIsFinished = order.isFinished
+                    OrdersModel.mDriver = order.driver
+                    OrdersModel.mCustomer = order.customer
+                }
 
+                MessageType.ORDER_REJECT -> {
+                    val order = responseModel.body as OrdersModel
+                    OrdersModel.mId = order.id
+                    OrdersModel.mDriverID = order.driverID
+                    OrdersModel.mCustomerID = order.customerID
+                    OrdersModel.mUuid = order.uuid
+                    OrdersModel.mIsFinished = order.isFinished
+                    OrdersModel.mDriver = order.driver
+                    OrdersModel.mCustomer = order.customer
+
+                }
+
+                MessageType.ORDER_FINISHED -> {
+                    val order = responseModel.body as OrdersModel
+                    OrdersModel.mId = order.id
+                    OrdersModel.mDriverID = order.driverID
+                    OrdersModel.mCustomerID = order.customerID
+                    OrdersModel.mUuid = order.uuid
+                    OrdersModel.mIsFinished = order.isFinished
+                    OrdersModel.mDriver = order.driver
+                    OrdersModel.mCustomer = order.customer
+                }
+
+                MessageType.NO_ORDERS -> {
+                    val order = responseModel.body as OrdersModel
+                    OrdersModel.mId = order.id
+                    OrdersModel.mDriverID = order.driverID
+                    OrdersModel.mCustomerID = order.customerID
+                    OrdersModel.mUuid = order.uuid
+                    OrdersModel.mIsFinished = order.isFinished
+                    OrdersModel.mDriver = order.driver
+                    OrdersModel.mCustomer = order.customer
                 }
 
                 else -> logInfo("No matchable types")
@@ -93,21 +133,15 @@ class SocketService : Service() {
             logError(throwable)
             throwable.printStackTrace()
         })
-
+        SocketHelper.compositeDisposable.add(topic)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
-    class SocketConnection : TimerTask() {
-
-        companion object {
-            var isRunning = false
-        }
-
-        override fun run() {
-            if (isRunning) socketMaintenance()
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        SocketHelper.compositeDisposable.dispose()
     }
 }
