@@ -2,6 +2,7 @@ package octii.app.taxiapp
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.models.UserModel
+import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,16 +25,15 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityMainBinding
+    private lateinit var intentService : Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         HttpHelper.doRetrofit()
         MyPreferences.userPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE)
         MyPreferences.applicationPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_APPLICATION, Context.MODE_PRIVATE)
-
         setNavigation()
     }
 
@@ -74,11 +76,38 @@ class MainActivity : AppCompatActivity() {
                         MyPreferences.saveToPreferences(
                             it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
                     }
+                    startSocketService()
                 }
             } else HttpHelper.errorProcessing(binding.root, respModel.errorBody())
         }
 
 
+    }
+
+    private fun startSocketService(){
+        //создание намерения, которое будет запущено
+        intentService = Intent(this, SocketService::class.java)
+        //запуск сервиса. Если метод возвращает true, то сервис был запущен,
+        // если сервис был остановлен, то false
+        touchService()
+    }
+
+    private fun touchService() : Boolean {
+        return if (!isMyServiceRunning()) {startService(intentService); true}
+        else {stopService(intentService); false}
+    }
+
+    private fun isMyServiceRunning(): Boolean {
+        /*
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+         */
+        return SocketService.serviceRunning
     }
 
 }

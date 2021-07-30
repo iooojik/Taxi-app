@@ -1,5 +1,6 @@
 package octii.app.taxiapp
 
+import octii.app.taxiapp.models.UserModel
 import java.util.*
 
 class Static {
@@ -14,9 +15,6 @@ class Static {
         const val SHARED_PREFERENCES_APPLICATION = "APPLICATION PREFERENCES"
         const val DRIVER_TYPE = "driver"
         const val CLIENT_TYPE = "client"
-        //var uuid : String = updateUUID()
-        //@JvmStatic
-        //val MAIN_TOPIC = "/topic/${uuid}"
         //@JvmStatic
         //fun updateUUID() : String = if (UserModel.uuid.isNotEmpty()) UserModel.uuid else "${UUID.randomUUID()}"
     }

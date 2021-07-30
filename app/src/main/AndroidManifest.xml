@@ -34,6 +34,25 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <service
+            android:name=".sockets.SocketService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".sockets.SocketReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:enabled="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.REBOOT"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </receiver>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
