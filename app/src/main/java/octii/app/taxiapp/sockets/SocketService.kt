@@ -76,7 +76,7 @@ class SocketService : Service() {
         topic = SocketHelper.mStompClient.topic(path).subscribeOn(Schedulers.io()).observeOn(
             AndroidSchedulers.mainThread()).subscribe({ topicMessage : StompMessage ->
             val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
-            logError(responseModel)
+            logInfo(responseModel)
 
             when(responseModel.type){
 
@@ -87,8 +87,7 @@ class SocketService : Service() {
                     OrdersModel.mCustomerID = order.customerID
                     OrdersModel.mUuid = order.uuid
                     OrdersModel.mIsFinished = order.isFinished
-                    OrdersModel.mDriver = order.driver
-                    OrdersModel.mCustomer = order.customer
+
                 }
 
                 MessageType.ORDER_REJECT -> {
@@ -98,8 +97,7 @@ class SocketService : Service() {
                     OrdersModel.mCustomerID = order.customerID
                     OrdersModel.mUuid = order.uuid
                     OrdersModel.mIsFinished = order.isFinished
-                    OrdersModel.mDriver = order.driver
-                    OrdersModel.mCustomer = order.customer
+
 
                 }
 
@@ -110,8 +108,7 @@ class SocketService : Service() {
                     OrdersModel.mCustomerID = order.customerID
                     OrdersModel.mUuid = order.uuid
                     OrdersModel.mIsFinished = order.isFinished
-                    OrdersModel.mDriver = order.driver
-                    OrdersModel.mCustomer = order.customer
+
                 }
 
                 MessageType.NO_ORDERS -> {
@@ -121,8 +118,20 @@ class SocketService : Service() {
                     OrdersModel.mCustomerID = order.customerID
                     OrdersModel.mUuid = order.uuid
                     OrdersModel.mIsFinished = order.isFinished
-                    OrdersModel.mDriver = order.driver
-                    OrdersModel.mCustomer = order.customer
+
+                }
+
+                MessageType.ORDER_REQUEST -> {
+                    val order = gson.fromJson(responseModel.body!!.toString(), OrdersModel::class.java)
+
+                    logInfo("order request ${order}")
+
+                    OrdersModel.mId = order.id
+                    OrdersModel.mDriverID = order.driverID
+                    OrdersModel.mCustomerID = order.customerID
+                    OrdersModel.mUuid = order.uuid
+                    OrdersModel.mIsFinished = order.isFinished
+
                 }
 
                 else -> logInfo("No matchable types")
@@ -132,6 +141,7 @@ class SocketService : Service() {
         }, { throwable ->
             logError(throwable)
             throwable.printStackTrace()
+            SocketHelper.resetSubscriptions()
         })
         SocketHelper.compositeDisposable.add(topic)
     }

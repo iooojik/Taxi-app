@@ -1,5 +1,6 @@
 package octii.app.taxiapp
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -60,15 +61,17 @@ class MainActivity : AppCompatActivity() {
                     UserModel.uIsViber = model.isViber
                     UserModel.uIsWhatsapp = model.isWhatsapp
                     UserModel.uType = model.type
-                    UserModel.uPhoneNumber = model.phone
+                    UserModel.uPhoneNumber = model.phone!!
                     UserModel.uToken = model.token
-                    UserModel.nUserName = model.userName
+                    UserModel.nUserName = model.userName!!
                     UserModel.mUuid = model.uuid
                     MyPreferences.userPreferences?.let {
                         MyPreferences.saveToPreferences(
                             it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
                     }
                     startSocketService()
+                } else{
+                    runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.authMessengersFragment) }
                 }
             } else HttpHelper.errorProcessing(binding.root, respModel.errorBody())
         }
@@ -90,16 +93,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isMyServiceRunning(): Boolean {
-        /*
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
+            if (SocketService::javaClass.name == service.service.className) {
                 return true
             }
         }
         return false
-         */
-        return SocketService.serviceRunning
+
     }
 
 }

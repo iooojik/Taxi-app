@@ -19,8 +19,8 @@ class OrdersModel(
     var uuid : String = mUuid,
     @ColumnInfo(name = "is_finished")
     var isFinished : Boolean = mIsFinished,
-    var driver : UserModel = mDriver,
-    var customer : UserModel = mCustomer
+    var driver : UserModel? = mDriver,
+    var customer : UserModel? = mCustomer
 ) {
     companion object{
         @JvmStatic

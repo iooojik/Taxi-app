@@ -55,7 +55,7 @@ class SocketHelper {
             //connectToRoom()
         }
 
-        private fun resetSubscriptions() {
+        fun resetSubscriptions() {
             compositeDisposable.dispose()
             compositeDisposable = CompositeDisposable()
             connect()

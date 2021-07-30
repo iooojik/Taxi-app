@@ -1,5 +1,8 @@
 package octii.app.taxiapp.ui.auth
 
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +16,7 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentUserInfoBinding
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -57,15 +61,16 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
                                     UserModel.uIsViber = model.isViber
                                     UserModel.uIsWhatsapp = model.isWhatsapp
                                     UserModel.uType = model.type
-                                    UserModel.uPhoneNumber = model.phone
+                                    UserModel.uPhoneNumber = model.phone!!
                                     UserModel.uToken = model.token
-                                    UserModel.nUserName = model.userName
+                                    UserModel.nUserName = model.userName!!
                                     UserModel.mUuid = model.uuid
                                     MyPreferences.userPreferences?.let {
                                         MyPreferences.saveToPreferences(
                                             it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token
                                         )
                                     }
+                                    startSocketService()
                                     findNavController().navigate(R.id.clientMapFragment)
                                 }
                             } else HttpHelper.errorProcessing(binding.root, response.errorBody())
@@ -95,6 +100,30 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
                 else UserModel.uType = Static.CLIENT_TYPE
             }
         }
+    }
+
+    private fun startSocketService(){
+        //создание намерения, которое будет запущено
+        val intentService = Intent(requireActivity(), SocketService::class.java)
+        //запуск сервиса. Если метод возвращает true, то сервис был запущен,
+        // если сервис был остановлен, то false
+        touchService(intentService)
+    }
+
+    private fun touchService(intentService : Intent) : Boolean {
+        return if (!isMyServiceRunning()) {requireActivity().startService(intentService); true}
+        else {requireActivity().stopService(intentService); false}
+    }
+
+    private fun isMyServiceRunning(): Boolean {
+        val manager = requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (SocketService::javaClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+
     }
 
 }

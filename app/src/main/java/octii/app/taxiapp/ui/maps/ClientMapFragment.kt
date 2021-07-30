@@ -14,7 +14,9 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import octii.app.taxiapp.R
+import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
+import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.web.SocketHelper
 
 class ClientMapFragment : Fragment(), View.OnClickListener {
@@ -67,7 +69,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.callTaxi.setOnClickListener(this)
+        if (UserModel.uType == Static.DRIVER_TYPE) binding.callTaxi.hide()
+        else binding.callTaxi.setOnClickListener(this)
         setMap()
     }
 

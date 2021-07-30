@@ -12,10 +12,10 @@ class UserModel(
     var id: Long = uID,
 
     @ColumnInfo(name = "user_name")
-    var userName: String = nUserName,
+    var userName: String? = nUserName,
 
     @ColumnInfo(name = "user_phone")
-    var phone: String = uPhoneNumber,
+    var phone: String? = uPhoneNumber,
 
     @ColumnInfo(name = "token")
     var token: String = uToken,
