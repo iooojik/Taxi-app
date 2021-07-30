@@ -64,6 +64,7 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
                                     UserModel.uPhoneNumber = model.phone
                                     UserModel.uToken = model.token
                                     UserModel.nUserName = model.userName
+                                    UserModel.mUuid = model.uuid
                                     MyPreferences.userPreferences?.let {
                                         MyPreferences.saveToPreferences(
                                             it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token

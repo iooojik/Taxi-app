@@ -28,6 +28,9 @@ class UserModel(
 
     @ColumnInfo(name = "is_viber")
     var isViber : Boolean = uIsViber,
+
+    @ColumnInfo(name = "uuid")
+    var uuid: String = mUuid,
 ){
     companion object{
         @JvmStatic
@@ -50,5 +53,8 @@ class UserModel(
 
         @JvmStatic
         var uIsViber : Boolean = false
+
+        @JvmStatic
+        var mUuid: String = UUID.randomUUID().toString()
     }
 }
