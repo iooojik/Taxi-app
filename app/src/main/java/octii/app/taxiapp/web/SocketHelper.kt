@@ -32,19 +32,20 @@ class SocketHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { lifecycleEvent ->
                     logInfo(lifecycleEvent.type)
+                    if (lifecycleEvent.type != null) {
+                        when (lifecycleEvent.type!!) {
+                            LifecycleEvent.Type.OPENED -> logInfo("Stomp connection opened")
 
-                    when (lifecycleEvent.type) {
-                        LifecycleEvent.Type.OPENED -> logInfo("Stomp connection opened")
+                            LifecycleEvent.Type.ERROR -> logError("Stomp connection error ${lifecycleEvent.exception}")
 
-                        LifecycleEvent.Type.ERROR -> logError("Stomp connection error ${lifecycleEvent.exception}")
+                            LifecycleEvent.Type.CLOSED -> {
+                                logInfo("Stomp connection closed")
+                                resetSubscriptions()
+                            }
 
-                        LifecycleEvent.Type.CLOSED -> {
-                            logInfo("Stomp connection closed")
-                            resetSubscriptions()
+                            LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> logError("Stomp failed server heartbeat")
+
                         }
-                        
-                        LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> logError("Stomp failed server heartbeat")
-
                     }
                 }
             if (dispLifecycle != null) {
