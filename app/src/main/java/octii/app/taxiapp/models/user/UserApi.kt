@@ -1,5 +1,6 @@
 package octii.app.taxiapp.models.user
 
+import octii.app.taxiapp.models.TokenAuthorization
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -9,6 +10,6 @@ interface UserApi {
     fun login(@Body userModel: UserModel) : Call<UserModel>
 
     @POST("/users/login.token")
-    fun loginWithToken(@Body userModel: UserModel) : Call<UserModel>
+    fun loginWithToken(@Body userModel: UserModel) : Call<TokenAuthorization>
 
 }

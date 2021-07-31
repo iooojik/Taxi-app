@@ -19,11 +19,6 @@ class HttpHelper {
         @JvmStatic
         lateinit var USER_API: UserApi
         @JvmStatic
-        val updateTimer = Timer()
-        @JvmStatic
-        val userInfoUpdate = UserInfoUpdate()
-
-        @JvmStatic
         fun prepare(){
             doRetrofit()
         }
@@ -62,17 +57,6 @@ class HttpHelper {
 
         fun onFailure(t : Throwable){
             Log.e(TAG, "FAILURE $t")
-        }
-    }
-
-    class UserInfoUpdate : TimerTask() {
-
-        companion object {
-            var isRunning = false
-        }
-
-        override fun run() {
-            //if (isRunning) login()
         }
     }
 }

@@ -31,6 +31,9 @@ class UserModel(
 
     @ColumnInfo(name = "uuid")
     var uuid: String = mUuid,
+
+    @ColumnInfo(name = "is_only_client")
+    var isOnlyClient : Boolean = mIsOnlyClient
 ){
     companion object{
         @JvmStatic
@@ -56,5 +59,8 @@ class UserModel(
 
         @JvmStatic
         var mUuid: String = UUID.randomUUID().toString()
+
+        @JvmStatic
+        var mIsOnlyClient : Boolean = true
     }
 }

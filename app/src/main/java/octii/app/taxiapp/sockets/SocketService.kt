@@ -4,11 +4,14 @@ import android.app.Service
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
+import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import octii.app.taxiapp.R
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.models.MessageType
 import octii.app.taxiapp.models.OrdersModel
@@ -28,6 +31,27 @@ class SocketService : Service() {
         val updateTimer = Timer()
         @JvmStatic
         val handler = Handler()
+        @JvmStatic
+        fun getOrderModel(json : Any, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel{
+            val order = Gson().fromJson(json.toString(), OrdersModel::class.java)
+            logInfo("order request $order")
+
+            OrdersModel.mId = order.id
+            OrdersModel.mDriverID = order.driverID
+            OrdersModel.mCustomerID = order.customerID
+            OrdersModel.mUuid = order.uuid
+            OrdersModel.mIsFinished = order.isFinished
+
+            if (order.driver != null)
+                OrdersModel.mDriver = order.driver!!
+            if (order.customer != null)
+                OrdersModel.mCustomer = order.customer!!
+
+            OrdersModel.isOrdered = isOrdered
+            OrdersModel.isAccepted = isAccepted
+
+            return OrdersModel()
+        }
     }
 
     private val gson = Gson()
@@ -81,60 +105,42 @@ class SocketService : Service() {
             when(responseModel.type){
 
                 MessageType.ORDER_ACCEPT -> {
-                    val order = responseModel.body as OrdersModel
-                    OrdersModel.mId = order.id
-                    OrdersModel.mDriverID = order.driverID
-                    OrdersModel.mCustomerID = order.customerID
-                    OrdersModel.mUuid = order.uuid
-                    OrdersModel.mIsFinished = order.isFinished
-
+                    if (responseModel.body != null){
+                        val order = getOrderModel(responseModel.body!!,
+                            isOrdered = false,
+                            isAccepted = true)
+                    }
                 }
 
                 MessageType.ORDER_REJECT -> {
-                    val order = responseModel.body as OrdersModel
-                    OrdersModel.mId = order.id
-                    OrdersModel.mDriverID = order.driverID
-                    OrdersModel.mCustomerID = order.customerID
-                    OrdersModel.mUuid = order.uuid
-                    OrdersModel.mIsFinished = order.isFinished
-
-
+                    if (responseModel.body != null){
+                        val order = getOrderModel(responseModel.body!!, false)
+                    }
                 }
 
                 MessageType.ORDER_FINISHED -> {
-                    val order = responseModel.body as OrdersModel
-                    OrdersModel.mId = order.id
-                    OrdersModel.mDriverID = order.driverID
-                    OrdersModel.mCustomerID = order.customerID
-                    OrdersModel.mUuid = order.uuid
-                    OrdersModel.mIsFinished = order.isFinished
-
+                    if (responseModel.body != null){
+                        val order = getOrderModel(responseModel.body!!, false)
+                    }
                 }
 
                 MessageType.NO_ORDERS -> {
-                    val order = responseModel.body as OrdersModel
-                    OrdersModel.mId = order.id
-                    OrdersModel.mDriverID = order.driverID
-                    OrdersModel.mCustomerID = order.customerID
-                    OrdersModel.mUuid = order.uuid
-                    OrdersModel.mIsFinished = order.isFinished
-
+                    Toast.makeText(applicationContext,
+                        resources.getString(R.string.all_drivers_are_busy), Toast.LENGTH_SHORT).show()
                 }
 
                 MessageType.ORDER_REQUEST -> {
-                    val order = gson.fromJson(responseModel.body!!.toString(), OrdersModel::class.java)
-
-                    logInfo("order request ${order}")
-
-                    OrdersModel.mId = order.id
-                    OrdersModel.mDriverID = order.driverID
-                    OrdersModel.mCustomerID = order.customerID
-                    OrdersModel.mUuid = order.uuid
-                    OrdersModel.mIsFinished = order.isFinished
+                    if (responseModel.body != null){
+                        val order = getOrderModel(responseModel.body!!, true)
+                    }
 
                 }
 
-                else -> logInfo("No matchable types")
+                else -> {
+                    logInfo("No matchable types")
+                    Toast.makeText(applicationContext,
+                        resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
+                }
             }
             logInfo("Application was connected to WebSockets path: $path")
 
@@ -145,6 +151,8 @@ class SocketService : Service() {
         })
         SocketHelper.compositeDisposable.add(topic)
     }
+
+
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

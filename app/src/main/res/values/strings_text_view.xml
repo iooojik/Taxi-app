@@ -2,4 +2,5 @@
 <resources>
     <string name="download_messengers">Чтобы пользоваться нашим приложением вам необходимо иметь установленный Whatsapp или Viber</string>
     <string name="authorization">Авторизация</string>
+    <string name="timer_zero">00</string>
 </resources>

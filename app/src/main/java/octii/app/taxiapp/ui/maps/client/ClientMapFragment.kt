@@ -1,7 +1,8 @@
-package octii.app.taxiapp.ui.maps
+package octii.app.taxiapp.ui.maps.client
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
@@ -9,19 +10,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import octii.app.taxiapp.R
-import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
-import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.SocketHelper
+import java.util.*
+import android.content.Intent
+import android.net.Uri
+import android.widget.ImageView
+
 
 class ClientMapFragment : Fragment(), View.OnClickListener {
 
     lateinit var binding: FragmentClientMapBinding
+    private lateinit var mTimer : Timer
+    private lateinit var orderUpdate : OrderUpdate
+
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -61,17 +74,30 @@ class ClientMapFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentClientMapBinding.inflate(layoutInflater)
+        binding.callTaxi.setOnClickListener(this)
+        binding.fabSettings.setOnClickListener(this)
+        setTimer()
+        view?.findViewById<ImageView>(R.id.call_to_driver)?.setOnClickListener(this)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (UserModel.uType == Static.DRIVER_TYPE) binding.callTaxi.hide()
-        else binding.callTaxi.setOnClickListener(this)
         setMap()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view?.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
+    }
+
+    private fun setTimer() {
+        orderUpdate = OrderUpdate(binding.root, requireActivity())
+        mTimer = Timer()
+        mTimer.schedule(orderUpdate, 0, 1000)
     }
 
     private fun setMap(){
@@ -83,6 +109,35 @@ class ClientMapFragment : Fragment(), View.OnClickListener {
         when(v!!.id){
             R.id.call_taxi -> {
                 SocketHelper.makeOrder()
+                OrdersModel.isOrdered = true
+                binding.callTaxi.hide()
+            }
+            R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsFragment)
+            R.id.call_to_driver -> callToDriver()
+        }
+    }
+
+    private fun callToDriver() {
+        val dial = "tel:${OrdersModel.mDriver.phone}"
+        startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
+    }
+
+    inner class OrderUpdate(
+        private val view: View, private val activity: Activity,
+    ) : TimerTask() {
+
+        override fun run() {
+            activity.runOnUiThread {
+                if (OrdersModel.isAccepted) {
+                    logInfo("isAccepted")
+                    binding.callTaxi.hide()
+                    view.findViewById<TextView>(R.id.driver_name).text = OrdersModel.mDriver.userName
+                    view.findViewById<TextView>(R.id.driver_phone).text = OrdersModel.mDriver.phone
+                    view.findViewById<ConstraintLayout>(R.id.client_order_info_layout).visibility = View.VISIBLE
+                } else {
+                    view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
+                    if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered) binding.callTaxi.show()
+                }
             }
         }
     }

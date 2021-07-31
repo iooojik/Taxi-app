@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentAuthMessengersBinding
 
@@ -19,6 +20,7 @@ class AuthMessengersFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAuthMessengersBinding.inflate(layoutInflater)
+        MyPreferences.clearAll()
         return binding.root
     }
 

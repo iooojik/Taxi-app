@@ -23,5 +23,4 @@ data class DriverAvailable(
     @ColumnInfo(name = "is_working")
     var isWorking : Boolean = false,
     var driver : UserModel
-
 )

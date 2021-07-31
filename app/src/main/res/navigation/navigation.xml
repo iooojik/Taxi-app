@@ -22,10 +22,36 @@
         <action
             android:id="@+id/action_userInfoFragment_to_clienMapFragment"
             app:destination="@id/clientMapFragment" />
+        <action
+            android:id="@+id/action_userInfoFragment_to_driverMapFragment"
+            app:destination="@id/driverMapFragment" />
     </fragment>
     <fragment
         android:id="@+id/clientMapFragment"
-        android:name="octii.app.taxiapp.ui.maps.ClientMapFragment"
+        android:name="octii.app.taxiapp.ui.maps.client.ClientMapFragment"
         android:label="fragment_client_map"
-        tools:layout="@layout/fragment_client_map" />
+        tools:layout="@layout/fragment_client_map" >
+        <action
+            android:id="@+id/action_clientMapFragment_to_clientSettingsFragment"
+            app:destination="@id/clientSettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/driverMapFragment"
+        android:name="octii.app.taxiapp.ui.maps.driver.DriverMapFragment"
+        android:label="fragment_driver_map"
+        tools:layout="@layout/fragment_driver_map" >
+        <action
+            android:id="@+id/action_driverMapFragment_to_driverSettingsFragment"
+            app:destination="@id/driverSettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/driverSettingsFragment"
+        android:name="octii.app.taxiapp.ui.settings.DriverSettingsFragment"
+        android:label="fragment_driver_settings"
+        tools:layout="@layout/fragment_driver_settings" />
+    <fragment
+        android:id="@+id/clientSettingsFragment"
+        android:name="octii.app.taxiapp.ui.settings.ClientSettingsFragment"
+        android:label="fragment_client_settings"
+        tools:layout="@layout/fragment_client_settings" />
 </navigation>

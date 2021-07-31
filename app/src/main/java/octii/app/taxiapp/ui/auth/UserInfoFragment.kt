@@ -65,13 +65,17 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
                                     UserModel.uToken = model.token
                                     UserModel.nUserName = model.userName!!
                                     UserModel.mUuid = model.uuid
+                                    UserModel.mIsOnlyClient = model.isOnlyClient
+
                                     MyPreferences.userPreferences?.let {
                                         MyPreferences.saveToPreferences(
                                             it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token
                                         )
                                     }
                                     startSocketService()
-                                    findNavController().navigate(R.id.clientMapFragment)
+                                    if (UserModel.uType == Static.DRIVER_TYPE)
+                                        findNavController().navigate(R.id.driverMapFragment)
+                                    else findNavController().navigate(R.id.clientMapFragment)
                                 }
                             } else HttpHelper.errorProcessing(binding.root, response.errorBody())
                         }

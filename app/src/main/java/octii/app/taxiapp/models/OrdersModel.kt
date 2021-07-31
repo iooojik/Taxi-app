@@ -32,10 +32,14 @@ class OrdersModel(
         @JvmStatic
         var mUuid : String = UUID.randomUUID().toString()
         @JvmStatic
-        var mIsFinished : Boolean = false
+        var mIsFinished : Boolean = true
         @JvmStatic
         var mDriver : UserModel = UserModel()
         @JvmStatic
         var mCustomer : UserModel = UserModel()
+        @JvmStatic
+        var isOrdered = false
+        @JvmStatic
+        var isAccepted = false
     }
 }

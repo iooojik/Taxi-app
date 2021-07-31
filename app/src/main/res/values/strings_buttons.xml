@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="next_button">Далее</string>
+    <string name="button_accept">Принять</string>
+    <string name="button_reject">Отклонить</string>
+    <string name="button_finish">Закончить</string>
 </resources>

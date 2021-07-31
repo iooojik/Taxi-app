@@ -8,11 +8,16 @@ import android.os.Bundle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import com.google.gson.Gson
 import octii.app.taxiapp.databinding.ActivityMainBinding
+import octii.app.taxiapp.models.TokenAuthorization
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.HttpHelper
-import kotlin.concurrent.thread
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,56 +32,81 @@ class MainActivity : AppCompatActivity() {
         HttpHelper.doRetrofit()
         MyPreferences.userPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE)
         MyPreferences.applicationPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_APPLICATION, Context.MODE_PRIVATE)
-        setNavigation()
+        checkAuth()
     }
 
     private fun setNavigation(){
-        //val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         val drawer : DrawerLayout = findViewById(R.id.drawer)
-        //val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         AppBarConfiguration.Builder(R.id.authMessengersFragment).setOpenableLayout(drawer).build()
-        //NavigationUI.setupWithNavController(bottomNavigationView, navController)
-        //val token = MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")
-        //if (token != null && token.isNotEmpty())
-            //findNavController(R.id.nav_host_fragment).navigate(R.id.chatRoomsFragment)
-        checkAuth()
     }
 
     private fun checkAuth() {
         val token = if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "").isNullOrEmpty()) ""
         else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")
 
-        if (token.isNullOrEmpty()) runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.authMessengersFragment) }
-        else {
-            runOnUiThread {
-                findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
-            }
-        }
+        HttpHelper.USER_API.loginWithToken(UserModel(token = token!!)).enqueue(object : Callback<TokenAuthorization>{
+            override fun onResponse(call: Call<TokenAuthorization>, response: Response<TokenAuthorization>) {
+                if (response.isSuccessful){
+                    val model = response.body()?.user
+                    if (model != null && model.token.isNotEmpty()){
+                        UserModel.uIsViber = model.isViber
+                        UserModel.uIsWhatsapp = model.isWhatsapp
+                        UserModel.uType = model.type
+                        UserModel.uPhoneNumber = model.phone!!
+                        UserModel.uToken = model.token
+                        UserModel.nUserName = model.userName!!
+                        UserModel.mUuid = model.uuid
+                        UserModel.mIsOnlyClient = model.isOnlyClient
 
-        thread {
-            val respModel = HttpHelper.USER_API.loginWithToken(UserModel(token = token!!)).execute()
-            if (respModel.isSuccessful){
-                val model = respModel.body()
-                if (model != null && model.token.isNotEmpty()){
-                    UserModel.uIsViber = model.isViber
-                    UserModel.uIsWhatsapp = model.isWhatsapp
-                    UserModel.uType = model.type
-                    UserModel.uPhoneNumber = model.phone!!
-                    UserModel.uToken = model.token
-                    UserModel.nUserName = model.userName!!
-                    UserModel.mUuid = model.uuid
-                    MyPreferences.userPreferences?.let {
-                        MyPreferences.saveToPreferences(
-                            it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
+                        MyPreferences.userPreferences?.let {
+                            MyPreferences.saveToPreferences(
+                                it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
+                        }
+
+                        if (response.body()?.order != null){
+                            val order = response.body()?.order
+                            SocketService.getOrderModel(Gson().toJson(order), false,
+                                if (!order?.isFinished!!) !order.isFinished else false)
+                        }
+
+                        startSocketService()
+                        setNavigation()
+
+                        if (token.isNullOrEmpty()) {
+                            navigateToStartPage()
+                        }
+                        else {
+                            if (UserModel.uType == Static.DRIVER_TYPE) navigateToDriverMap()
+                            else navigateToClientMap()
+                        }
+                    } else{
+                        setNavigation()
+                        navigateToStartPage()
                     }
-                    startSocketService()
-                } else{
-                    runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.authMessengersFragment) }
+                } else {
+                    setNavigation()
+                    HttpHelper.errorProcessing(binding.root, response.errorBody())
+                    navigateToStartPage()
                 }
-            } else HttpHelper.errorProcessing(binding.root, respModel.errorBody())
-        }
+            }
 
+            override fun onFailure(call: Call<TokenAuthorization>, t: Throwable) {
+                HttpHelper.onFailure(t)
+                navigateToStartPage()
+            }
+        })
+    }
 
+    private fun navigateToDriverMap(){
+        runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.driverMapFragment) }
+    }
+
+    private fun navigateToClientMap(){
+        runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment) }
+    }
+
+    private fun navigateToStartPage(){
+        runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.authMessengersFragment) }
     }
 
     private fun startSocketService(){
