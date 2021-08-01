@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 if (response.isSuccessful){
                     val model = response.body()?.user
                     if (model != null && model.token.isNotEmpty()){
+                        UserModel.uID = model.id
                         UserModel.uIsViber = model.isViber
                         UserModel.uIsWhatsapp = model.isWhatsapp
                         UserModel.uType = model.type
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                         UserModel.nUserName = model.userName!!
                         UserModel.mUuid = model.uuid
                         UserModel.mIsOnlyClient = model.isOnlyClient
+                        UserModel.mAvatarURL = model.avatarURL
 
                         MyPreferences.userPreferences?.let {
                             MyPreferences.saveToPreferences(

@@ -27,9 +27,13 @@ import java.util.*
 import android.content.Intent
 import android.net.Uri
 import android.widget.ImageView
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import com.google.android.material.snackbar.Snackbar
 
 
-class ClientMapFragment : Fragment(), View.OnClickListener {
+class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener {
 
     lateinit var binding: FragmentClientMapBinding
     private lateinit var mTimer : Timer
@@ -81,6 +85,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener {
         binding.fabSettings.setOnClickListener(this)
         setTimer()
         view?.findViewById<ImageView>(R.id.call_to_driver)?.setOnClickListener(this)
+        view?.findViewById<TextView>(R.id.driver_phone)?.setOnLongClickListener(this)
         return binding.root
     }
 
@@ -140,5 +145,18 @@ class ClientMapFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    override fun onLongClick(v: View?): Boolean {
+        when(v!!.id){
+            R.id.driver_phone -> {
+                val clipboard: ClipboardManager =
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("", view?.findViewById<TextView>(R.id.driver_phone)?.text.toString())
+                clipboard.setPrimaryClip(clip)
+                Snackbar.make(binding.root, resources.getString(R.string.copied), Snackbar.LENGTH_SHORT).show()
+            }
+        }
+        return true
     }
 }

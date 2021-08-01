@@ -12,4 +12,7 @@ interface UserApi {
     @POST("/users/login.token")
     fun loginWithToken(@Body userModel: UserModel) : Call<TokenAuthorization>
 
+    @POST("/users/update")
+    fun update(@Body userModel: UserModel) : Call<UserModel>
+
 }

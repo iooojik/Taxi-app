@@ -5,56 +5,168 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.shape.RoundedCornerTreatment
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
 import octii.app.taxiapp.R
+import octii.app.taxiapp.Static
+import octii.app.taxiapp.databinding.FragmentDriverSettingsBinding
+import octii.app.taxiapp.models.driverAvailable.DriverAvailable
+import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.web.HttpHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [DriverSettingsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class DriverSettingsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class DriverSettingsFragment : Fragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding : FragmentDriverSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_driver_settings, container, false)
+    ): View {
+        binding = FragmentDriverSettingsBinding.inflate(layoutInflater)
+        binding.becomeClient.setOnClickListener(this)
+        binding.fabBack.setOnClickListener(this)
+        binding.working.setOnCheckedChangeListener(this)
+        binding.driverName.text = UserModel.nUserName
+        binding.driverPhone.text = UserModel.uPhoneNumber
+        if (UserModel.mAvatarURL.isNotEmpty()){
+            Picasso.with(requireContext())
+                .load(UserModel.mAvatarURL)
+                .transform(CircularTransformation(0f))
+                .into(binding.driverAvatar)
+        } else {
+            binding.driverAvatar.setImageResource(R.drawable.outline_account_circle_24)
+        }
+        getDriver()
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DriverSettingsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DriverSettingsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onClick(v: View?) {
+        when(v!!.id){
+            R.id.become_client -> {
+                UserModel.uType = Static.CLIENT_TYPE
+                updateDriver()
+            }
+            R.id.button_russian_language -> {
+
+            }
+            R.id.button_english_language -> {
+
+            }
+            R.id.button_serbian_language -> {
+
+            }
+            R.id.fab_back -> {
+                updateDriver()
+                findNavController().navigate(R.id.driverMapFragment)
+            }
+        }
+    }
+
+    private fun updateDriver(){
+        HttpHelper.USER_API.update(UserModel()).enqueue(object : Callback<UserModel>{
+            override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                if (response.isSuccessful){
+                    val model = response.body()
+                    if (model != null){
+                        if (model.type == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientSettingsFragment)
+                    }
+                } else {
+                    HttpHelper.errorProcessing(binding.root, response.errorBody())
                 }
             }
+
+            override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                HttpHelper.onFailure(t)
+            }
+        })
+        HttpHelper.DRIVER_AVAILABLE_API.update(DriverAvailable(
+            pricePerKm = binding.pricePerKm.editText?.text.toString().toFloat(),
+            pricePerMinute = binding.pricePerMin.editText?.text.toString().toFloat(),
+            priceWaitingMin = binding.priceWaiting.editText?.text.toString().toFloat(),
+            rideDistance = binding.maxDistance.editText?.text.toString().toFloat(),
+        )).enqueue(object : Callback<DriverAvailable>{
+            override fun onResponse(
+                call: Call<DriverAvailable>,
+                response: Response<DriverAvailable>,
+            ) {
+                if (response.isSuccessful){
+                    val model = response.body()
+                    if (model != null){
+                        logError(model)
+                        changeStaticInfo(model)
+                    }
+                } else {
+                    HttpHelper.errorProcessing(binding.root, response.errorBody())
+                }
+            }
+
+            override fun onFailure(call: Call<DriverAvailable>, t: Throwable) {
+                HttpHelper.onFailure(t)
+            }
+
+        })
     }
+
+    private fun getDriver(){
+        HttpHelper.DRIVER_AVAILABLE_API.getDriver(DriverAvailable(driverID = UserModel.uID)).enqueue(object : Callback<DriverAvailable>{
+            override fun onResponse(
+                call: Call<DriverAvailable>,
+                response: Response<DriverAvailable>,
+            ) {
+                if (response.isSuccessful){
+                    val model = response.body()
+                    if (model != null){
+                        changeStaticInfo(model)
+                        updateUiInfo()
+                    }
+                } else {
+                    HttpHelper.errorProcessing(binding.root, response.errorBody())
+                }
+            }
+
+            override fun onFailure(call: Call<DriverAvailable>, t: Throwable) {
+                HttpHelper.onFailure(t)
+            }
+
+        })
+    }
+
+    private fun changeStaticInfo(newDriver : DriverAvailable?){
+        if (newDriver != null){
+            DriverAvailable.mDriver = newDriver.driver
+            DriverAvailable.mDriverID = newDriver.driverID
+            DriverAvailable.mId = newDriver.id
+            DriverAvailable.mIsWorking = newDriver.isWorking
+            DriverAvailable.mPricePerKm = newDriver.pricePerKm
+            DriverAvailable.mPricePerMinute = newDriver.pricePerMinute
+            DriverAvailable.mPriceWaitingMin = newDriver.pricePerMinute
+            DriverAvailable.mRideDistance = newDriver.rideDistance
+        }
+    }
+
+    private fun updateUiInfo() {
+        binding.pricePerKm.editText?.setText(DriverAvailable.mPricePerKm.toString())
+        binding.pricePerMin.editText?.setText(DriverAvailable.mPricePerMinute.toString())
+        binding.priceWaiting.editText?.setText(DriverAvailable.mPriceWaitingMin.toString())
+        binding.maxDistance.editText?.setText(DriverAvailable.mRideDistance.toString())
+        binding.working.isChecked = DriverAvailable.mIsWorking
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        when(buttonView!!.id){
+            R.id.working -> {
+                DriverAvailable.mIsWorking = isChecked
+                updateDriver()
+            }
+        }
+    }
+
 }

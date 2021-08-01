@@ -3,7 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">188.127.254.149</domain>
         <domain includeSubdomains="true">iooojik.ru</domain>
-        <domain includeSubdomains="true">192.168.0.105</domain>
+        <domain includeSubdomains="true">192.168.0.100</domain>
         <domain includeSubdomains="true">10.0.0.2</domain>
     </domain-config>
 </network-security-config>

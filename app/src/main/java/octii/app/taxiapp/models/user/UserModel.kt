@@ -33,7 +33,10 @@ class UserModel(
     var uuid: String = mUuid,
 
     @ColumnInfo(name = "is_only_client")
-    var isOnlyClient : Boolean = mIsOnlyClient
+    var isOnlyClient : Boolean = mIsOnlyClient,
+
+    @ColumnInfo(name = "avatar_url")
+    var avatarURL : String = mAvatarURL
 ){
     companion object{
         @JvmStatic
@@ -62,5 +65,8 @@ class UserModel(
 
         @JvmStatic
         var mIsOnlyClient : Boolean = true
+
+        @JvmStatic
+        var mAvatarURL : String = ""
     }
 }

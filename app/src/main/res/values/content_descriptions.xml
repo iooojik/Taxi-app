@@ -3,4 +3,5 @@
     <string name="fab_settings_description">Settings</string>
     <string name="avatar_description">Avatar</string>
     <string name="call_description">Call</string>
+    <string name="back_description">Back</string>
 </resources>

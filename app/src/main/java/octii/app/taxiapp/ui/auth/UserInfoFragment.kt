@@ -58,6 +58,7 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
                             if (response.isSuccessful) {
                                 val model = response.body()
                                 if (model != null) {
+                                    UserModel.uID = model.id
                                     UserModel.uIsViber = model.isViber
                                     UserModel.uIsWhatsapp = model.isWhatsapp
                                     UserModel.uType = model.type
@@ -66,6 +67,7 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
                                     UserModel.nUserName = model.userName!!
                                     UserModel.mUuid = model.uuid
                                     UserModel.mIsOnlyClient = model.isOnlyClient
+                                    UserModel.mAvatarURL = model.avatarURL
 
                                     MyPreferences.userPreferences?.let {
                                         MyPreferences.saveToPreferences(

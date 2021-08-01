@@ -3,6 +3,8 @@ package octii.app.taxiapp.ui.maps.driver
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.OrdersModel
@@ -29,7 +32,7 @@ import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
-class DriverMapFragment : Fragment(), View.OnClickListener {
+class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener {
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -74,6 +77,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        //TODO(orders check)
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -83,6 +87,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener {
         setMap()
         setTimer()
         binding.fabSettings.setOnClickListener(this)
+        view.findViewById<TextView>(R.id.customer_phone)?.setOnLongClickListener(this)
         view.findViewById<ImageView>(R.id.call_to_customer).setOnClickListener(this)
     }
 
@@ -146,5 +151,18 @@ class DriverMapFragment : Fragment(), View.OnClickListener {
         super.onDestroyView()
         mTimer.cancel()
         mTimer.purge()
+    }
+
+    override fun onLongClick(v: View?): Boolean {
+        when(v!!.id){
+            R.id.customer_phone -> {
+                val clipboard: ClipboardManager =
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("", view?.findViewById<TextView>(R.id.customer_phone)?.text.toString())
+                clipboard.setPrimaryClip(clip)
+                Snackbar.make(binding.root, resources.getString(R.string.copied), Snackbar.LENGTH_SHORT).show()
+            }
+        }
+        return true
     }
 }
