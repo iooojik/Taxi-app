@@ -25,10 +25,15 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.sockets.SocketService
+import octii.app.taxiapp.sockets.location.LocationService
+import octii.app.taxiapp.ui.settings.CircularTransformation
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
@@ -105,6 +110,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private fun setMap(){
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        try {
+            val intentService = Intent(requireContext(), LocationService::class.java)
+            requireActivity().startService(intentService)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onClick(v: View?) {
@@ -142,6 +153,15 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     view.findViewById<TextView>(R.id.customer_phone).text = OrdersModel.mCustomer.phone
                     view.findViewById<Button>(R.id.finish_order).setOnClickListener(this@DriverMapFragment)
                     view.findViewById<ConstraintLayout>(R.id.driver_order_info_layout).visibility = View.VISIBLE
+                    val avatarView = view.findViewById<ImageView>(R.id.customer_avatar)
+                    if (OrdersModel.mCustomer.avatarURL.isNotEmpty()){
+                        Picasso.with(requireContext())
+                            .load(OrdersModel.mCustomer.avatarURL)
+                            .transform(CircularTransformation(0f))
+                            .into(avatarView)
+                    } else {
+                        avatarView.setImageResource(R.drawable.outline_account_circle_24)
+                    }
                 }
             }
         }

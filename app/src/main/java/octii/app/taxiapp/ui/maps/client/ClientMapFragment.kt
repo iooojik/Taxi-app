@@ -31,6 +31,10 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
+import octii.app.taxiapp.sockets.SocketService
+import octii.app.taxiapp.sockets.location.LocationService
+import octii.app.taxiapp.ui.settings.CircularTransformation
 
 
 class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener {
@@ -108,6 +112,12 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private fun setMap(){
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        try {
+            val intentService = Intent(requireContext(), LocationService::class.java)
+            requireActivity().startService(intentService)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onClick(v: View?) {
@@ -138,6 +148,15 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     binding.callTaxi.hide()
                     view.findViewById<TextView>(R.id.driver_name).text = OrdersModel.mDriver.userName
                     view.findViewById<TextView>(R.id.driver_phone).text = OrdersModel.mDriver.phone
+                    val avatarView = view.findViewById<ImageView>(R.id.driver_avatar)
+                    if (OrdersModel.mDriver.avatarURL.isNotEmpty()){
+                        Picasso.with(requireContext())
+                            .load(OrdersModel.mDriver.avatarURL)
+                            .transform(CircularTransformation(0f))
+                            .into(avatarView)
+                    } else {
+                        avatarView.setImageResource(R.drawable.outline_account_circle_24)
+                    }
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout).visibility = View.VISIBLE
                 } else {
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE

@@ -59,6 +59,8 @@ class MainActivity : AppCompatActivity() {
                         UserModel.mUuid = model.uuid
                         UserModel.mIsOnlyClient = model.isOnlyClient
                         UserModel.mAvatarURL = model.avatarURL
+                        UserModel.mLanguages = model.languages
+                        UserModel.mCoordinates = model.coordinates
 
                         MyPreferences.userPreferences?.let {
                             MyPreferences.saveToPreferences(

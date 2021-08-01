@@ -3,6 +3,8 @@ package octii.app.taxiapp.models.user
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import octii.app.taxiapp.models.CoordinatesModel
+import octii.app.taxiapp.models.SpeakingLanguagesModel
 import java.util.*
 
 @Entity
@@ -36,7 +38,11 @@ class UserModel(
     var isOnlyClient : Boolean = mIsOnlyClient,
 
     @ColumnInfo(name = "avatar_url")
-    var avatarURL : String = mAvatarURL
+    var avatarURL : String = mAvatarURL,
+
+    var languages : List<SpeakingLanguagesModel>? = mLanguages,
+
+    var coordinates : CoordinatesModel? = mCoordinates
 ){
     companion object{
         @JvmStatic
@@ -68,5 +74,11 @@ class UserModel(
 
         @JvmStatic
         var mAvatarURL : String = ""
+
+        @JvmStatic
+        var mLanguages : List<SpeakingLanguagesModel>? = listOf()
+
+        @JvmStatic
+        var mCoordinates : CoordinatesModel? = CoordinatesModel()
     }
 }

@@ -6,6 +6,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import octii.app.taxiapp.Static
+import octii.app.taxiapp.models.CoordinatesModel
 import octii.app.taxiapp.models.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
@@ -75,6 +76,11 @@ class SocketHelper {
 
         fun finishOrder(order : OrdersModel){
             mStompClient.send("/requests/order.finish.${UserModel.mUuid}", toJSON(order)).subscribe()
+        }
+
+        fun updateCoordinates(coordinatesModel: CoordinatesModel){
+            mStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
+                toJSON(coordinatesModel)).subscribe()
         }
 
         fun authorization(){
