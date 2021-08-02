@@ -8,6 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import octii.app.taxiapp.MyPreferences
@@ -29,10 +33,15 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.scripts.logDebug
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.sockets.location.LocationService
+import octii.app.taxiapp.sockets.location.MyLocationListener
+import octii.app.taxiapp.ui.maps.GMapV2Direction
 import octii.app.taxiapp.ui.settings.CircularTransformation
 import octii.app.taxiapp.web.SocketHelper
+import org.w3c.dom.Document
 import java.util.*
 
 class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener {
@@ -48,12 +57,34 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
+        logError(OrdersModel.mCustomer.coordinates != null)
+        if (OrdersModel.mCustomer.coordinates != null) {
+            val md = GMapV2Direction()
+
+            val doc: Document =
+                md.getDocument(LatLng(MyLocationListener.latitude, MyLocationListener.longitude),
+                    LatLng(OrdersModel.mCustomer.coordinates!!.latitude, OrdersModel.mCustomer.coordinates!!.longitude),
+                    GMapV2Direction.MODE_DRIVING)
+
+            val directionPoint = md.getDirection(doc)
+            logError(directionPoint)
+            val rectLine = PolylineOptions().width(3f).color(Color.RED)
+
+            for (i in 0 until directionPoint.size) {
+                rectLine.add(directionPoint[i])
+            }
+
+            googleMap.addPolyline(rectLine)
+        }
         googleMap.isMyLocationEnabled = true
+
+
     }
 
     private lateinit var binding: FragmentDriverMapBinding
     private lateinit var ordersUpdate : OrdersUpdate
     private lateinit var mTimer: Timer
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

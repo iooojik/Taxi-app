@@ -61,11 +61,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        LocaleUtils.setSelectedLanguageId(LocaleUtils.SERBIAN)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

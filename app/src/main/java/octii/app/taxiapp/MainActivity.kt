@@ -47,22 +47,24 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 if (UserModel.uToken.isEmpty()) {
                     navigateToStartPage()
+                } else {
+                    startSocketService()
+
+                    val savedUserType =
+                        if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE,
+                                Static.CLIENT_TYPE).isNullOrEmpty()
+                        ) Static.CLIENT_TYPE
+                        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE,
+                            Static.CLIENT_TYPE)!!
+
+                    if (savedUserType == Static.DRIVER_TYPE) navigateToDriverMap()
+                    else navigateToClientMap()
                 }
+
             }
-        }
 
-        startSocketService()
 
-        if (token.isNotEmpty()) {
-            val savedUserType =
-                if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE,
-                        Static.CLIENT_TYPE).isNullOrEmpty()
-                ) Static.CLIENT_TYPE
-                else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE,
-                    Static.CLIENT_TYPE)!!
 
-            if (savedUserType == Static.DRIVER_TYPE) navigateToDriverMap()
-            else navigateToClientMap()
         }
 
     }
