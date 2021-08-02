@@ -2,7 +2,4 @@
     <string name="app_name">Taxi app</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="russian_language">Русский</string>
-    <string name="english_language">English</string>
-    <string name="serbian_language">Српски</string>
 </resources>

@@ -1,7 +1,6 @@
 package octii.app.taxiapp
 
 import android.app.Activity
-import android.content.Intent
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.user.UserModel
 

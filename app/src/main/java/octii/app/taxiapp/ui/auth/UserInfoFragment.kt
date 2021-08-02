@@ -11,17 +11,12 @@ import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentUserInfoBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.sockets.SocketService
-import octii.app.taxiapp.web.HttpHelper
 import octii.app.taxiapp.web.requests.Requests
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.concurrent.thread
 
 

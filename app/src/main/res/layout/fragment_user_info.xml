@@ -73,18 +73,6 @@
             android:layout_height="wrap_content"
             android:text="@string/i_am_driver" />
 
-        <!--<com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/code_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/phone_number">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>-->
-
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

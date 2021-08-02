@@ -5,17 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.scripts.logDebug
-import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.requests.Requests
 import kotlin.concurrent.thread
-import octii.app.taxiapp.ui.settings.ClientSettingsFragment
 
 
 class MainActivity : AppCompatActivity() {

@@ -193,8 +193,4 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         return true
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-    }
 }

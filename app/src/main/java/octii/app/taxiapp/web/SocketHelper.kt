@@ -28,7 +28,7 @@ class SocketHelper {
 
 
         fun connect(){
-            val dispLifecycle: Disposable? = mStompClient.lifecycle()
+            val disposableLifecycle: Disposable? = mStompClient.lifecycle()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { lifecycleEvent ->
@@ -49,8 +49,8 @@ class SocketHelper {
                         }
                     }
                 }
-            if (dispLifecycle != null) {
-                compositeDisposable.add(dispLifecycle)
+            if (disposableLifecycle != null) {
+                compositeDisposable.add(disposableLifecycle)
             }
             mStompClient.connect()
             //connectToRoom()
