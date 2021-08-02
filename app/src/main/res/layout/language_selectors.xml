@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/speak_on_following_languages" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/button_russian_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/russian_language" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/button_english_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/english_language" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/button_serbian_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/serbian_language" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_language" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/russian_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/russian_language" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/english_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/english_language" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/serbian_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/serbian_language" />
+
+    </RadioGroup>
+</LinearLayout>

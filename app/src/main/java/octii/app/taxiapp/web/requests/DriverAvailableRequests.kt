@@ -8,6 +8,7 @@ import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Response
 
 class DriverAvailableRequests(private val view : View?, private val activity: Activity) {
+
     fun updateDriverAvailableModel(model : DriverAvailable) : DriverAvailable {
         val resp = HttpHelper.DRIVER_AVAILABLE_API.update(model).execute()
         return localUpdateDriverAvailable(resp)
