@@ -21,13 +21,15 @@ class HttpHelper {
         @JvmStatic
         lateinit var DRIVER_AVAILABLE_API : DriverAvailableApi
         @JvmStatic
+        lateinit var retrofit : Retrofit
+        @JvmStatic
         fun prepare(){
             doRetrofit()
         }
 
         @JvmStatic
         fun doRetrofit() {
-            val retrofit: Retrofit = Retrofit.Builder()
+            retrofit = Retrofit.Builder()
                 .baseUrl(Static.REST_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -63,6 +65,10 @@ class HttpHelper {
         fun onFailure(t : Throwable){
             Log.e(TAG, "FAILURE $t")
         }
+
     }
+
+
+
 }
 

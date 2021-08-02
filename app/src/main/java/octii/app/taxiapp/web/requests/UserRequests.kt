@@ -6,6 +6,8 @@ import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.web.HttpHelper
+import retrofit2.await
+import retrofit2.awaitResponse
 
 class UserRequests(private val view : View? = null, private val activity: Activity? = null) {
 
@@ -52,6 +54,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
 
     fun loginWithToken(token : String){
         val response = HttpHelper.USER_API.loginWithToken(UserModel(token = token)).execute()
+
         if (response.isSuccessful){
             val model = response.body()?.user
             if (model != null && model.token.isNotEmpty()){
@@ -65,6 +68,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                 }
             }
         }
+
     }
 
     fun login(phoneNum : String, name : String) : UserModel{

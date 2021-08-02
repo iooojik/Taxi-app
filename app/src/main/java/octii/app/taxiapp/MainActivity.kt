@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import kotlinx.coroutines.runBlocking
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.sockets.SocketService
@@ -28,12 +29,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         MyPreferences.userPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE)
         MyPreferences.applicationPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_APPLICATION, Context.MODE_PRIVATE)
         Application.getInstance().initAppLanguage(this)
         requests = Requests(activity = this)
         checkAuth()
-
     }
 
     private fun checkAuth() {
@@ -43,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         thread {
             requests.userRequests.loginWithToken(token)
-
             runOnUiThread {
                 if (UserModel.uToken.isEmpty()) {
                     navigateToStartPage()

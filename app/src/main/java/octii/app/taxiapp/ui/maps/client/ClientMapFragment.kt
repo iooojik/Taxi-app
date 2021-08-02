@@ -24,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import octii.app.taxiapp.LocaleUtils
 import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
@@ -58,6 +59,11 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         googleMap.isMyLocationEnabled = true
 
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        LocaleUtils.setSelectedLanguageId(LocaleUtils.SERBIAN)
     }
 
     override fun onCreateView(
