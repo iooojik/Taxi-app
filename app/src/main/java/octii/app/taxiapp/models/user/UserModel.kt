@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import octii.app.taxiapp.models.CoordinatesModel
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Entity
 class UserModel(

@@ -3,22 +3,15 @@ package octii.app.taxiapp
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import com.google.gson.Gson
 import octii.app.taxiapp.databinding.ActivityMainBinding
-import octii.app.taxiapp.models.TokenAuthorization
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.sockets.SocketService
-import octii.app.taxiapp.web.HttpHelper
 import octii.app.taxiapp.web.requests.Requests
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.concurrent.thread
 
 

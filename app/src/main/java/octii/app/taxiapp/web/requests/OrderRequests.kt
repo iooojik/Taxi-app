@@ -2,7 +2,6 @@ package octii.app.taxiapp.web.requests
 
 import android.app.Activity
 import android.view.View
-import com.google.gson.Gson
 import octii.app.taxiapp.models.OrdersModel
 import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logInfo

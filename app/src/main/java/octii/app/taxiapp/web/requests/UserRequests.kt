@@ -2,16 +2,10 @@ package octii.app.taxiapp.web.requests
 
 import android.app.Activity
 import android.view.View
-import com.google.gson.Gson
 import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.Static
-import octii.app.taxiapp.models.TokenAuthorization
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.HttpHelper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class UserRequests(private val view : View? = null, private val activity: Activity? = null) {
 

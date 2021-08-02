@@ -12,8 +12,6 @@ import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
-import java.util.*
 
 class HttpHelper {
 

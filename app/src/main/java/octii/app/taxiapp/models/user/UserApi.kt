@@ -2,7 +2,8 @@ package octii.app.taxiapp.models.user
 
 import octii.app.taxiapp.models.TokenAuthorization
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 interface UserApi {
 

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.web.requests.Requests
 
 interface SettingsFragment {
     fun setLanguage(language : String, activity: Activity){
