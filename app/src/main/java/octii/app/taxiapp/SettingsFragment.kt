@@ -8,8 +8,9 @@ import octii.app.taxiapp.models.user.UserModel
 interface SettingsFragment {
     fun setLanguage(language : String, activity: Activity){
         LocaleUtils.setSelectedLanguageId(language)
-        val i: Intent? = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
-        activity.startActivity(i)
+        activity.recreate()
+        //val i: Intent? = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
+        //activity.startActivity(i)
     }
 
     fun changeSpeakingLanguage(lang: String, isChecked: Boolean){

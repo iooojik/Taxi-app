@@ -10,9 +10,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logDebug
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.requests.Requests
 import kotlin.concurrent.thread
+import octii.app.taxiapp.ui.settings.ClientSettingsFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,42 +31,45 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Application.getInstance().initAppLanguage(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        requests = Requests(activity = this)
         setContentView(binding.root)
-
         MyPreferences.userPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE)
         MyPreferences.applicationPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_APPLICATION, Context.MODE_PRIVATE)
-
+        Application.getInstance().initAppLanguage(this)
+        requests = Requests(activity = this)
         checkAuth()
-    }
 
-    private fun setNavigation(){
-        val drawer : DrawerLayout = findViewById(R.id.drawer)
-        AppBarConfiguration.Builder(R.id.authMessengersFragment).setOpenableLayout(drawer).build()
     }
 
     private fun checkAuth() {
+
         val token = if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "").isNullOrEmpty()) ""
         else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")!!
 
         thread {
             requests.userRequests.loginWithToken(token)
-            runOnUiThread {
-                startSocketService()
-                setNavigation()
 
+            runOnUiThread {
                 if (UserModel.uToken.isEmpty()) {
                     navigateToStartPage()
                 }
-                else {
-                    if (UserModel.uType == Static.DRIVER_TYPE) navigateToDriverMap()
-                    else navigateToClientMap()
-                }
             }
-
         }
+
+        startSocketService()
+
+        if (token.isNotEmpty()) {
+            val savedUserType =
+                if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE,
+                        Static.CLIENT_TYPE).isNullOrEmpty()
+                ) Static.CLIENT_TYPE
+                else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE,
+                    Static.CLIENT_TYPE)!!
+
+            if (savedUserType == Static.DRIVER_TYPE) navigateToDriverMap()
+            else navigateToClientMap()
+        }
+
     }
 
     private fun navigateToDriverMap(){

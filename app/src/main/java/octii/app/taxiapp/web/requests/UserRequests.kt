@@ -9,7 +9,7 @@ import octii.app.taxiapp.web.HttpHelper
 
 class UserRequests(private val view : View? = null, private val activity: Activity? = null) {
 
-    val orderRequests = OrderRequests(view, activity)
+    private val orderRequests = OrderRequests(view, activity)
 
     fun updateUser() : UserModel {
         val response = HttpHelper.USER_API.update(UserModel()).execute()
@@ -39,6 +39,11 @@ class UserRequests(private val view : View? = null, private val activity: Activi
 
             MyPreferences.userPreferences?.let {
                 MyPreferences.saveToPreferences(
+                    it, Static.SHARED_PREFERENCES_USER_TYPE, model.type)
+            }
+
+            MyPreferences.userPreferences?.let {
+                MyPreferences.saveToPreferences(
                     it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
             }
         }
@@ -60,5 +65,16 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                 }
             }
         }
+    }
+
+    fun login(phoneNum : String, name : String) : UserModel{
+        val response = HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name)).execute()
+        if (response.isSuccessful){
+            val model = response.body()
+            if (model != null && model.token.isNotEmpty()){
+                setUserInfo(model)
+            }
+        }
+        return UserModel()
     }
 }

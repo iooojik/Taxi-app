@@ -18,15 +18,18 @@ import octii.app.taxiapp.databinding.FragmentUserInfoBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.HttpHelper
+import octii.app.taxiapp.web.requests.Requests
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.concurrent.thread
 
 
 class UserInfoFragment : Fragment(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener {
 
     lateinit var binding : FragmentUserInfoBinding
+    private lateinit var requests: Requests
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +37,11 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
     ): View {
         binding = FragmentUserInfoBinding.inflate(layoutInflater)
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requests = Requests(requireView(), requireActivity())
     }
 
     override fun onStart() {
@@ -49,46 +57,35 @@ class UserInfoFragment : Fragment(), View.OnClickListener,
             R.id.login_button -> {
                 val phoneNum = binding.phoneNumberLayout.editText?.text.toString()
                 val name = binding.nameLayout.editText?.text.toString()
-                if ((binding.iAmInWhatsapp.isChecked || binding.iAmInViber.isChecked) && phoneNum.isNotEmpty() && name.isNotEmpty()) {
-                    HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name)).enqueue(object : Callback<UserModel> {
-                        override fun onResponse(
-                            call: Call<UserModel>,
-                            response: Response<UserModel>
-                        ) {
-                            if (response.isSuccessful) {
-                                val model = response.body()
-                                if (model != null) {
-                                    UserModel.uID = model.id
-                                    UserModel.uIsViber = model.isViber
-                                    UserModel.uIsWhatsapp = model.isWhatsapp
-                                    UserModel.uType = model.type
-                                    UserModel.uPhoneNumber = model.phone!!
-                                    UserModel.uToken = model.token
-                                    UserModel.nUserName = model.userName!!
-                                    UserModel.mUuid = model.uuid
-                                    UserModel.mIsOnlyClient = model.isOnlyClient
-                                    UserModel.mAvatarURL = model.avatarURL
 
-                                    MyPreferences.userPreferences?.let {
-                                        MyPreferences.saveToPreferences(
-                                            it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token
-                                        )
-                                    }
-                                    startSocketService()
-                                    if (UserModel.uType == Static.DRIVER_TYPE)
-                                        findNavController().navigate(R.id.driverMapFragment)
-                                    else findNavController().navigate(R.id.clientMapFragment)
-                                }
-                            } else HttpHelper.errorProcessing(binding.root, response.errorBody())
-                        }
-
-                        override fun onFailure(call: Call<UserModel>, t: Throwable) {
-                            HttpHelper.onFailure(t)
-                        }
-                    })
+                if (!(binding.iAmInWhatsapp.isChecked || binding.iAmInViber.isChecked)) {
+                    Snackbar.make(binding.root,
+                        resources.getString(R.string.whatsapp_or_viber_not_chosen),
+                        Snackbar.LENGTH_SHORT).show()
+                } else if (phoneNum.isEmpty()) {
+                    Snackbar.make(binding.root,
+                        resources.getString(R.string.no_phone),
+                        Snackbar.LENGTH_SHORT).show()
+                } else if (phoneNum.isEmpty()) {
+                    Snackbar.make(binding.root,
+                        resources.getString(R.string.no_name),
+                        Snackbar.LENGTH_SHORT).show()
                 } else {
-                    Snackbar.make(binding.root, resources.getString(R.string.whatsapp_or_viber_not_chosen), Snackbar.LENGTH_SHORT).show()
+                    thread {
+                        val user = requests.userRequests.login(phoneNum, name)
+                        if (user.token.isNotEmpty()) {
+                            startSocketService()
+                            requireActivity().runOnUiThread {
+                                if (user.type == Static.DRIVER_TYPE)
+                                    findNavController().navigate(R.id.driverMapFragment)
+                                else findNavController().navigate(R.id.clientMapFragment)
+                            }
+                        }
+                    }
+
                 }
+
+
             }
         }
     }

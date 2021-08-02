@@ -24,7 +24,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
+import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.OrdersModel
 import octii.app.taxiapp.scripts.logInfo
@@ -59,6 +61,10 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
+        MyPreferences.userPreferences?.let {
+            MyPreferences.saveToPreferences(
+                it, Static.SHARED_PREFERENCES_USER_TYPE, Static.DRIVER_TYPE)
+        }
         return binding.root
     }
 
@@ -144,6 +150,11 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         override fun run() {
             activity.runOnUiThread {
                 logInfo("running")
+                val savedUserType = if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE).isNullOrEmpty()) Static.CLIENT_TYPE
+                else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE)!!
+
+                if (savedUserType != Static.DRIVER_TYPE) findNavController().navigate(R.id.clientMapFragment)
+
                 if (OrdersModel.isOrdered){
                     logInfo("isOrdered")
                     val bottomSheet = DriverAcceptOrderBottomSheet(context, activity, OrdersModel())

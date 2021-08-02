@@ -24,7 +24,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
+import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.OrdersModel
 import octii.app.taxiapp.sockets.location.LocationService
@@ -69,6 +71,10 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         setTimer()
         view?.findViewById<ImageView>(R.id.call_to_driver)?.setOnClickListener(this)
         view?.findViewById<TextView>(R.id.driver_phone)?.setOnLongClickListener(this)
+        MyPreferences.userPreferences?.let {
+            MyPreferences.saveToPreferences(
+                it, Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE)
+        }
         return binding.root
     }
 
@@ -147,13 +153,18 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
         override fun run() {
             activity.runOnUiThread {
+                val savedUserType = if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE).isNullOrEmpty()) Static.CLIENT_TYPE
+                else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE)!!
+
+                if (savedUserType != Static.CLIENT_TYPE) findNavController().navigate(R.id.driverMapFragment)
+
                 if (OrdersModel.isAccepted) {
                     binding.callTaxi.hide()
                     view.findViewById<TextView>(R.id.driver_name).text = OrdersModel.mDriver.userName
                     view.findViewById<TextView>(R.id.driver_phone).text = OrdersModel.mDriver.phone
                     val avatarView = view.findViewById<ImageView>(R.id.driver_avatar)
                     if (OrdersModel.mDriver.avatarURL.isNotEmpty()){
-                        Picasso.with(requireContext())
+                        Picasso.with(context)
                             .load(OrdersModel.mDriver.avatarURL)
                             .transform(CircularTransformation(0f))
                             .into(avatarView)
@@ -180,5 +191,10 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
             }
         }
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 }

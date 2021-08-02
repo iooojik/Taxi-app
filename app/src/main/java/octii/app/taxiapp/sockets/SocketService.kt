@@ -117,10 +117,13 @@ class SocketService : Service() {
 
                 }
 
+                MessageType.COORDINATES_UPDATE -> {
+
+                }
+
                 else -> {
                     logInfo("No matchable types")
-                    Toast.makeText(applicationContext,
-                        resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
             }
             logInfo("Application was connected to WebSockets path: $path")
