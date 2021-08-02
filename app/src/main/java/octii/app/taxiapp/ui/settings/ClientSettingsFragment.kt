@@ -16,11 +16,7 @@ import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentClientSettingsBinding
 import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.web.HttpHelper
 import octii.app.taxiapp.web.requests.Requests
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.concurrent.thread
 
 

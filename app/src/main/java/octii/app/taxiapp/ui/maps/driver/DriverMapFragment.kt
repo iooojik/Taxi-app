@@ -29,9 +29,7 @@ import com.squareup.picasso.Picasso
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.OrdersModel
-import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logInfo
-import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.sockets.location.LocationService
 import octii.app.taxiapp.ui.settings.CircularTransformation
 import octii.app.taxiapp.web.SocketHelper
@@ -62,7 +60,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        //TODO(orders check)
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
         return binding.root
     }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -15,10 +14,11 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.models.MessageType
 import octii.app.taxiapp.models.OrdersModel
-import octii.app.taxiapp.models.ResponseModel
+import octii.app.taxiapp.models.responses.ResponseModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.web.requests.Requests
 import ua.naiksoftware.stomp.dto.StompMessage
 import java.util.*
 
@@ -31,36 +31,17 @@ class SocketService : Service() {
         val updateTimer = Timer()
         @JvmStatic
         val handler = Handler()
-        @JvmStatic
-        fun getOrderModel(json : Any, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel{
-            val order = Gson().fromJson(json.toString(), OrdersModel::class.java)
-            logInfo("order request $order")
-
-            OrdersModel.mId = order.id
-            OrdersModel.mDriverID = order.driverID
-            OrdersModel.mCustomerID = order.customerID
-            OrdersModel.mUuid = order.uuid
-            OrdersModel.mIsFinished = order.isFinished
-
-            if (order.driver != null)
-                OrdersModel.mDriver = order.driver!!
-            if (order.customer != null)
-                OrdersModel.mCustomer = order.customer!!
-
-            OrdersModel.isOrdered = isOrdered
-            OrdersModel.isAccepted = isAccepted
-
-            return OrdersModel()
-        }
     }
 
     private val gson = Gson()
     private var topic : Disposable = CompositeDisposable()
     private val uuid : String = UserModel.mUuid
     private val mainTopic : String = "/topic/${UserModel.mUuid}"
+    private lateinit var requests: Requests
 
     override fun onCreate() {
         super.onCreate()
+        requests = Requests()
         SocketHelper.connect()
         connectToMainTopic()
         //doTask()
@@ -100,13 +81,13 @@ class SocketService : Service() {
         topic = SocketHelper.mStompClient.topic(path).subscribeOn(Schedulers.io()).observeOn(
             AndroidSchedulers.mainThread()).subscribe({ topicMessage : StompMessage ->
             val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
-            logInfo(responseModel)
+            logInfo(topicMessage)
 
             when(responseModel.type){
 
                 MessageType.ORDER_ACCEPT -> {
                     if (responseModel.body != null){
-                        val order = getOrderModel(responseModel.body!!,
+                        val order = requests.orderRequests.getOrderModel(responseModel.body as OrdersModel,
                             isOrdered = false,
                             isAccepted = true)
                     }
@@ -114,13 +95,13 @@ class SocketService : Service() {
 
                 MessageType.ORDER_REJECT -> {
                     if (responseModel.body != null){
-                        val order = getOrderModel(responseModel.body!!, false)
+                        val order = requests.orderRequests.getOrderModel(responseModel.body as OrdersModel, false)
                     }
                 }
 
                 MessageType.ORDER_FINISHED -> {
                     if (responseModel.body != null){
-                        val order = getOrderModel(responseModel.body!!, false)
+                        val order = requests.orderRequests.getOrderModel(responseModel.body as OrdersModel, false)
                     }
                 }
 
@@ -131,7 +112,7 @@ class SocketService : Service() {
 
                 MessageType.ORDER_REQUEST -> {
                     if (responseModel.body != null){
-                        val order = getOrderModel(responseModel.body!!, true)
+                        //val order = requests.orderRequests.getOrderModel(responseModel.body, true)
                     }
 
                 }

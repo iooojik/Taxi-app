@@ -8,7 +8,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.BottomSheetAcceptOrderBinding
 import octii.app.taxiapp.models.OrdersModel
-import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 

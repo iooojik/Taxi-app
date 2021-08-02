@@ -15,15 +15,18 @@ import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.web.HttpHelper
+import octii.app.taxiapp.web.requests.Requests
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityMainBinding
     private lateinit var intentService : Intent
+    private lateinit var requests: Requests
 
     override fun attachBaseContext(newBase: Context?) {
         Application.getInstance().initAppLanguage(newBase)
@@ -34,10 +37,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Application.getInstance().initAppLanguage(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        requests = Requests(activity = this)
         setContentView(binding.root)
-        HttpHelper.doRetrofit()
+
         MyPreferences.userPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE)
         MyPreferences.applicationPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_APPLICATION, Context.MODE_PRIVATE)
+
         checkAuth()
     }
 
@@ -48,63 +53,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAuth() {
         val token = if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "").isNullOrEmpty()) ""
-        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")
+        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")!!
 
-        HttpHelper.USER_API.loginWithToken(UserModel(token = token!!)).enqueue(object : Callback<TokenAuthorization>{
-            override fun onResponse(call: Call<TokenAuthorization>, response: Response<TokenAuthorization>) {
-                if (response.isSuccessful){
-                    val model = response.body()?.user
-                    if (model != null && model.token.isNotEmpty()){
-                        UserModel.uID = model.id
-                        UserModel.uIsViber = model.isViber
-                        UserModel.uIsWhatsapp = model.isWhatsapp
-                        UserModel.uType = model.type
-                        UserModel.uPhoneNumber = model.phone!!
-                        UserModel.uToken = model.token
-                        UserModel.nUserName = model.userName!!
-                        UserModel.mUuid = model.uuid
-                        UserModel.mIsOnlyClient = model.isOnlyClient
-                        UserModel.mAvatarURL = model.avatarURL
-                        UserModel.mLanguages = model.languages
-                        UserModel.mCoordinates = model.coordinates
+        thread {
+            requests.userRequests.loginWithToken(token)
+            runOnUiThread {
+                startSocketService()
+                setNavigation()
 
-                        MyPreferences.userPreferences?.let {
-                            MyPreferences.saveToPreferences(
-                                it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
-                        }
-
-                        if (response.body()?.order != null){
-                            val order = response.body()?.order
-                            SocketService.getOrderModel(Gson().toJson(order), false,
-                                if (!order?.isFinished!!) !order.isFinished else false)
-                        }
-
-                        startSocketService()
-                        setNavigation()
-
-                        if (token.isNullOrEmpty()) {
-                            navigateToStartPage()
-                        }
-                        else {
-                            if (UserModel.uType == Static.DRIVER_TYPE) navigateToDriverMap()
-                            else navigateToClientMap()
-                        }
-                    } else{
-                        setNavigation()
-                        navigateToStartPage()
-                    }
-                } else {
-                    setNavigation()
-                    HttpHelper.errorProcessing(binding.root, response.errorBody())
+                if (UserModel.uToken.isEmpty()) {
                     navigateToStartPage()
+                }
+                else {
+                    if (UserModel.uType == Static.DRIVER_TYPE) navigateToDriverMap()
+                    else navigateToClientMap()
                 }
             }
 
-            override fun onFailure(call: Call<TokenAuthorization>, t: Throwable) {
-                HttpHelper.onFailure(t)
-                navigateToStartPage()
-            }
-        })
+        }
     }
 
     private fun navigateToDriverMap(){

@@ -7,10 +7,11 @@ import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Response
 
-class Requests(private val view : View?, private val activity: Activity) {
+class Requests(private val view : View? = null, private val activity: Activity? = null) {
 
     val driverAvailableRequests = DriverAvailableRequests(view, activity)
     val userRequests = UserRequests(view, activity)
+    val orderRequests = OrderRequests(view, activity)
 
     init {
         HttpHelper.doRetrofit()

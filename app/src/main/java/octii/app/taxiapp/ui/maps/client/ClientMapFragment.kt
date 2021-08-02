@@ -21,7 +21,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.OrdersModel
-import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 import android.content.Intent
@@ -32,7 +31,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-import octii.app.taxiapp.sockets.SocketService
 import octii.app.taxiapp.sockets.location.LocationService
 import octii.app.taxiapp.ui.settings.CircularTransformation
 
@@ -152,7 +150,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         override fun run() {
             activity.runOnUiThread {
                 if (OrdersModel.isAccepted) {
-                    logInfo("isAccepted")
                     binding.callTaxi.hide()
                     view.findViewById<TextView>(R.id.driver_name).text = OrdersModel.mDriver.userName
                     view.findViewById<TextView>(R.id.driver_phone).text = OrdersModel.mDriver.phone
