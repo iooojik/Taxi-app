@@ -56,27 +56,10 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
          * user has installed Google Play services and returned to the app.
          */
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                listOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ).toTypedArray(),
-                101
-            )
-            setMap()
-        } else {
-            googleMap.isMyLocationEnabled = true
 
-        }
+        googleMap.isMyLocationEnabled = true
+
+
     }
 
     override fun onCreateView(
@@ -95,7 +78,11 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setMap()
+        try {
+            requestPermissions(true)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onResume() {
@@ -112,12 +99,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private fun setMap(){
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-        try {
-            val intentService = Intent(requireContext(), LocationService::class.java)
-            requireActivity().startService(intentService)
-        } catch (e : Exception){
-            e.printStackTrace()
-        }
     }
 
     override fun onClick(v: View?) {
@@ -129,6 +110,33 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
             }
             R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsFragment)
             R.id.call_to_driver -> callToDriver()
+        }
+    }
+
+    private fun requestPermissions(startLocationService : Boolean){
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                listOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ).toTypedArray(),
+                101
+            )
+            requestPermissions(startLocationService)
+        } else {
+            if (startLocationService){
+                val intentService = Intent(requireContext(), LocationService::class.java)
+                requireActivity().startService(intentService)
+            }
+            setMap()
         }
     }
 

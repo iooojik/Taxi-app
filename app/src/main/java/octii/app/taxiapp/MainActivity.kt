@@ -25,8 +25,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     private lateinit var intentService : Intent
 
+    override fun attachBaseContext(newBase: Context?) {
+        Application.getInstance().initAppLanguage(newBase)
+        super.attachBaseContext(newBase)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Application.getInstance().initAppLanguage(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         HttpHelper.doRetrofit()

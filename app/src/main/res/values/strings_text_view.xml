@@ -3,4 +3,6 @@
     <string name="download_messengers">Чтобы пользоваться нашим приложением вам необходимо иметь установленный Whatsapp или Viber</string>
     <string name="authorization">Авторизация</string>
     <string name="timer_zero">00</string>
+    <string name="speak_on_following_languages">Я говорю на следующих языках:</string>
+    <string name="app_language">Язык приложения</string>
 </resources>

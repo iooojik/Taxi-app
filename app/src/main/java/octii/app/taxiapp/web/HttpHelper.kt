@@ -1,5 +1,6 @@
 package octii.app.taxiapp.web
 
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.View
@@ -37,17 +38,19 @@ class HttpHelper {
         }
 
 
-        fun errorProcessing(view: View?, response: ResponseBody?){
+        fun errorProcessing(view: View?, response: ResponseBody?, activity: Activity? = null){
             //обработчик ошибок запроса
             try {
                 if (view != null) {
                     if (response != null) {
                         val jsonError = JSONObject(response.string())
-                        Snackbar.make(
-                            view,
-                            jsonError.getString("errorMessage").toString(),
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+                        activity?.runOnUiThread {
+                            Snackbar.make(
+                                view,
+                                jsonError.getString("errorMessage").toString(),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
                         Log.e(TAG, response.string())
                     }
                 } else if (response != null) {

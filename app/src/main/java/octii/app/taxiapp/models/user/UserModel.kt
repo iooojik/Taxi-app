@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import octii.app.taxiapp.models.CoordinatesModel
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity
 class UserModel(
@@ -40,7 +41,7 @@ class UserModel(
     @ColumnInfo(name = "avatar_url")
     var avatarURL : String = mAvatarURL,
 
-    var languages : List<SpeakingLanguagesModel>? = mLanguages,
+    var languages : List<SpeakingLanguagesModel> = mLanguages,
 
     var coordinates : CoordinatesModel? = mCoordinates
 ){
@@ -76,7 +77,7 @@ class UserModel(
         var mAvatarURL : String = ""
 
         @JvmStatic
-        var mLanguages : List<SpeakingLanguagesModel>? = listOf()
+        var mLanguages : List<SpeakingLanguagesModel> = listOf()
 
         @JvmStatic
         var mCoordinates : CoordinatesModel? = CoordinatesModel()

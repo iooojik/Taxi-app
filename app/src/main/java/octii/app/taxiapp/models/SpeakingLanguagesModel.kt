@@ -9,8 +9,8 @@ data class SpeakingLanguagesModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     var id: Long = -1,
-    @ColumnInfo(name = "driver_id")
-    var driverId : Long = -1,
+    @ColumnInfo(name = "user_id")
+    var userId : Long = -1,
     @ColumnInfo(name = "language")
     var language : String = "ru"
 )
