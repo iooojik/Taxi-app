@@ -21,8 +21,7 @@ data class DriverAvailable(
     @ColumnInfo(name = "price_waiting_min")
     var priceWaitingMin : Float = mPriceWaitingMin,
     @ColumnInfo(name = "is_working")
-    var isWorking : Boolean = mIsWorking,
-    var driver : UserModel = mDriver
+    var isWorking : Boolean = mIsWorking
 ) {
     companion object {
 
@@ -39,7 +38,5 @@ data class DriverAvailable(
         var mPriceWaitingMin : Float = 1f
 
         var mIsWorking : Boolean = false
-
-        var mDriver : UserModel = UserModel()
     }
 }

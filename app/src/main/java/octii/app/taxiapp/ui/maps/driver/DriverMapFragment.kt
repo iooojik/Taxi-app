@@ -58,24 +58,29 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
          * user has installed Google Play services and returned to the app.
          */
         logError(OrdersModel.mCustomer.coordinates != null)
-        if (OrdersModel.mCustomer.coordinates != null) {
-            val md = GMapV2Direction()
+        try {
+            if (OrdersModel.mCustomer.coordinates != null) {
+                val md = GMapV2Direction()
 
-            val doc: Document =
-                md.getDocument(LatLng(MyLocationListener.latitude, MyLocationListener.longitude),
-                    LatLng(OrdersModel.mCustomer.coordinates!!.latitude, OrdersModel.mCustomer.coordinates!!.longitude),
-                    GMapV2Direction.MODE_DRIVING)
+                val doc: Document =
+                    md.getDocument(LatLng(MyLocationListener.latitude, MyLocationListener.longitude),
+                        LatLng(OrdersModel.mCustomer.coordinates!!.latitude, OrdersModel.mCustomer.coordinates!!.longitude),
+                        GMapV2Direction.MODE_DRIVING)
 
-            val directionPoint = md.getDirection(doc)
-            logError(directionPoint)
-            val rectLine = PolylineOptions().width(3f).color(Color.RED)
+                val directionPoint = md.getDirection(doc)
+                logError(directionPoint)
+                val rectLine = PolylineOptions().width(3f).color(Color.RED)
 
-            for (i in 0 until directionPoint.size) {
-                rectLine.add(directionPoint[i])
+                for (i in 0 until directionPoint.size) {
+                    rectLine.add(directionPoint[i])
+                }
+
+                googleMap.addPolyline(rectLine)
             }
-
-            googleMap.addPolyline(rectLine)
+        } catch (e : Exception){
+            e.printStackTrace()
         }
+
         googleMap.isMyLocationEnabled = true
 
 

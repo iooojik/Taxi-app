@@ -78,9 +78,9 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 
     override fun getSettingsInformation(){
         thread {
-            val driverModel = requests.driverAvailableRequests.getDriverAvailableModel()
+            //val driverModel = requests.driverAvailableRequests.getDriverAvailableModel()
             //проверяем, вернулась ли модель или заглушка, так как у заглушки id = -1
-            requireActivity().runOnUiThread { if (driverModel.driverID > 0) updateUiInfo() }
+            requireActivity().runOnUiThread { if (DriverAvailable.mId > 0) updateUiInfo() }
         }
     }
 
@@ -137,26 +137,20 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             }
             R.id.button_russian_language ->{
                 changeSpeakingLanguage(LocaleUtils.RUSSIAN, isChecked)
-                updateDriver()
+                //updateDriver()
             }
             R.id.button_serbian_language ->{
                 changeSpeakingLanguage(LocaleUtils.SERBIAN, isChecked)
-                updateDriver()
+                //updateDriver()
             }
             R.id.button_english_language ->{
                 changeSpeakingLanguage(LocaleUtils.ENGLISH, isChecked)
-                updateDriver()
+                //updateDriver()
             }
         }
     }
 
     private fun updateDriver(){
-        thread {
-            val user = requests.userRequests.updateUser()
-            requireActivity().runOnUiThread {
-                if (user.type == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientSettingsFragment)
-            }
-        }
 
         val prices = listOf(
             binding.pricePerKm.editText,
@@ -167,16 +161,24 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 
         for (p in prices) if (p != null) if (p.text.isEmpty()) p.setText("0.0")
 
-        val driverAvailable = DriverAvailable(
-            pricePerKm = prices[0]?.text.toString().toFloat(),
-            pricePerMinute = prices[1]?.text.toString().toFloat(),
-            priceWaitingMin = prices[2]?.text.toString().toFloat(),
-            rideDistance = prices[3]?.text.toString().toFloat(),
-        )
+
+        UserModel.mDriver.pricePerKm = prices[0]?.text.toString().toFloat()
+        UserModel.mDriver.pricePerMinute = prices[1]?.text.toString().toFloat()
+        UserModel.mDriver.priceWaitingMin = prices[2]?.text.toString().toFloat()
+        UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
+
 
         thread {
-            requests.driverAvailableRequests.updateDriverAvailableModel(driverAvailable)
+            val user = requests.userRequests.update()
+            requireActivity().runOnUiThread {
+                if (user.type == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientSettingsFragment)
+            }
         }
+    }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        updateDriver()
     }
 }

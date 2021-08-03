@@ -3,8 +3,10 @@ package octii.app.taxiapp.models.user
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import octii.app.taxiapp.LocaleUtils
 import octii.app.taxiapp.models.CoordinatesModel
 import octii.app.taxiapp.models.SpeakingLanguagesModel
+import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import java.util.*
 
 @Entity
@@ -17,7 +19,7 @@ class UserModel(
     var userName: String? = nUserName,
 
     @ColumnInfo(name = "user_phone")
-    var phone: String? = uPhoneNumber,
+    var phone: String = uPhoneNumber,
 
     @ColumnInfo(name = "token")
     var token: String = uToken,
@@ -42,14 +44,16 @@ class UserModel(
 
     var languages : List<SpeakingLanguagesModel> = mLanguages,
 
-    var coordinates : CoordinatesModel? = mCoordinates
+    var coordinates : CoordinatesModel = mCoordinates,
+
+    var driver : DriverAvailable = mDriver
 ){
     companion object{
         @JvmStatic
         var uID: Long = (-1).toLong()
 
         @JvmStatic
-        var uToken: String = UUID.randomUUID().toString()
+        var uToken: String = ""
 
         @JvmStatic
         var nUserName: String = ""
@@ -76,9 +80,12 @@ class UserModel(
         var mAvatarURL : String = ""
 
         @JvmStatic
-        var mLanguages : List<SpeakingLanguagesModel> = listOf()
+        var mLanguages : List<SpeakingLanguagesModel> = listOf(SpeakingLanguagesModel(language = LocaleUtils.SERBIAN))
 
         @JvmStatic
-        var mCoordinates : CoordinatesModel? = CoordinatesModel()
+        var mCoordinates : CoordinatesModel = CoordinatesModel()
+
+        @JvmStatic
+        var mDriver : DriverAvailable = DriverAvailable()
     }
 }

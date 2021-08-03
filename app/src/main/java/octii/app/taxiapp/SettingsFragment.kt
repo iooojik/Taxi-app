@@ -16,7 +16,7 @@ interface SettingsFragment {
         val languages = arrayListOf<SpeakingLanguagesModel>()
         if (isChecked){
             for (spLang in UserModel.mLanguages) languages.add(spLang)
-            languages.add(SpeakingLanguagesModel(language = lang, userId = UserModel.uID))
+            languages.add(SpeakingLanguagesModel(language = lang))
         } else {
             for (spLang in UserModel.mLanguages) {
                 if (spLang.language != lang) languages.add(spLang)

@@ -12,6 +12,12 @@ import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.OkHttpClient
+
+import okhttp3.logging.HttpLoggingInterceptor
+
+
+
 
 class HttpHelper {
 
@@ -29,8 +35,12 @@ class HttpHelper {
 
         @JvmStatic
         fun doRetrofit() {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.apply { interceptor.level = HttpLoggingInterceptor.Level.BODY }
+            val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
             retrofit = Retrofit.Builder()
                 .baseUrl(Static.REST_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             USER_API = retrofit.create(UserApi::class.java)

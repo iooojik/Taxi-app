@@ -23,7 +23,7 @@ class DriverAvailableRequests(private val view : View? = null, private val activ
         if (response.isSuccessful){
             if (response.body() != null){
                 val newDriver = response.body()!!
-                DriverAvailable.mDriver = newDriver.driver
+
                 DriverAvailable.mDriverID = newDriver.driverID
                 DriverAvailable.mId = newDriver.id
                 DriverAvailable.mIsWorking = newDriver.isWorking
