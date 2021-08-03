@@ -87,32 +87,39 @@ class SocketService : Service() {
 
                 MessageType.ORDER_ACCEPT -> {
                     if (responseModel.body != null){
-                        val order = requests.orderRequests.getOrderModel(responseModel.body as OrdersModel,
-                            isOrdered = false,
-                            isAccepted = true)
+                        //logError(responseModel.body.toString())
+                        val order = requests.orderRequests
+                            .getOrderModel(responseModel.body!!, false, true)
                     }
                 }
 
                 MessageType.ORDER_REJECT -> {
                     if (responseModel.body != null){
-                        val order = requests.orderRequests.getOrderModel(responseModel.body as OrdersModel, false)
+                        //logError(responseModel.body.toString())
+                        val order = requests.orderRequests
+                            .getOrderModel(responseModel.body!!, false)
                     }
                 }
 
                 MessageType.ORDER_FINISHED -> {
                     if (responseModel.body != null){
-                        val order = requests.orderRequests.getOrderModel(responseModel.body as OrdersModel, false)
+                        //logError(responseModel.body.toString())
+                        val order = requests.orderRequests
+                            .getOrderModel(responseModel.body!!, false)
                     }
                 }
 
                 MessageType.NO_ORDERS -> {
+                    OrdersModel.isOrdered = false
                     Toast.makeText(applicationContext,
                         resources.getString(R.string.all_drivers_are_busy), Toast.LENGTH_SHORT).show()
                 }
 
                 MessageType.ORDER_REQUEST -> {
                     if (responseModel.body != null){
-                        //val order = requests.orderRequests.getOrderModel(responseModel.body, true)
+                        //logError(responseModel.body.toString())
+                        val order = requests.orderRequests
+                            .getOrderModel(responseModel.body!!, true)
                     }
 
                 }

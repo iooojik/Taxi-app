@@ -30,6 +30,7 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.sockets.location.LocationService
 import octii.app.taxiapp.ui.settings.CircularTransformation
 import octii.app.taxiapp.web.SocketHelper
@@ -159,7 +160,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
                 if (savedUserType != Static.CLIENT_TYPE) findNavController().navigate(R.id.driverMapFragment)
 
-                if (OrdersModel.isAccepted) {
+                if (OrdersModel.isAccepted && OrdersModel.mDriverID > 0) {
                     binding.callTaxi.hide()
                     view.findViewById<TextView>(R.id.driver_name).text = OrdersModel.mDriver.userName
                     view.findViewById<TextView>(R.id.driver_phone).text = OrdersModel.mDriver.phone
@@ -175,6 +176,9 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout).visibility = View.VISIBLE
                 } else {
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
+                    logError(!binding.callTaxi.isVisible && !OrdersModel.isOrdered)
+                    logError(!binding.callTaxi.isVisible)
+                    logError(!OrdersModel.isOrdered)
                     if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered) binding.callTaxi.show()
                 }
             }

@@ -2,13 +2,17 @@ package octii.app.taxiapp.web.requests
 
 import android.app.Activity
 import android.view.View
+import com.google.gson.Gson
 import octii.app.taxiapp.models.OrdersModel
 import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logInfo
 
 class OrderRequests(private val view : View? = null, private val activity: Activity? = null) {
 
-    fun getOrderModel(order : OrdersModel, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel {
+    private val gson = Gson()
+
+    fun getOrderModel(json : Any, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel {
+        val order = gson.fromJson(gson.toJson(json), OrdersModel::class.java)
         logInfo("order request $order")
 
         OrdersModel.mId = order.id
@@ -23,8 +27,6 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
             OrdersModel.mCustomer = order.customer!!
 
         OrdersModel.isOrdered = isOrdered
-        logDebug(isAccepted)
-        logDebug(order.isFinished)
 
         if (order.isFinished) OrdersModel.isAccepted = false
         else OrdersModel.isAccepted = isAccepted

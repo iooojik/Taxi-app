@@ -19,6 +19,8 @@ class OrdersModel(
     var uuid : String = mUuid,
     @ColumnInfo(name = "is_finished")
     var isFinished : Boolean = mIsFinished,
+    @ColumnInfo(name = "is_new")
+    var isNew : Boolean = false,
     var driver : UserModel? = mDriver,
     var customer : UserModel? = mCustomer
 ) {
