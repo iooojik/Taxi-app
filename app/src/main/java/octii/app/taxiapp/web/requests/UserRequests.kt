@@ -9,7 +9,7 @@ import com.google.gson.Gson
 import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
-import octii.app.taxiapp.models.TokenAuthorization
+import octii.app.taxiapp.models.AuthorizationModel
 import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logDebug
@@ -54,8 +54,8 @@ class UserRequests(private val view : View? = null, private val activity: Activi
     }
 
     fun loginWithToken(token : String){
-        HttpHelper.USER_API.loginWithToken(UserModel(token = token)).enqueue(object : Callback<TokenAuthorization>{
-            override fun onResponse(call: Call<TokenAuthorization>, response: Response<TokenAuthorization>) {
+        HttpHelper.USER_API.loginWithToken(UserModel(token = token)).enqueue(object : Callback<AuthorizationModel>{
+            override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
                 if (response.isSuccessful){
                     val model = response.body()?.user
                     if (response.isSuccessful){
@@ -89,7 +89,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                 }
             }
 
-            override fun onFailure(call: Call<TokenAuthorization>, t: Throwable) {
+            override fun onFailure(call: Call<AuthorizationModel>, t: Throwable) {
                 t.printStackTrace()
                 showSnackBarError()
             }
@@ -113,13 +113,18 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         showProgressBar(progressBar)
 
         HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name)).enqueue(object :
-            Callback<UserModel> {
-            override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+            Callback<AuthorizationModel> {
+            override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
                 if (response.isSuccessful){
                     val model = response.body()
-                    if (model != null && model.token.isNotEmpty()){
-                        setUserInfo(model)
-                        if (model.type == Static.DRIVER_TYPE) navigateToFragment(R.id.driverMapFragment)
+                    if (model?.user != null && model.user.token.isNotEmpty()) {
+                        setUserInfo(model.user)
+                        val order = model.order
+                        if (order != null){
+                            orderRequests
+                                .getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
+                        }
+                        if (model.user.type == Static.DRIVER_TYPE) navigateToFragment(R.id.driverMapFragment)
                         else navigateToFragment(R.id.clientMapFragment)
                     }
                 } else {
@@ -128,7 +133,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                 }
             }
 
-            override fun onFailure(call: Call<UserModel>, t: Throwable) {
+            override fun onFailure(call: Call<AuthorizationModel>, t: Throwable) {
                 t.printStackTrace()
                 showSnackBarError()
                 hideProgressBar(progressBar)
