@@ -19,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
@@ -27,7 +28,6 @@ import octii.app.taxiapp.models.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.ui.Permissions
-import octii.app.taxiapp.ui.settings.CircularTransformation
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
@@ -153,7 +153,9 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     if (OrdersModel.mDriver.avatarURL.isNotEmpty()){
                         Picasso.with(context)
                             .load(OrdersModel.mDriver.avatarURL)
-                            .transform(CircularTransformation(0f))
+                            .transform(RoundedCornersTransformation(40, 5))
+                            .resize(160, 160)
+                            .centerCrop()
                             .into(binding.clientOrderInfoLayout.driverAvatar)
                     } else {
                         binding.clientOrderInfoLayout.driverAvatar.setImageResource(R.drawable.outline_account_circle_24)

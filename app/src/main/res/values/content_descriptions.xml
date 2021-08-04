@@ -5,5 +5,7 @@
     <string name="call_description">Call</string>
     <string name="back_description">Back</string>
     <string name="next_description">Next</string>
-    <string name="download_viber">download viber</string>
+    <string name="download_viber_description">download viber</string>
+    <string name="delete_description">Delete</string>
+    <string name="new_photo_description">Make new photo</string>
 </resources>

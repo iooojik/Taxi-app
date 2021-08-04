@@ -11,4 +11,9 @@
     <string name="app_language">Язык приложения</string>
     <string name="taximeter_price">km: %1$s | min: %2$s</string>
     <string name="taximeter_distance">%1$s km</string>
+
+    <string name="avatar_type">Фотография водителя</string>
+    <string name="car_type">Фотография машины</string>
+    <string name="car_number_type">Фотография номера машины</string>
+    <string name="license_type">Фотография лицензии</string>
 </resources>

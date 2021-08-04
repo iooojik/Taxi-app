@@ -1,5 +1,6 @@
 package octii.app.taxiapp.ui.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.LocaleUtils
 import octii.app.taxiapp.R
 import octii.app.taxiapp.SettingsFragment
@@ -48,6 +50,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             binding.becomeClient.setOnClickListener(this)
             binding.fabBack.setOnClickListener(this)
             binding.working.setOnCheckedChangeListener(this)
+            binding.addPhotos.setOnClickListener(this)
             //radio buttons
             binding.languageSelectors.russianLanguage.setOnCheckedChangeListener(this)
             binding.languageSelectors.englishLanguage.setOnCheckedChangeListener(this)
@@ -94,7 +97,9 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         if (UserModel.mAvatarURL.isNotEmpty()){
             Picasso.with(requireContext())
                 .load(UserModel.mAvatarURL)
-                .transform(CircularTransformation(0f))
+                .transform(RoundedCornersTransformation(40, 5))
+                .resize(160, 160)
+                .centerCrop()
                 .into(binding.driverAvatar)
         } else {
             binding.driverAvatar.setImageResource(R.drawable.outline_account_circle_24)
@@ -110,6 +115,9 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             R.id.fab_back -> {
                 updateDriver()
                 findNavController().navigate(R.id.driverMapFragment)
+            }
+            R.id.add_photos -> {
+                findNavController().navigate(R.id.editPhotoListFragment)
             }
         }
     }
@@ -148,6 +156,16 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        logError(requestCode)
+        when(requestCode){
+            Static.PICK_IMAGE_AVATAR -> {
+                logError("image picked")
+            }
+        }
+    }
+
     private fun updateDriver(){
 
         val prices = listOf(
@@ -165,15 +183,15 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-
+        /*
         thread {
             val user = requests.userRequests.update()
             requireActivity().runOnUiThread {
                 if (user.type == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientSettingsFragment)
             }
         }
+         */
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

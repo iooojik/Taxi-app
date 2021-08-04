@@ -20,8 +20,6 @@ class SocketHelper {
     companion object{
 
         val mStompClient: StompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Static.WEB_SOCKET_URL)
-        @JvmStatic
-        var isConnected = mStompClient.isConnected
         private val gson = Gson()
         @JvmStatic
         var compositeDisposable : CompositeDisposable = CompositeDisposable()
@@ -34,6 +32,7 @@ class SocketHelper {
                 .subscribe { lifecycleEvent ->
                     logInfo(lifecycleEvent.type)
                     if (lifecycleEvent.type != null) {
+                        logError(lifecycleEvent.type)
                         when (lifecycleEvent.type!!) {
                             LifecycleEvent.Type.OPENED -> logInfo("Stomp connection opened")
 

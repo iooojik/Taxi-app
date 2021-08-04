@@ -19,6 +19,7 @@
         <item name="textInputStyle">@style/custom_text_input_layout</item>
         <item name="materialButtonStyle">@style/custom_outlined_button</item>
         <item name="floatingActionButtonStyle">@style/floatingActionButtonStyle</item>
+        <item name="colorControlNormal">@color/dark_blue</item>
     </style>
 
     <style name="custom_text_input_layout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">

@@ -29,8 +29,6 @@ class SocketService : Service() {
         var serviceRunning = false
         @JvmStatic
         val updateTimer = Timer()
-        @JvmStatic
-        val handler = Handler()
     }
 
     private val gson = Gson()
@@ -44,24 +42,6 @@ class SocketService : Service() {
         requests = Requests()
         SocketHelper.connect()
         connectToMainTopic()
-        //doTask()
-    }
-
-    private fun doTask() {
-
-        handler.post(object : Runnable{
-            override fun run() {
-                if (SocketHelper.mStompClient.isConnected) socketMaintenance()
-                handler.postDelayed(this, (0.25*60*1000).toLong())
-            }
-        })
-
-        //SocketHelper.mStompClient.send("/messenger/chat.addUser.public", "{\"sender\": \"user\", \"type\": \"JOIN\"}").subscribe()
-    }
-
-    fun socketMaintenance(){
-        //if (!MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "").isNullOrEmpty())
-        //    SocketHelper.authorization()
     }
 
     private fun connectToMainTopic(){
@@ -70,8 +50,6 @@ class SocketService : Service() {
          * Когда пользователь проходит авторизацию, то сохраняем UUID и токен в SharedPrefs,
          * и слушаем события об авторизации каждые N секунд, и обновляем данные
          */
-        //Static.updateUUID()
-
         logInfo(mainTopic)
         topic(mainTopic)
     }

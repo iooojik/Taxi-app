@@ -188,10 +188,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                         view.findViewById<ConstraintLayout>(R.id.driver_order_info_layout).visibility = View.VISIBLE
 
                         if (OrdersModel.mCustomer.avatarURL.trim().isNotEmpty()) {
-                            val roundedCornerTransformation = RoundedCornersTransformation(40, 5)
                             Picasso.with(requireContext())
                                 .load(OrdersModel.mCustomer.avatarURL)
-                                .transform(roundedCornerTransformation)
+                                .transform(RoundedCornersTransformation(40, 5))
                                 .resize(160, 160)
                                 .centerCrop()
                                 .into(binding.driverOrderInfoLayout.customerAvatar)

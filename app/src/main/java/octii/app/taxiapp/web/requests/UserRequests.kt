@@ -39,6 +39,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
             UserModel.mAvatarURL = model.avatarURL
             UserModel.mLanguages = model.languages
             UserModel.mCoordinates = model.coordinates
+            UserModel.mFiles = model.files
 
             MyPreferences.userPreferences?.let {
                 MyPreferences.saveToPreferences(
@@ -160,7 +161,6 @@ class UserRequests(private val view : View? = null, private val activity: Activi
     }
 
     fun update() : UserModel{
-        logError(Gson().toJson(UserModel()))
         try {
             val response = HttpHelper.USER_API.update(UserModel()).execute()
             if (response.isSuccessful){

@@ -179,6 +179,12 @@
                 android:orientation="vertical">
 
                 <Button
+                    android:id="@+id/add_photos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_photos" />
+
+                <Button
                     android:id="@+id/become_client"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

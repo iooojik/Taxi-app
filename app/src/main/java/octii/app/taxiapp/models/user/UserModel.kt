@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import octii.app.taxiapp.LocaleUtils
 import octii.app.taxiapp.models.CoordinatesModel
+import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import java.util.*
@@ -46,7 +47,9 @@ class UserModel(
 
     var coordinates : CoordinatesModel = mCoordinates,
 
-    var driver : DriverAvailable = mDriver
+    var driver : DriverAvailable = mDriver,
+
+    var files : List<FileModel> = mFiles
 ){
     companion object{
         @JvmStatic
@@ -87,5 +90,8 @@ class UserModel(
 
         @JvmStatic
         var mDriver : DriverAvailable = DriverAvailable()
+
+        @JvmStatic
+        var mFiles : List<FileModel> = listOf()
     }
 }

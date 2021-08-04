@@ -70,7 +70,7 @@
                 android:layout_width="@dimen/messengers_size"
                 android:layout_height="@dimen/messengers_size"
                 android:layout_weight="1"
-                android:contentDescription="@string/download_viber"
+                android:contentDescription="@string/download_viber_description"
                 android:src="@drawable/viber" />
         </LinearLayout>
 

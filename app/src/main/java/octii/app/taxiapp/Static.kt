@@ -17,8 +17,8 @@ class Static {
         const val DRIVER_TYPE = "driver"
         const val CLIENT_TYPE = "client"
         val MAIN_SERVICES = listOf(SocketService::class, LocationService::class)
-
-        //@JvmStatic
-        //fun updateUUID() : String = if (UserModel.uuid.isNotEmpty()) UserModel.uuid else "${UUID.randomUUID()}"
+        val PHOTO_TYPES = listOf("avatar", "car", "car_number", "license")
+        const val PICK_IMAGE_AVATAR = 9
+        const val PICK_CROP = 2
     }
 }
