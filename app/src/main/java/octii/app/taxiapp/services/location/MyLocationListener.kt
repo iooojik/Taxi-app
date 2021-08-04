@@ -1,4 +1,4 @@
-package octii.app.taxiapp.sockets.location
+package octii.app.taxiapp.services.location
 
 import android.annotation.SuppressLint
 import android.content.Context

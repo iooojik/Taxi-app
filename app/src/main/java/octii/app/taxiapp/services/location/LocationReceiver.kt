@@ -1,4 +1,4 @@
-package octii.app.taxiapp.sockets.location
+package octii.app.taxiapp.services.location
 
 import android.content.BroadcastReceiver
 import android.content.Context

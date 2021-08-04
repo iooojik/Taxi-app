@@ -34,7 +34,7 @@ class CircularTransformation(radius: Float) : Transformation {
     }
 
     override fun key(): String {
-        return "circular$mRadius"
+        return "circular $mRadius"
     }
 
     init {

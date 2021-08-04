@@ -1,22 +1,17 @@
 package octii.app.taxiapp.ui.maps.client
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,25 +19,20 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-import octii.app.taxiapp.LocaleUtils
-import octii.app.taxiapp.MyPreferences
+import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.OrdersModel
-import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.sockets.location.LocationService
+import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.services.Services
+import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.ui.settings.CircularTransformation
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
 
-class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener {
-
-    lateinit var binding: FragmentClientMapBinding
-    private lateinit var mTimer : Timer
-    private lateinit var orderUpdate : OrderUpdate
-
+class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener, FragmentHelper {
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -61,6 +51,11 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
 
     }
+    private lateinit var binding: FragmentClientMapBinding
+    private lateinit var mTimer : Timer
+    private lateinit var orderUpdate : OrderUpdate
+    private lateinit var permissions: Permissions
+    private lateinit var services: Services
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,30 +63,46 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentClientMapBinding.inflate(layoutInflater)
-        binding.callTaxi.setOnClickListener(this)
-        binding.fabSettings.setOnClickListener(this)
         setTimer()
-        view?.findViewById<ImageView>(R.id.call_to_driver)?.setOnClickListener(this)
-        view?.findViewById<TextView>(R.id.driver_phone)?.setOnLongClickListener(this)
-        MyPreferences.userPreferences?.let {
-            MyPreferences.saveToPreferences(
-                it, Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE)
-        }
+        setListeners()
+        checkUserType()
+        setServices()
+        blockGoBack(requireActivity(), this)
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        try {
-            requestPermissions(true)
-        } catch (e : Exception){
-            e.printStackTrace()
-        }
     }
 
     override fun onResume() {
         super.onResume()
         view?.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
+        checkPermissions()
+        try {
+            setMap()
+        } catch (e : Exception){
+            e.printStackTrace()
+            Snackbar.make(requireView(), resources.getString(R.string.check_permissions), Snackbar.LENGTH_SHORT).show()
+        }
+
+    }
+
+    private fun setListeners(){
+        binding.callTaxi.setOnClickListener(this)
+        binding.fabSettings.setOnClickListener(this)
+        binding.clientOrderInfoLayout.callToDriver.setOnClickListener(this)
+        binding.clientOrderInfoLayout.driverPhone.setOnClickListener(this)
+    }
+
+    private fun checkUserType(){
+        if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
+    }
+
+    private fun setServices(){
+        services = Services(requireActivity(), Static.MAIN_SERVICES)
+        services.start()
+    }
+
+    private fun checkPermissions(){
+        permissions = Permissions(requireContext(), requireActivity())
+        permissions.requestPermissions()
     }
 
     private fun setTimer() {
@@ -101,7 +112,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun setMap(){
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
 
@@ -111,42 +123,18 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                 SocketHelper.makeOrder()
                 OrdersModel.isOrdered = true
                 binding.callTaxi.hide()
+                binding.clientMapprogressBar.visibility = View.VISIBLE
             }
             R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsFragment)
             R.id.call_to_driver -> callToDriver()
         }
     }
 
-    private fun requestPermissions(startLocationService : Boolean){
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                listOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ).toTypedArray(),
-                101
-            )
-            requestPermissions(startLocationService)
-        } else {
-            if (startLocationService){
-                val intentService = Intent(requireContext(), LocationService::class.java)
-                requireActivity().startService(intentService)
-            }
-            setMap()
-        }
-    }
-
     private fun callToDriver() {
-        val dial = "tel:${OrdersModel.mDriver.phone}"
-        startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
+        if (OrdersModel.mDriver.phone.isNotEmpty()) {
+            val dial = "tel:${OrdersModel.mDriver.phone}"
+            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
+        }
     }
 
     inner class OrderUpdate(
@@ -155,31 +143,28 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
         override fun run() {
             activity.runOnUiThread {
-                val savedUserType = if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE).isNullOrEmpty()) Static.CLIENT_TYPE
-                else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, Static.CLIENT_TYPE)!!
-
-                if (savedUserType != Static.CLIENT_TYPE) findNavController().navigate(R.id.driverMapFragment)
 
                 if (OrdersModel.isAccepted && OrdersModel.mDriverID > 0) {
                     binding.callTaxi.hide()
-                    view.findViewById<TextView>(R.id.driver_name).text = OrdersModel.mDriver.userName
-                    view.findViewById<TextView>(R.id.driver_phone).text = OrdersModel.mDriver.phone
-                    val avatarView = view.findViewById<ImageView>(R.id.driver_avatar)
+                    binding.clientMapprogressBar.visibility = View.INVISIBLE
+                    binding.clientOrderInfoLayout.driverName.text = OrdersModel.mDriver.userName
+                    binding.clientOrderInfoLayout.driverPhone.text = OrdersModel.mDriver.phone
+
                     if (OrdersModel.mDriver.avatarURL.isNotEmpty()){
                         Picasso.with(context)
                             .load(OrdersModel.mDriver.avatarURL)
                             .transform(CircularTransformation(0f))
-                            .into(avatarView)
+                            .into(binding.clientOrderInfoLayout.driverAvatar)
                     } else {
-                        avatarView.setImageResource(R.drawable.outline_account_circle_24)
+                        binding.clientOrderInfoLayout.driverAvatar.setImageResource(R.drawable.outline_account_circle_24)
                     }
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout).visibility = View.VISIBLE
                 } else {
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
-                    logError(!binding.callTaxi.isVisible && !OrdersModel.isOrdered)
-                    logError(!binding.callTaxi.isVisible)
-                    logError(!OrdersModel.isOrdered)
-                    if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered) binding.callTaxi.show()
+                    if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered){
+                        binding.callTaxi.show()
+                        binding.clientMapprogressBar.visibility = View.INVISIBLE
+                    }
                 }
             }
         }
@@ -190,12 +175,14 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
             R.id.driver_phone -> {
                 val clipboard: ClipboardManager =
                     requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("", view?.findViewById<TextView>(R.id.driver_phone)?.text.toString())
+                val clip = ClipData.newPlainText("", binding.clientOrderInfoLayout.driverPhone.text.toString())
                 clipboard.setPrimaryClip(clip)
                 Snackbar.make(binding.root, resources.getString(R.string.copied), Snackbar.LENGTH_SHORT).show()
             }
         }
         return true
     }
+
+
 
 }

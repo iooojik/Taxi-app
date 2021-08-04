@@ -3,7 +3,6 @@ package octii.app.taxiapp.models.driverAvailable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import octii.app.taxiapp.models.user.UserModel
 
 @Entity
 data class DriverAvailable(

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="whatsapp_or_viber_not_chosen">У вас должен быть установлен WhatsApp или Viber</string>
-    <string name="no_phone">Вы не указали номер телефона</string>
-    <string name="no_name">Вы не указали, как вас зовут</string>
+    <string name="no_phone">Вы указали неверный номер телефона</string>
+    <string name="no_name">Вы не указали ваше имя</string>
     <string name="all_drivers_are_busy">К сожалению, все водители заняты, попробуйте позже</string>
     <string name="error">Ошибка</string>
     <string name="to_become_driver">Чтобы стать водителем, вам надо иметь установленный Viber и WhatsApp</string>
     <string name="copied">Скопировано</string>
+    <string name="check_permissions">Проверьте разрешения</string>
 </resources>

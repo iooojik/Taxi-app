@@ -28,14 +28,15 @@
                 android:layout_marginEnd="8dp"
                 android:orientation="horizontal">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/client_avatar"
-                    android:layout_width="78dp"
-                    android:layout_height="81dp"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:contentDescription="@string/avatar_description"
-                    tools:src="@tools:sample/avatars" />
+                    tools:src="@tools:sample/avatars"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
@@ -106,8 +107,9 @@
                     android:id="@+id/become_driver"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="80dp"
                     android:text="@string/become_driver"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
             </LinearLayout>
 
         </LinearLayout>

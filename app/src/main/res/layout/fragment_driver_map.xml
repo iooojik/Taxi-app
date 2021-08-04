@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.auth.AuthMessengersFragment">
+    tools:context=".ui.auth.WelcomeFragment">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
@@ -35,6 +35,15 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/map"/>
 
+    <include
+        android:id="@+id/taximeter"
+        layout="@layout/taximeter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/bottom_view_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

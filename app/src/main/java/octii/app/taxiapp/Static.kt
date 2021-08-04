@@ -1,5 +1,8 @@
 package octii.app.taxiapp
 
+import octii.app.taxiapp.services.location.LocationService
+import octii.app.taxiapp.services.socket.SocketService
+
 class Static {
     companion object{
         private const val SERVER_IP = "192.168.0.101"
@@ -13,6 +16,8 @@ class Static {
         const val SHARED_PREFERENCES_APPLICATION = "APPLICATION PREFERENCES"
         const val DRIVER_TYPE = "driver"
         const val CLIENT_TYPE = "client"
+        val MAIN_SERVICES = listOf(SocketService::class, LocationService::class)
+
         //@JvmStatic
         //fun updateUUID() : String = if (UserModel.uuid.isNotEmpty()) UserModel.uuid else "${UUID.randomUUID()}"
     }

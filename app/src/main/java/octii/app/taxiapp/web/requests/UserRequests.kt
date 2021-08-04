@@ -2,16 +2,22 @@ package octii.app.taxiapp.web.requests
 
 import android.app.Activity
 import android.view.View
+import android.widget.ProgressBar
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
+import octii.app.taxiapp.models.TokenAuthorization
 import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.web.HttpHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class UserRequests(private val view : View? = null, private val activity: Activity? = null) {
 
@@ -47,70 +53,99 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         return UserModel()
     }
 
-    fun loginWithToken(token : String) : UserModel{
-
-        try {
-            val response = HttpHelper.USER_API.loginWithToken(UserModel(token = token)).execute()
-            if (response.isSuccessful){
-                val model = response.body()?.user
+    fun loginWithToken(token : String){
+        HttpHelper.USER_API.loginWithToken(UserModel(token = token)).enqueue(object : Callback<TokenAuthorization>{
+            override fun onResponse(call: Call<TokenAuthorization>, response: Response<TokenAuthorization>) {
                 if (response.isSuccessful){
-                    if (model != null && model.token.isNotEmpty()){
-                        setUserInfo(model)
+                    val model = response.body()?.user
+                    if (response.isSuccessful){
+                        if (model != null && model.token.isNotEmpty()){
+                            setUserInfo(model)
 
-                        if (response.body()?.order != null){
-                            val order = response.body()?.order
-                            if (order != null){
-                                orderRequests.getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
+                            if (response.body()?.order != null){
+                                val order = response.body()?.order
+                                if (order != null){
+                                    orderRequests
+                                        .getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
+                                }
+
                             }
 
+
                         }
-
-
                     }
-                }
-                activity?.runOnUiThread {
-                    if (UserModel.uToken.isEmpty()) activity.findNavController(R.id.nav_host_fragment).navigate(R.id.authMessengersFragment)
-                    if (UserModel.uType == Static.DRIVER_TYPE) activity.findNavController(R.id.nav_host_fragment).navigate(R.id.driverMapFragment)
-                    else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
-                }
+                    activity?.runOnUiThread {
+                        if (UserModel.uToken.isEmpty())
+                            activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
 
-            } else {
-                showSnackBarError()
-                activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.authMessengersFragment) }
+                        if (UserModel.uType == Static.DRIVER_TYPE)
+                            activity.findNavController(R.id.nav_host_fragment).navigate(R.id.driverMapFragment)
+                        else
+                            activity.findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
+                    }
 
+                } else {
+                    showSnackBarError()
+                }
             }
-        } catch (e : Exception){
-            showSnackBarError()
-            e.printStackTrace()
-        }
-        return UserModel()
 
+            override fun onFailure(call: Call<TokenAuthorization>, t: Throwable) {
+                t.printStackTrace()
+                showSnackBarError()
+            }
+
+        })
     }
 
     private fun setDriverInfo(driver : DriverAvailable) {
+        logDebug(driver)
         DriverAvailable.mId = driver.id
         DriverAvailable.mIsWorking = driver.isWorking
         DriverAvailable.mPricePerMinute = driver.pricePerMinute
         DriverAvailable.mRideDistance = driver.rideDistance
         DriverAvailable.mPricePerKm = driver.pricePerKm
         DriverAvailable.mPriceWaitingMin = driver.priceWaitingMin
+        logDebug(DriverAvailable)
+
     }
 
-    fun login(phoneNum : String, name : String) : UserModel{
-        try {
-            val response = HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name)).execute()
-            if (response.isSuccessful){
-                val model = response.body()
-                if (model != null && model.token.isNotEmpty()){
-                    setUserInfo(model)
+    fun login(phoneNum : String, name : String, progressBar: ProgressBar? = null){
+        showProgressBar(progressBar)
+
+        HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name)).enqueue(object :
+            Callback<UserModel> {
+            override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                if (response.isSuccessful){
+                    val model = response.body()
+                    if (model != null && model.token.isNotEmpty()){
+                        setUserInfo(model)
+                        if (model.type == Static.DRIVER_TYPE) navigateToFragment(R.id.driverMapFragment)
+                        else navigateToFragment(R.id.clientMapFragment)
+                    }
+                } else {
+                    hideProgressBar(progressBar)
+                    showSnackBarError()
                 }
             }
-        }catch (e : Exception){
-            showSnackBarError()
-            e.printStackTrace()
-        }
-        return UserModel()
+
+            override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                t.printStackTrace()
+                showSnackBarError()
+                hideProgressBar(progressBar)
+            }
+        })
     }
+
+    private fun showProgressBar(progressBar: ProgressBar? = null){
+        if (activity != null && progressBar != null)
+            activity.runOnUiThread { progressBar.visibility = View.VISIBLE }
+    }
+
+    private fun hideProgressBar(progressBar: ProgressBar? = null){
+        if (activity != null && progressBar != null)
+            activity.runOnUiThread { progressBar.visibility = View.INVISIBLE }
+    }
+
     private fun showSnackBarError(){
         if (view != null && activity != null){
             activity.runOnUiThread {
@@ -134,5 +169,15 @@ class UserRequests(private val view : View? = null, private val activity: Activi
             e.printStackTrace()
         }
         return UserModel()
+    }
+
+    fun navigateToFragment(fragment : Int){
+        try {
+            activity?.findNavController(R.id.nav_host_fragment)?.navigate(fragment)
+        } catch (e : java.lang.Exception){
+            e.printStackTrace()
+            showSnackBarError()
+        }
+
     }
 }

@@ -8,15 +8,12 @@ import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.models.driverAvailable.DriverAvailableApi
 import octii.app.taxiapp.models.user.UserApi
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.OkHttpClient
-
-import okhttp3.logging.HttpLoggingInterceptor
-
-
 
 
 class HttpHelper {

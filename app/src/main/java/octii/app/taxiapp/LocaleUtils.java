@@ -41,10 +41,6 @@ public class LocaleUtils {
         } else {
             context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
         }
-        //context.createConfigurationContext(configuration);
-        //configuration.locale = locale;
-        //resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-
         return true;
     }
 

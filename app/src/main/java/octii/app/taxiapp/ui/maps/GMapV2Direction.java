@@ -1,10 +1,10 @@
 package octii.app.taxiapp.ui.maps;
 
-import java.io.InputStream;
-import java.util.ArrayList;
+import static octii.app.taxiapp.scripts.LogKt.logError;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -16,10 +16,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.android.gms.maps.model.LatLng;
+import java.io.InputStream;
+import java.util.ArrayList;
 
-import android.content.Context;
-import android.util.Log;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class GMapV2Direction {
     public final static String MODE_DRIVING = "driving";
@@ -38,6 +39,8 @@ public class GMapV2Direction {
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
             HttpPost httpPost = new HttpPost(url);
+            logError(url);
+            //todo здесь вылетает. попробовать через retrofit
             HttpResponse response = httpClient.execute(httpPost, localContext);
             InputStream in = response.getEntity().getContent();
             DocumentBuilder builder = DocumentBuilderFactory.newInstance()

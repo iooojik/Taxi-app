@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="phone_number">Номер телефона</string>
-    <string name="phone_helper_text">Номер, который используется в WhatsApp и/или Viber</string>
+    <string name="phone_helper_text">Номер, который вы используете в WhatsApp И Viber</string>
     <string name="whats_your_name">Как вас зовут</string>
     <string name="price_waiting">Цена за ожидание</string>
     <string name="max_searching_distance">Максимальная дистанция поиска клиентов</string>

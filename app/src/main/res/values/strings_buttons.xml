@@ -7,4 +7,5 @@
     <string name="call_taxi">Вызвать такси</string>
     <string name="become_client">Стать клиентом(потом можно вернуться в водители)</string>
     <string name="become_driver">Стать водителем(потом можно вернуться в клиенты)</string>
+    <string name="change_language">Изменить язык</string>
 </resources>

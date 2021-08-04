@@ -15,6 +15,7 @@ import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentDriverSettingsBinding
 import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.web.requests.Requests
 import kotlin.concurrent.thread
 
@@ -77,11 +78,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     override fun getSettingsInformation(){
-        thread {
-            //val driverModel = requests.driverAvailableRequests.getDriverAvailableModel()
-            //проверяем, вернулась ли модель или заглушка, так как у заглушки id = -1
-            requireActivity().runOnUiThread { if (DriverAvailable.mId > 0) updateUiInfo() }
-        }
+        updateUiInfo()
     }
 
     override fun updateUiInfo() {
@@ -120,7 +117,8 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.working -> {
-                DriverAvailable.mIsWorking = isChecked
+                UserModel.mDriver.isWorking = isChecked
+                logError(isChecked)
                 updateDriver()
             }
             R.id.russian_language -> {

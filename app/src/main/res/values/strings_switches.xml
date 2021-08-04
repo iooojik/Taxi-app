@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="i_am_driver">Я водитель</string>
+    <string name="i_am_driver">Зарегистрироваться как водитель</string>
     <string name="i_am_working">Я работаю(виден клиентам)</string>
 </resources>

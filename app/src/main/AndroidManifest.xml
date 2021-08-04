@@ -37,12 +37,12 @@
             android:value="@string/google_maps_key" />
 
         <service
-            android:name=".sockets.SocketService"
+            android:name=".services.socket.SocketService"
             android:enabled="true"
             android:exported="true" />
 
         <receiver
-            android:name=".sockets.SocketReceiver"
+            android:name=".services.socket.SocketReceiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
@@ -55,13 +55,13 @@
         </receiver>
 
         <service
-            android:name=".sockets.location.LocationService"
+            android:name=".services.location.LocationService"
             android:enabled="true"
             android:exported="true" >
         </service>
 
         <receiver
-            android:name=".sockets.location.LocationReceiver"
+            android:name=".services.location.LocationReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:enabled="true">
 
@@ -76,6 +76,8 @@
 
         <activity android:name=".MainActivity"
             android:configChanges="keyboardHidden|locale|layoutDirection">
+            <nav-graph android:value="@navigation/nav_graph" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

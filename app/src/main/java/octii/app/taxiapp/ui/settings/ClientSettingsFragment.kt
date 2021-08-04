@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.LocaleUtils
 import octii.app.taxiapp.R
 import octii.app.taxiapp.SettingsFragment
@@ -70,13 +71,6 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
 
     override fun getSettingsInformation() {
         if (UserModel.uID > 0) updateUiInfo()
-        /*
-        thread {
-            val driverModel = requests.driverAvailableRequests.getDriverAvailableModel()
-            //проверяем, вернулась ли модель или заглушка, так как у заглушки id = -1
-            requireActivity().runOnUiThread { if (driverModel.driverID > 0) updateUiInfo() }
-        }
-         */
     }
 
     override fun updateUiInfo() {
@@ -89,9 +83,12 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         binding.iAmInWhatsapp.isChecked = UserModel.uIsWhatsapp
 
         if (UserModel.mAvatarURL.isNotEmpty()){
+            val roundedCornerTransformation = RoundedCornersTransformation(40, 5)
             Picasso.with(requireContext())
                 .load(UserModel.mAvatarURL)
-                .transform(CircularTransformation(0f))
+                .transform(roundedCornerTransformation)
+                .resize(160, 160)
+                .centerCrop()
                 .into(binding.clientAvatar)
         } else {
             binding.clientAvatar.setImageResource(R.drawable.outline_account_circle_24)

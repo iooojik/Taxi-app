@@ -21,14 +21,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/customer_avatar"
-            android:layout_width="78dp"
-            android:layout_height="81dp"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/avatar_description"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@tools:sample/avatars"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
 
         <LinearLayout
             android:id="@+id/linearLayout"
