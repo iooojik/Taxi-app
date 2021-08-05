@@ -122,7 +122,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
             R.id.call_taxi -> {
                 SocketHelper.makeOrder()
                 OrdersModel.isOrdered = true
-                //binding.callTaxi.hide()
+                binding.callTaxi.hide()
                 binding.clientMapprogressBar.visibility = View.VISIBLE
             }
             R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsFragment)
@@ -145,7 +145,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
             activity.runOnUiThread {
 
                 if (OrdersModel.isAccepted && OrdersModel.mDriverID > 0) {
-                    //binding.callTaxi.hide()
+                    binding.callTaxi.hide()
                     binding.clientMapprogressBar.visibility = View.INVISIBLE
                     binding.clientOrderInfoLayout.driverName.text = OrdersModel.mDriver.userName
                     binding.clientOrderInfoLayout.driverPhone.text = OrdersModel.mDriver.phone
