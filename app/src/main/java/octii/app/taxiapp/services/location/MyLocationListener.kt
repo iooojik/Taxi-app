@@ -28,9 +28,13 @@ class MyLocationListener : LocationListener {
         distance += calcDistance(imHere, prevLocation)
 
         prevLocation = loc
-
-        SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
-        logError(CoordinatesModel(latitude = latitude, longitude = longitude))
+        try {
+            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
+            logError("coords: ${CoordinatesModel(latitude = latitude, longitude = longitude)}")
+        } catch (e : Exception){
+            logError(e)
+            e.printStackTrace()
+        }
 
         logDebug("speed $speed " +
                     "distance $distance " +

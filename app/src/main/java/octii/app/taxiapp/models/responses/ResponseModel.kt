@@ -1,7 +1,7 @@
 package octii.app.taxiapp.models.responses
 
 import octii.app.taxiapp.models.MessageType
-import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.orders.OrdersModel
 
 
 data class ResponseModel(

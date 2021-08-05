@@ -6,7 +6,7 @@ import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.BottomSheetDriverOrderBinding
-import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.web.SocketHelper
 
 class DriverOrderBottomSheet (context: Context, activity: Activity, private val order : OrdersModel) :

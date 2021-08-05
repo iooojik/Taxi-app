@@ -24,7 +24,7 @@ import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
-import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.ui.Permissions

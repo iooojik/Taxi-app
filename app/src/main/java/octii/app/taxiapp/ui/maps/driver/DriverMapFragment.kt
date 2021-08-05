@@ -25,10 +25,9 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.databinding.TaximeterBinding
-import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.Permissions
@@ -81,7 +80,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private lateinit var mTimer: Timer
     private lateinit var permissions: Permissions
     private lateinit var services: Services
-    private var avatarIsLoaded = false
     private var orderTime : Long = 0
 
 
@@ -177,11 +175,11 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
         override fun run() {
             activity.runOnUiThread {
-                logError(OrdersModel.isAccepted)
                 if (OrdersModel.isOrdered){
                     val bottomSheet = DriverAcceptOrderBottomSheet(context, activity, OrdersModel())
                     bottomSheet.show()
                 } else if (OrdersModel.isAccepted) {
+                    orderTime = orderTime.plus(1)
                     taximeterUpdate(binding.taximeter)
                     binding.driverOrderInfoLayout.customerName.text = OrdersModel.mCustomer.userName
                     binding.driverOrderInfoLayout.customerPhone.text = OrdersModel.mCustomer.phone
@@ -208,6 +206,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     } else {
                         binding.driverOrderInfoLayout.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
                     }
+                } else {
+                    orderTime = 0
+                    taximeterUpdate(binding.taximeter)
                 }
 
             }
@@ -235,7 +236,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         taximeterBinding.price.text = resources.getString(
             R.string.taximeter_price,
             (DriverAvailable.mPricePerKm * MyLocationListener.distance).toString(),
-            if(orderTime/60 > 0) DriverAvailable.mPricePerMinute.toString()
+            if(orderTime/60 < 1) DriverAvailable.mPricePerMinute.toString()
             else (DriverAvailable.mPricePerMinute * (orderTime/60))
         )
     }

@@ -8,7 +8,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.models.CoordinatesModel
-import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
@@ -16,7 +16,6 @@ import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import io.reactivex.CompletableTransformer
-import ua.naiksoftware.stomp.dto.StompMessage
 
 
 class SocketHelper {

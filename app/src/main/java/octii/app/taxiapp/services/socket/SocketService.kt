@@ -7,12 +7,10 @@ import android.os.IBinder
 import android.widget.Toast
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import octii.app.taxiapp.R
 import octii.app.taxiapp.models.MessageType
-import octii.app.taxiapp.models.OrdersModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.responses.ResponseModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
@@ -20,7 +18,6 @@ import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests
 import ua.naiksoftware.stomp.dto.StompMessage
-import java.util.*
 
 class SocketService : Service() {
 
@@ -72,7 +69,7 @@ class SocketService : Service() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ topicMessage : StompMessage ->
 
-            logInfo(topicMessage)
+            logInfo("topic msg: $topicMessage")
 
             val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
 

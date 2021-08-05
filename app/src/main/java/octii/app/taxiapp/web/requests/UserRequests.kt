@@ -58,29 +58,24 @@ class UserRequests(private val view : View? = null, private val activity: Activi
     }
 
     fun loginWithToken(token : String){
-        logInfo(1)
         HttpHelper.USER_API.loginWithToken(UserModel(token = token)).enqueue(object : Callback<AuthorizationModel>{
             override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
                 if (response.isSuccessful){
-                    logInfo(2)
                     val model = response.body()?.user
                     if (response.isSuccessful){
                         if (model != null && model.token.isNotEmpty()){
                             setUserInfo(model)
-
+                            orderRequests.orderCheck(model)
                             if (response.body()?.order != null){
                                 val order = response.body()?.order
                                 if (order != null){
                                     orderRequests
                                         .getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
                                 }
-
                             }
-
-
                         }
                     }
-                    logInfo(3)
+
                     activity?.runOnUiThread {
                         if (UserModel.uToken.isEmpty())
                             activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
@@ -98,7 +93,6 @@ class UserRequests(private val view : View? = null, private val activity: Activi
             }
 
             override fun onFailure(call: Call<AuthorizationModel>, t: Throwable) {
-                logInfo(5)
                 t.printStackTrace()
                 showSnackBarError()
             }
