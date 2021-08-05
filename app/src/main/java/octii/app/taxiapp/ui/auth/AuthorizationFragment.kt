@@ -6,16 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
-import octii.app.taxiapp.Static
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.web.requests.Requests
 
 
 class AuthorizationFragment : Fragment(), View.OnClickListener,
-    CompoundButton.OnCheckedChangeListener {
+    CompoundButton.OnCheckedChangeListener, FragmentHelper {
 
     lateinit var binding : FragmentAuthorizationBinding
     private lateinit var requests: Requests
@@ -39,6 +41,8 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
         binding.iAmInWhatsapp.setOnCheckedChangeListener(this)
         binding.iAmInViber.setOnCheckedChangeListener(this)
         binding.iAmDriver.setOnCheckedChangeListener(this)
+        binding.mainAuth.setOnClickListener(this)
+        binding.fabBack.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -62,6 +66,13 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                     requests.userRequests.login("+$phoneNumber", userName, binding.progressBar)
                 }
             }
+            R.id.main_auth -> {
+                if (activity != null)
+                    hideKeyBoard(requireActivity(), binding.root)
+                binding.phoneNumberLayout.clearFocus()
+                binding.nameLayout.clearFocus()
+            }
+            R.id.fab_back -> findNavController().navigateUp()
         }
     }
 

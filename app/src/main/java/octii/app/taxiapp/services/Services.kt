@@ -13,8 +13,8 @@ class Services(private val activity: Activity, private val servicesList: List<KC
 
         if (servicesList.isNotEmpty()) {
             servicesList.forEach {
-                activity.startService(Intent(activity, it.java))
-                //startService(it)
+                //activity.startService(Intent(activity, it.java))
+                startService(it)
             }
         }
     }
@@ -29,7 +29,8 @@ class Services(private val activity: Activity, private val servicesList: List<KC
 
     private fun touchService(intentService : Intent, serviceName : KClass<out Service>) : Boolean {
         return if (!isMyServiceRunning(serviceName)) {activity.startService(intentService); true}
-        else {activity.stopService(intentService); false}
+        else false
+        //else {activity.stopService(intentService); false}
     }
 
     private fun isMyServiceRunning(serviceName : KClass<out Service>): Boolean {

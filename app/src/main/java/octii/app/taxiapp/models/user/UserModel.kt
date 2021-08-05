@@ -3,11 +3,11 @@ package octii.app.taxiapp.models.user
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import octii.app.taxiapp.LocaleUtils
+import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.CoordinatesModel
 import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.SpeakingLanguagesModel
-import octii.app.taxiapp.models.driverAvailable.DriverAvailable
+import octii.app.taxiapp.models.driver.DriverModel
 import java.util.*
 
 @Entity
@@ -47,7 +47,7 @@ class UserModel(
 
     var coordinates : CoordinatesModel = mCoordinates,
 
-    var driver : DriverAvailable = mDriver,
+    var driver : DriverModel = mDriver,
 
     var files : List<FileModel> = mFiles
 ){
@@ -89,7 +89,7 @@ class UserModel(
         var mCoordinates : CoordinatesModel = CoordinatesModel()
 
         @JvmStatic
-        var mDriver : DriverAvailable = DriverAvailable()
+        var mDriver : DriverModel = DriverModel()
 
         @JvmStatic
         var mFiles : List<FileModel> = listOf()

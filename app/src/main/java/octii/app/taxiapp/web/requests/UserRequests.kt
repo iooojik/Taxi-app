@@ -5,15 +5,13 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
-import octii.app.taxiapp.Static
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.AuthorizationModel
-import octii.app.taxiapp.models.driverAvailable.DriverAvailable
+import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logDebug
-import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
@@ -100,16 +98,16 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         })
     }
 
-    private fun setDriverInfo(driver : DriverAvailable?) {
+    private fun setDriverInfo(driver : DriverModel?) {
         if (driver != null) {
             logDebug(driver)
-            DriverAvailable.mId = driver.id
-            DriverAvailable.mIsWorking = driver.isWorking
-            DriverAvailable.mPricePerMinute = driver.pricePerMinute
-            DriverAvailable.mRideDistance = driver.rideDistance
-            DriverAvailable.mPricePerKm = driver.pricePerKm
-            DriverAvailable.mPriceWaitingMin = driver.priceWaitingMin
-            logDebug(DriverAvailable)
+            DriverModel.mId = driver.id
+            DriverModel.mIsWorking = driver.isWorking
+            DriverModel.mPrices.pricePerMinute = driver.prices.pricePerMinute
+            DriverModel.mRideDistance = driver.rideDistance
+            DriverModel.mPrices.pricePerKm = driver.prices.pricePerKm
+            DriverModel.mPrices.priceWaitingMin = driver.prices.priceWaitingMin
+            logDebug(DriverModel)
         }
     }
 

@@ -34,8 +34,6 @@ class SocketService : Service() {
         requests = Requests()
 
         SocketHelper.connect()
-        SocketHelper.resetSubscriptions()
-
         connectToMainTopic()
         setTimer()
     }
@@ -45,8 +43,9 @@ class SocketService : Service() {
         timer.post(object : Runnable {
             override fun run() {
                 if (running){
-                    if (!SocketHelper.mStompClient.isConnected) SocketHelper.connect()
-                    handler.postDelayed(this, 1000)
+                    //if (!SocketHelper.mStompClient.isConnected) SocketHelper.connect()
+                    logInfo(SocketHelper.mStompClient.isConnected)
+                    handler.postDelayed(this, 10000)
                 }
             }
         })
@@ -138,6 +137,7 @@ class SocketService : Service() {
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
                 connectToMainTopic()
+                SocketHelper.resetSubscriptions()
             })
         SocketHelper.compositeDisposable.add(topic)
         SocketHelper.mStompClient.connect()

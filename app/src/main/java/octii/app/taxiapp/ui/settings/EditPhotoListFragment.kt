@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
-import octii.app.taxiapp.Static
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.EditPhotoItemBinding
 import octii.app.taxiapp.databinding.FragmentEditPhotoListBinding
 import octii.app.taxiapp.models.files.FileModel

@@ -1,8 +1,12 @@
 package octii.app.taxiapp
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -29,5 +33,11 @@ interface FragmentHelper {
             cursor.close()
         }
         return result
+    }
+
+    fun hideKeyBoard(activity: Activity, v : View){
+        val imm: InputMethodManager =
+            activity.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(v.windowToken, 0)
     }
 }

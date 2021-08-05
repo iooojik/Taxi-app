@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import octii.app.taxiapp.*
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
+import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.ui.Permissions
 
 

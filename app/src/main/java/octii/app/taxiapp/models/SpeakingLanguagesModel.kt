@@ -2,8 +2,7 @@ package octii.app.taxiapp.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import octii.app.taxiapp.LocaleUtils
+import octii.app.taxiapp.locale.LocaleUtils
 
 @Entity
 class SpeakingLanguagesModel(

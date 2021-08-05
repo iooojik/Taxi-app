@@ -6,7 +6,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import octii.app.taxiapp.Static
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.CoordinatesModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
@@ -35,7 +35,7 @@ class SocketHelper {
                 mStompClient.lifecycle()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { lifecycleEvent ->
+                .subscribe ({ lifecycleEvent ->
                     if (lifecycleEvent.type != null) {
                         when (lifecycleEvent.type!!) {
                             LifecycleEvent.Type.OPENED -> logInfo("Stomp connection opened")
@@ -51,7 +51,11 @@ class SocketHelper {
 
                         }
                     }
-                }
+                    mStompClient.connect()
+                }, { throwable ->
+                logError("ttt :$throwable")
+                throwable.printStackTrace()
+            })
 
             compositeDisposable.add(disposableLifecycle!!)
         }

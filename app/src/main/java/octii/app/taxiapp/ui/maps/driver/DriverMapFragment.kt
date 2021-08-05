@@ -1,7 +1,6 @@
 package octii.app.taxiapp.ui.maps.driver
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -22,11 +21,11 @@ import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
-import octii.app.taxiapp.Static
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.databinding.TaximeterBinding
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.models.driverAvailable.DriverAvailable
+import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
@@ -190,15 +189,16 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                         view.findViewById<ConstraintLayout>(R.id.driver_order_info_layout).visibility =
                             View.VISIBLE
 
-                        if (OrdersModel.mCustomer.isWhatsapp)
+                        if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp)
+                            binding.driverOrderInfoLayout.messengersInfo.text =
+                                activity!!.resources.getString(R.string.user_available_in_viber_and_whatsapp)
+                        else if (OrdersModel.mCustomer.isWhatsapp)
                             binding.driverOrderInfoLayout.messengersInfo.text =
                                 activity!!.resources.getString(R.string.user_available_in_whatsapp)
                         else if (OrdersModel.mCustomer.isViber)
                             binding.driverOrderInfoLayout.messengersInfo.text =
                                 activity!!.resources.getString(R.string.user_available_in_viber)
-                        else if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp)
-                            binding.driverOrderInfoLayout.messengersInfo.text =
-                                activity!!.resources.getString(R.string.user_available_in_viber_and_whatsapp)
+
 
                         if (OrdersModel.mCustomer.avatarURL.trim().isNotEmpty()) {
                             Picasso.with(requireContext())
@@ -240,9 +240,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         taximeterBinding.distance.text = MyLocationListener.distance.toString()
         taximeterBinding.price.text = resources.getString(
             R.string.taximeter_price,
-            (DriverAvailable.mPricePerKm * MyLocationListener.distance).toString(),
-            if(orderTime/60 < 1) DriverAvailable.mPricePerMinute.toString()
-            else (DriverAvailable.mPricePerMinute * (orderTime/60))
+            (DriverModel.mPrices.pricePerKm * MyLocationListener.distance).toString(),
+            if(orderTime/60 < 1) DriverModel.mPrices.pricePerMinute.toString()
+            else (DriverModel.mPrices.pricePerMinute * (orderTime/60))
         )
     }
 }

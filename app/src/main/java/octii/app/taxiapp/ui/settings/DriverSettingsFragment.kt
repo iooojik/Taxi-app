@@ -10,12 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
-import octii.app.taxiapp.LocaleUtils
+import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.R
 import octii.app.taxiapp.SettingsFragment
-import octii.app.taxiapp.Static
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentDriverSettingsBinding
-import octii.app.taxiapp.models.driverAvailable.DriverAvailable
+import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.web.requests.Requests
@@ -85,11 +85,11 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     override fun updateUiInfo() {
-        binding.pricePerKm.editText?.setText(DriverAvailable.mPricePerKm.toString())
-        binding.pricePerMin.editText?.setText(DriverAvailable.mPricePerMinute.toString())
-        binding.priceWaiting.editText?.setText(DriverAvailable.mPriceWaitingMin.toString())
-        binding.maxDistance.editText?.setText(DriverAvailable.mRideDistance.toString())
-        binding.working.isChecked = DriverAvailable.mIsWorking
+        binding.pricePerKm.editText?.setText(DriverModel.mPrices.pricePerKm.toString())
+        binding.pricePerMin.editText?.setText(DriverModel.mPrices.pricePerMinute.toString())
+        binding.priceWaiting.editText?.setText(DriverModel.mPrices.priceWaitingMin.toString())
+        binding.maxDistance.editText?.setText(DriverModel.mRideDistance.toString())
+        binding.working.isChecked = DriverModel.mIsWorking
         binding.driverName.text = UserModel.nUserName
         binding.driverPhone.text = UserModel.uPhoneNumber
 
@@ -178,9 +178,9 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         for (p in prices) if (p != null) if (p.text.isEmpty()) p.setText("0.0")
 
 
-        UserModel.mDriver.pricePerKm = prices[0]?.text.toString().toFloat()
-        UserModel.mDriver.pricePerMinute = prices[1]?.text.toString().toFloat()
-        UserModel.mDriver.priceWaitingMin = prices[2]?.text.toString().toFloat()
+        UserModel.mDriver.prices.pricePerKm = prices[0]?.text.toString().toFloat()
+        UserModel.mDriver.prices.pricePerMinute = prices[1]?.text.toString().toFloat()
+        UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
 

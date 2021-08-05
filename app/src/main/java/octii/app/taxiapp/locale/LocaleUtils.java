@@ -1,4 +1,4 @@
-package octii.app.taxiapp;
+package octii.app.taxiapp.locale;
 
 import android.annotation.TargetApi;
 import android.content.Context;

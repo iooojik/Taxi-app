@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.ActivityMainBinding
+import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.web.requests.Requests
 
 

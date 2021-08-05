@@ -5,8 +5,8 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
-import octii.app.taxiapp.Static
-import octii.app.taxiapp.models.driverAvailable.DriverAvailableApi
+import octii.app.taxiapp.constants.Static
+import octii.app.taxiapp.models.driver.DriverApi
 import octii.app.taxiapp.models.files.FileApi
 import octii.app.taxiapp.models.orders.OrdersApi
 import octii.app.taxiapp.models.user.UserApi
@@ -24,7 +24,7 @@ class HttpHelper {
         @JvmStatic
         lateinit var USER_API: UserApi
         @JvmStatic
-        lateinit var DRIVER_AVAILABLE_API : DriverAvailableApi
+        lateinit var driverApi : DriverApi
         @JvmStatic
         lateinit var FILE_API : FileApi
         @JvmStatic
@@ -47,7 +47,7 @@ class HttpHelper {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             USER_API = retrofit.create(UserApi::class.java)
-            DRIVER_AVAILABLE_API = retrofit.create(DriverAvailableApi::class.java)
+            driverApi = retrofit.create(DriverApi::class.java)
             FILE_API = retrofit.create(FileApi::class.java)
             ORDERS_API = retrofit.create(OrdersApi::class.java)
         }
