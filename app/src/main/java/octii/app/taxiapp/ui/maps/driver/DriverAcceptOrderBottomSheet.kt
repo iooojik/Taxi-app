@@ -5,6 +5,8 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.BottomSheetAcceptOrderBinding
 import octii.app.taxiapp.models.OrdersModel
@@ -25,6 +27,17 @@ class DriverAcceptOrderBottomSheet (context: Context, activity: Activity, privat
         binding.acceptOrder.setOnClickListener(this)
         binding.customerName.text = order.customer?.userName
         binding.customerPhone.text = order.customer?.phone
+        if (order.customer != null){
+            if (order.customer?.avatarURL?.trim()?.isNotEmpty() == true){
+                Picasso.with(context)
+                    .load(OrdersModel.mCustomer.avatarURL)
+                    .transform(RoundedCornersTransformation(40, 5))
+                    .resize(160, 160)
+                    .centerCrop()
+                    .into(binding.customerAvatar)
+            } else binding.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
+        }
+
         val timerToReject = TimerToReject(binding.timer, activity)
         timer = Timer()
         timer.schedule(timerToReject, 0, 1000)

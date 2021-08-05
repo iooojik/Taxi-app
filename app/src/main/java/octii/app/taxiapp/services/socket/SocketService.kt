@@ -24,24 +24,35 @@ import java.util.*
 
 class SocketService : Service() {
 
-    companion object{
-        @JvmStatic
-        var serviceRunning = false
-        @JvmStatic
-        val updateTimer = Timer()
-    }
-
     private val gson = Gson()
-    private var topic : Disposable = CompositeDisposable()
     private val uuid : String = UserModel.mUuid
     private val mainTopic : String = "/topic/${UserModel.mUuid}"
     private lateinit var requests: Requests
+    private val timer = Handler()
+    private val handler = Handler()
+    private var running = true
 
     override fun onCreate() {
         super.onCreate()
         requests = Requests()
+
         SocketHelper.connect()
+        SocketHelper.resetSubscriptions()
+
         connectToMainTopic()
+        setTimer()
+    }
+
+    private fun setTimer(){
+        //таймер с записью в бд
+        timer.post(object : Runnable {
+            override fun run() {
+                if (running){
+                    if (!SocketHelper.mStompClient.isConnected) SocketHelper.connect()
+                    handler.postDelayed(this, 1000)
+                }
+            }
+        })
     }
 
     private fun connectToMainTopic(){
@@ -56,34 +67,44 @@ class SocketService : Service() {
 
     private fun topic(path : String) {
 
-        topic = SocketHelper.mStompClient.topic(path).subscribeOn(Schedulers.io()).observeOn(
-            AndroidSchedulers.mainThread()).subscribe({ topicMessage : StompMessage ->
-            val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
+        val topic = SocketHelper.mStompClient.topic(path)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ topicMessage : StompMessage ->
+
             logInfo(topicMessage)
+
+            val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
 
             when(responseModel.type){
 
                 MessageType.ORDER_ACCEPT -> {
+                    logInfo("order accepted")
                     if (responseModel.body != null){
-                        //logError(responseModel.body.toString())
                         val order = requests.orderRequests
-                            .getOrderModel(responseModel.body!!, false, true)
+                            .getOrderModel(responseModel.body!! as OrdersModel,
+                                isOrdered = false,
+                                isAccepted = true)
                     }
                 }
 
                 MessageType.ORDER_REJECT -> {
+                    logInfo("order rejected")
                     if (responseModel.body != null){
                         //logError(responseModel.body.toString())
                         val order = requests.orderRequests
-                            .getOrderModel(responseModel.body!!, false)
+                            .getOrderModel(responseModel.body!! as OrdersModel, false)
                     }
                 }
 
                 MessageType.ORDER_FINISHED -> {
+                    logInfo("order finished")
                     if (responseModel.body != null){
                         //logError(responseModel.body.toString())
                         val order = requests.orderRequests
-                            .getOrderModel(responseModel.body!!, false)
+                            .getOrderModel(responseModel.body!! as OrdersModel,
+                                isOrdered = false,
+                                isAccepted = false)
                     }
                 }
 
@@ -94,11 +115,13 @@ class SocketService : Service() {
                 }
 
                 MessageType.ORDER_REQUEST -> {
+                    logInfo("order request")
                     if (responseModel.body != null){
                         //logError(responseModel.body.toString())
                         val order = requests.orderRequests
                             .getOrderModel(responseModel.body!!, true)
                     }
+                    SocketHelper.resetSubscriptions()
 
                 }
 
@@ -111,17 +134,17 @@ class SocketService : Service() {
                     Toast.makeText(applicationContext, resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
             }
+
+                connectToMainTopic()
             logInfo("Application was connected to WebSockets path: $path")
-
         }, { throwable ->
-            logError(throwable)
-            throwable.printStackTrace()
-            SocketHelper.resetSubscriptions()
-        })
+                logError("ttt :$throwable")
+                throwable.printStackTrace()
+                connectToMainTopic()
+            })
         SocketHelper.compositeDisposable.add(topic)
+        SocketHelper.mStompClient.connect()
     }
-
-
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -129,6 +152,6 @@ class SocketService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        SocketHelper.compositeDisposable.dispose()
+        logInfo("destroy")
     }
 }

@@ -1,6 +1,7 @@
 package octii.app.taxiapp.web
 
 import com.google.gson.Gson
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -14,6 +15,8 @@ import octii.app.taxiapp.scripts.logInfo
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
+import io.reactivex.CompletableTransformer
+import ua.naiksoftware.stomp.dto.StompMessage
 
 
 class SocketHelper {
@@ -26,13 +29,15 @@ class SocketHelper {
 
 
         fun connect(){
-            val disposableLifecycle: Disposable? = mStompClient.lifecycle()
+            mStompClient.withClientHeartbeat(1000).withServerHeartbeat(1000)
+            resetSubscriptions()
+
+            val disposableLifecycle: Disposable? =
+                mStompClient.lifecycle()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { lifecycleEvent ->
-                    logInfo(lifecycleEvent.type)
                     if (lifecycleEvent.type != null) {
-                        logError(lifecycleEvent.type)
                         when (lifecycleEvent.type!!) {
                             LifecycleEvent.Type.OPENED -> logInfo("Stomp connection opened")
 
@@ -48,46 +53,81 @@ class SocketHelper {
                         }
                     }
                 }
-            if (disposableLifecycle != null) {
-                compositeDisposable.add(disposableLifecycle)
-            }
-            mStompClient.connect()
-            //connectToRoom()
+
+            compositeDisposable.add(disposableLifecycle!!)
         }
 
         fun resetSubscriptions() {
             compositeDisposable.dispose()
             compositeDisposable = CompositeDisposable()
-            connect()
         }
 
         fun makeOrder(){
-            mStompClient.send("/requests/order.make.${UserModel.mUuid}", toJSON(UserModel())).subscribe()
+            compositeDisposable.add(
+                mStompClient.send("/requests/order.make.${UserModel.mUuid}", toJSON(UserModel())).compose(
+                    applySchedulers()).subscribe({
+                    logInfo("success")
+                }, { throwable ->
+                    logError("ttt :$throwable")
+                    throwable.printStackTrace()
+                }))
         }
 
         fun acceptOrder(order : OrdersModel){
-            mStompClient.send("/requests/order.accept.${UserModel.mUuid}", toJSON(order)).subscribe()
+            compositeDisposable.add(mStompClient.send("/requests/order.accept.${UserModel.mUuid}", toJSON(order))
+                .compose(applySchedulers()).subscribe({
+                    logInfo("success")
+                }, { throwable ->
+                    logError("ttt :$throwable")
+                    throwable.printStackTrace()
+                }))
         }
 
         fun rejectOrder(order : OrdersModel){
-            mStompClient.send("/requests/order.reject.${UserModel.mUuid}", toJSON(order)).subscribe()
+            compositeDisposable.add(mStompClient.send("/requests/order.reject.${UserModel.mUuid}", toJSON(order))
+                .compose(applySchedulers()).subscribe({
+                logInfo("success")
+            }, { throwable ->
+                logError("ttt :$throwable")
+                throwable.printStackTrace()
+            }))
         }
 
         fun finishOrder(order : OrdersModel){
-            mStompClient.send("/requests/order.finish.${UserModel.mUuid}", toJSON(order)).subscribe()
+            compositeDisposable.add(mStompClient.send("/requests/order.finish.${UserModel.mUuid}", toJSON(order))
+                .compose(applySchedulers()).subscribe({
+                logInfo("success")
+            }, { throwable ->
+                logError("ttt :$throwable")
+                throwable.printStackTrace()
+            }))
         }
 
         fun updateCoordinates(coordinatesModel: CoordinatesModel){
-            mStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
-                toJSON(coordinatesModel)).subscribe()
-        }
-
-        fun authorization(){
-            //mStompClient.send("/messenger/authorization.${UserModel.mUuid}", gson.toJson(UserModel())).subscribe()
+            compositeDisposable.add(mStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
+                toJSON(coordinatesModel)).compose(applySchedulers()).subscribe({
+                logInfo("success")
+            }, { throwable ->
+                logError("ttt :$throwable")
+                throwable.printStackTrace()
+            }))
         }
 
         private fun toJSON(model : Any) : String{
             return gson.toJson(model)
+        }
+
+        fun disconnectStomp() {
+            mStompClient.disconnect()
+        }
+
+        fun applySchedulers(): CompletableTransformer {
+            return CompletableTransformer { upstream: Completable ->
+                upstream
+                    .unsubscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+            }
         }
     }
 

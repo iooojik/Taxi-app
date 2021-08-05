@@ -10,8 +10,8 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
 
     private val gson = Gson()
 
-    fun getOrderModel(json : Any, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel {
-        val order = gson.fromJson(gson.toJson(json), OrdersModel::class.java)
+    fun getOrderModel(order : OrdersModel, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel {
+        //val order = gson.fromJson(gson.toJson(json), OrdersModel::class.java)
         logInfo("order request $order")
 
         OrdersModel.mId = order.id
@@ -27,8 +27,7 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
 
         OrdersModel.isOrdered = isOrdered
 
-        if (order.isFinished) OrdersModel.isAccepted = false
-        else OrdersModel.isAccepted = isAccepted
+        OrdersModel.isAccepted = isAccepted
 
         return OrdersModel()
     }

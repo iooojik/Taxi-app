@@ -1,9 +1,10 @@
 package octii.app.taxiapp.models.responses
 
 import octii.app.taxiapp.models.MessageType
+import octii.app.taxiapp.models.OrdersModel
 
 
 data class ResponseModel(
     var type: MessageType? = null,
-    var body : Any? = null
+    var body : OrdersModel? = null
 )

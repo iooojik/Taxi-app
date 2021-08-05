@@ -9,15 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import octii.app.taxiapp.LocaleUtils
-import octii.app.taxiapp.MyPreferences
-import octii.app.taxiapp.R
-import octii.app.taxiapp.SettingsFragment
+import octii.app.taxiapp.*
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
 import octii.app.taxiapp.ui.Permissions
 
 
-class WelcomeFragment : Fragment(), View.OnClickListener, SettingsFragment {
+class WelcomeFragment : Fragment(), View.OnClickListener, SettingsFragment, FragmentHelper {
 
     private lateinit var binding : FragmentWelcomeBinding
     private lateinit var permissions: Permissions
@@ -29,6 +26,7 @@ class WelcomeFragment : Fragment(), View.OnClickListener, SettingsFragment {
         binding = FragmentWelcomeBinding.inflate(layoutInflater)
         MyPreferences.clearAll()
         setListeners()
+        blockGoBack(requireActivity(), this)
         return binding.root
     }
 

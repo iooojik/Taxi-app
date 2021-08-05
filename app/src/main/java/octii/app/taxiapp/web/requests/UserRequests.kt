@@ -14,6 +14,7 @@ import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -41,6 +42,8 @@ class UserRequests(private val view : View? = null, private val activity: Activi
             UserModel.mCoordinates = model.coordinates
             UserModel.mFiles = model.files
 
+            logInfo("token: ${model.token}")
+
             MyPreferences.userPreferences?.let {
                 MyPreferences.saveToPreferences(
                     it, Static.SHARED_PREFERENCES_USER_TYPE, model.type)
@@ -55,9 +58,11 @@ class UserRequests(private val view : View? = null, private val activity: Activi
     }
 
     fun loginWithToken(token : String){
+        logInfo(1)
         HttpHelper.USER_API.loginWithToken(UserModel(token = token)).enqueue(object : Callback<AuthorizationModel>{
             override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
                 if (response.isSuccessful){
+                    logInfo(2)
                     val model = response.body()?.user
                     if (response.isSuccessful){
                         if (model != null && model.token.isNotEmpty()){
@@ -75,6 +80,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
 
                         }
                     }
+                    logInfo(3)
                     activity?.runOnUiThread {
                         if (UserModel.uToken.isEmpty())
                             activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
@@ -86,11 +92,13 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                     }
 
                 } else {
+                    activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment) }
                     showSnackBarError()
                 }
             }
 
             override fun onFailure(call: Call<AuthorizationModel>, t: Throwable) {
+                logInfo(5)
                 t.printStackTrace()
                 showSnackBarError()
             }
@@ -98,16 +106,17 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         })
     }
 
-    private fun setDriverInfo(driver : DriverAvailable) {
-        logDebug(driver)
-        DriverAvailable.mId = driver.id
-        DriverAvailable.mIsWorking = driver.isWorking
-        DriverAvailable.mPricePerMinute = driver.pricePerMinute
-        DriverAvailable.mRideDistance = driver.rideDistance
-        DriverAvailable.mPricePerKm = driver.pricePerKm
-        DriverAvailable.mPriceWaitingMin = driver.priceWaitingMin
-        logDebug(DriverAvailable)
-
+    private fun setDriverInfo(driver : DriverAvailable?) {
+        if (driver != null) {
+            logDebug(driver)
+            DriverAvailable.mId = driver.id
+            DriverAvailable.mIsWorking = driver.isWorking
+            DriverAvailable.mPricePerMinute = driver.pricePerMinute
+            DriverAvailable.mRideDistance = driver.rideDistance
+            DriverAvailable.mPricePerKm = driver.pricePerKm
+            DriverAvailable.mPriceWaitingMin = driver.priceWaitingMin
+            logDebug(DriverAvailable)
+        }
     }
 
     fun login(phoneNum : String, name : String, progressBar: ProgressBar? = null){

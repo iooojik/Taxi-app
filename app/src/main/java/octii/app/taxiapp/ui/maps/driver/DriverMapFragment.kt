@@ -24,9 +24,11 @@ import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
 import octii.app.taxiapp.Static
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
+import octii.app.taxiapp.databinding.TaximeterBinding
 import octii.app.taxiapp.models.OrdersModel
 import octii.app.taxiapp.models.driverAvailable.DriverAvailable
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.Permissions
@@ -100,7 +102,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
     private fun setUiInfo() {
         binding.taximeter.price.text = resources.getString(R.string.taximeter_price,
-            DriverAvailable.mPricePerKm.toString(), DriverAvailable.mPricePerMinute.toString())
+            "0", "0")
         binding.taximeter.time.text = formatDuration(orderTime)
         binding.taximeter.distance.text = resources.getString(R.string.taximeter_distance, MyLocationListener.distance.toString()  )
     }
@@ -175,40 +177,41 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
         override fun run() {
             activity.runOnUiThread {
+                logError(OrdersModel.isAccepted)
                 if (OrdersModel.isOrdered){
                     val bottomSheet = DriverAcceptOrderBottomSheet(context, activity, OrdersModel())
                     bottomSheet.show()
                 } else if (OrdersModel.isAccepted) {
-                    orderTime = orderTime.plus(1)
+                    taximeterUpdate(binding.taximeter)
+                    binding.driverOrderInfoLayout.customerName.text = OrdersModel.mCustomer.userName
+                    binding.driverOrderInfoLayout.customerPhone.text = OrdersModel.mCustomer.phone
+                    binding.driverOrderInfoLayout.finishOrder.setOnClickListener(this@DriverMapFragment)
+                    view.findViewById<ConstraintLayout>(R.id.driver_order_info_layout).visibility = View.VISIBLE
 
-                    if (!avatarIsLoaded) {
-                        binding.driverOrderInfoLayout.customerName.text = OrdersModel.mCustomer.userName
-                        binding.driverOrderInfoLayout.customerPhone.text = OrdersModel.mCustomer.phone
-                        binding.driverOrderInfoLayout.finishOrder.setOnClickListener(this@DriverMapFragment)
-                        view.findViewById<ConstraintLayout>(R.id.driver_order_info_layout).visibility = View.VISIBLE
+                    if (OrdersModel.mCustomer.isWhatsapp)
+                        binding.driverOrderInfoLayout.messengersInfo.text =
+                            activity.resources.getString(R.string.user_available_in_whatsapp)
+                    else if (OrdersModel.mCustomer.isViber)
+                        binding.driverOrderInfoLayout.messengersInfo.text =
+                            activity.resources.getString(R.string.user_available_in_viber)
+                    else if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp)
+                        binding.driverOrderInfoLayout.messengersInfo.text =
+                            activity.resources.getString(R.string.user_available_in_viber_and_whatsapp)
 
-                        if (OrdersModel.mCustomer.avatarURL.trim().isNotEmpty()) {
-                            Picasso.with(requireContext())
-                                .load(OrdersModel.mCustomer.avatarURL)
-                                .transform(RoundedCornersTransformation(40, 5))
-                                .resize(160, 160)
-                                .centerCrop()
-                                .into(binding.driverOrderInfoLayout.customerAvatar)
-                        } else {
-                            binding.driverOrderInfoLayout.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
-                        }
-                        avatarIsLoaded = true
+                    if (OrdersModel.mCustomer.avatarURL.trim().isNotEmpty()) {
+                        Picasso.with(requireContext())
+                            .load(OrdersModel.mCustomer.avatarURL)
+                            .transform(RoundedCornersTransformation(40, 5))
+                            .resize(160, 160)
+                            .centerCrop()
+                            .into(binding.driverOrderInfoLayout.customerAvatar)
+                    } else {
+                        binding.driverOrderInfoLayout.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
                     }
                 }
 
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mTimer.cancel()
-        mTimer.purge()
     }
 
     override fun onLongClick(v: View?): Boolean {
@@ -225,4 +228,15 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun formatDuration(seconds: Long): String = DateUtils.formatElapsedTime(seconds)
+
+    private fun taximeterUpdate(taximeterBinding: TaximeterBinding){
+        taximeterBinding.time.text = formatDuration(seconds = orderTime)
+        taximeterBinding.distance.text = MyLocationListener.distance.toString()
+        taximeterBinding.price.text = resources.getString(
+            R.string.taximeter_price,
+            (DriverAvailable.mPricePerKm * MyLocationListener.distance).toString(),
+            if(orderTime/60 > 0) DriverAvailable.mPricePerMinute.toString()
+            else (DriverAvailable.mPricePerMinute * (orderTime/60))
+        )
+    }
 }

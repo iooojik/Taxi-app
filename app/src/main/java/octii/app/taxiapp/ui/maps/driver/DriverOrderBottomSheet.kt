@@ -18,6 +18,17 @@ class DriverOrderBottomSheet (context: Context, activity: Activity, private val 
         this.setContentView(binding.root)
         binding.customerName.text = order.customer?.userName
         binding.customerPhone.text = order.customer?.phone
+        if (order.customer != null){
+            if (order.customer!!.isWhatsapp)
+                binding.messengersInfo.text =
+                    activity.resources.getString(R.string.user_available_in_whatsapp)
+            else if (order.customer!!.isViber)
+                binding.messengersInfo.text =
+                    activity.resources.getString(R.string.user_available_in_viber)
+            else if (order.customer!!.isViber && order.customer!!.isWhatsapp)
+                binding.messengersInfo.text =
+                    activity.resources.getString(R.string.user_available_in_viber_and_whatsapp)
+        }
         binding.finishOrder.setOnClickListener(this)
     }
 

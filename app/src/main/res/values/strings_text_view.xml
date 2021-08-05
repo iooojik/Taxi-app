@@ -16,4 +16,7 @@
     <string name="car_type">Фотография машины</string>
     <string name="car_number_type">Фотография номера машины</string>
     <string name="license_type">Фотография лицензии</string>
+    <string name="user_available_in_whatsapp">Пользователь доступен в Whatsapp</string>
+    <string name="user_available_in_viber">Пользователь доступен в Viber</string>
+    <string name="user_available_in_viber_and_whatsapp">Пользователь доступен в Whatsapp и Viber</string>
 </resources>
