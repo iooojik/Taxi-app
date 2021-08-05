@@ -7,9 +7,6 @@ import octii.app.taxiapp.LocaleUtils
 
 @Entity
 class SpeakingLanguagesModel(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    var id: Long = -1,
     @ColumnInfo(name = "language")
     var language : String = LocaleUtils.SERBIAN
 )

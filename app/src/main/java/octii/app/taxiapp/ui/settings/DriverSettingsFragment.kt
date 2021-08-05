@@ -143,15 +143,15 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             }
             R.id.button_russian_language ->{
                 changeSpeakingLanguage(LocaleUtils.RUSSIAN, isChecked)
-                //updateDriver()
+                updateDriver()
             }
             R.id.button_serbian_language ->{
                 changeSpeakingLanguage(LocaleUtils.SERBIAN, isChecked)
-                //updateDriver()
+                updateDriver()
             }
             R.id.button_english_language ->{
                 changeSpeakingLanguage(LocaleUtils.ENGLISH, isChecked)
-                //updateDriver()
+                updateDriver()
             }
         }
     }
@@ -183,14 +183,14 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-        /*
+
         thread {
             val user = requests.userRequests.update()
             requireActivity().runOnUiThread {
                 if (user.type == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientSettingsFragment)
             }
         }
-         */
+
     }
 
     override fun onDestroyView() {

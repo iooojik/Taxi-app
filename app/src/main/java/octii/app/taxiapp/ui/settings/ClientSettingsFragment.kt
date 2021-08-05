@@ -46,8 +46,11 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
     private fun updateClient(){
         thread {
             val user = requests.userRequests.update()
-            if (user.type == Static.DRIVER_TYPE)
-                findNavController().navigate(R.id.driverSettingsFragment)
+            requireActivity().runOnUiThread {
+                if (user.type == Static.DRIVER_TYPE)
+                    findNavController().navigate(R.id.driverSettingsFragment)
+            }
+
         }
     }
 
