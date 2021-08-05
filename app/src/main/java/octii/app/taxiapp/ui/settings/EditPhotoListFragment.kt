@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
@@ -45,6 +46,7 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentEditPhotoListBinding.inflate(layoutInflater)
+        binding.fabBack.setOnClickListener(this)
         setViews()
         setInformation()
         return binding.root
@@ -188,7 +190,9 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-
+        when(v!!.id){
+            R.id.fab_back -> findNavController().navigateUp()
+        }
     }
 
 }

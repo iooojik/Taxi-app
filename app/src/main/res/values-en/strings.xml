@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="i_am_driver">Register as a driver</string>
+    <string name="i_am_working">I\'m working(visible to clients)</string>
+    <string name="next_button">Next</string>
+    <string name="button_accept">Accept</string>
+    <string name="button_reject">Reject</string>
+    <string name="button_finish">Finish</string>
+    <string name="call_taxi">Call a taxi</string>
+    <string name="become_client">Become a customer(then you can return to drivers)</string>
+    <string name="become_driver">Become a driver(then you can return to customers)</string>
+    <string name="change_language">Change the language</string>
+    <string name="add_photos">Add Photos</string>
+    <string name="whatsapp_or_viber_not_chosen">You must have WhatsApp or Viber installed</string>
+    <string name="no_phone">You have entered an incorrect phone number</string>
+    <string name="no_name">You didn\'t specify your name</string>
+    <string name="all_drivers_are_busy">Unfortunately, all drivers are busy, try again later</string>
+    <string name="error">Error</string>
+    <string name="to_become_driver">To become a driver, you need to have Viber and WhatsApp installed</string>
+    <string name="copied">Copied</string>
+    <string name="check_permissions">Check the permissions</string>
+    <string name="phone_number">Phone number</string>
+    <string name="phone_helper_text">The number that you use in WhatsApp And Viber</string>
+    <string name="whats_your_name">Your name</string>
+    <string name="price_waiting">The price for waiting</string>
+    <string name="max_searching_distance">Maximum customer search distance</string>
+    <string name="price_per_minute">Price per minute</string>
+    <string name="price_per_km">Price per km</string>
+    <string name="i_am_in_whatsapp">I have WhatsApp</string>
+    <string name="i_am_in_viber">I have Viber</string>
+    <string name="download_messengers">To use our application you need to have Whatsapp or Viber installed.</string>
+    <string name="to_download_messengers">Click on the logo below if you don\'t have one of the messengers installed.</string>
+    <string name="welcome">Welcome</string>
+    <string name="let_us_meet">Let\'s get acquainted</string>
+    <string name="speak_on_following_languages">I speak the following languages:</string>
+    <string name="app_language">Application language</string>
+    <string name="avatar_type">Driver\'s photo</string>
+    <string name="car_type">Car photo</string>
+    <string name="car_number_type">Photo of the license plate</string>
+    <string name="license_type">Фотография лицензии</string>
+    <string name="user_available_in_whatsapp">User available on Whatsapp</string>
+    <string name="user_available_in_viber">User is available on Viber</string>
+    <string name="user_available_in_viber_and_whatsapp">The user is available on Whatsapp and Viber</string>
+</resources>

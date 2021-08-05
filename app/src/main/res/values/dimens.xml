@@ -4,6 +4,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="standard_elements_margin">16dp</dimen>
     <dimen name="bottom_view_margin">54dp</dimen>
+    <dimen name="bottom_view_margin2">80dp</dimen>
     <dimen name="body1_font_size">16sp</dimen>
     <dimen name="body2_font_size">14sp</dimen>
     <dimen name="buttons_border_width">0dp</dimen>

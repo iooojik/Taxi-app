@@ -89,7 +89,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
-        setTimer()
         setListeners()
         checkUserType()
         setServices()
@@ -109,6 +108,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         super.onResume()
         view?.findViewById<ConstraintLayout>(R.id.driver_order_info_layout)?.visibility = View.GONE
         checkPermissions()
+        setTimer()
         try {
             setMap()
         } catch (e : java.lang.Exception){
@@ -128,7 +128,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun setTimer() {
-        ordersUpdate = OrdersUpdate(binding.root, requireContext(), requireActivity())
+        ordersUpdate = OrdersUpdate(binding.root, requireContext())
         mTimer = Timer()
         mTimer.schedule(ordersUpdate, 0, 1000)
     }
@@ -170,47 +170,52 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         MyLocationListener.distance = 0f
     }
 
-    inner class OrdersUpdate(private val view: View, private val context : Context,
-                       private val activity : Activity) : TimerTask() {
+    inner class OrdersUpdate(private val view: View, private val context : Context) : TimerTask() {
 
         override fun run() {
-            activity.runOnUiThread {
-                if (OrdersModel.isOrdered){
-                    val bottomSheet = DriverAcceptOrderBottomSheet(context, activity, OrdersModel())
-                    bottomSheet.show()
-                } else if (OrdersModel.isAccepted) {
-                    orderTime = orderTime.plus(1)
-                    taximeterUpdate(binding.taximeter)
-                    binding.driverOrderInfoLayout.customerName.text = OrdersModel.mCustomer.userName
-                    binding.driverOrderInfoLayout.customerPhone.text = OrdersModel.mCustomer.phone
-                    binding.driverOrderInfoLayout.finishOrder.setOnClickListener(this@DriverMapFragment)
-                    view.findViewById<ConstraintLayout>(R.id.driver_order_info_layout).visibility = View.VISIBLE
+            if (activity != null) {
+                activity!!.runOnUiThread {
+                    if (OrdersModel.isOrdered) {
+                        val bottomSheet =
+                            DriverAcceptOrderBottomSheet(context, activity!!, OrdersModel())
+                        bottomSheet.show()
+                    } else if (OrdersModel.isAccepted) {
+                        orderTime = orderTime.plus(1)
+                        taximeterUpdate(binding.taximeter)
+                        binding.driverOrderInfoLayout.customerName.text =
+                            OrdersModel.mCustomer.userName
+                        binding.driverOrderInfoLayout.customerPhone.text =
+                            OrdersModel.mCustomer.phone
+                        binding.driverOrderInfoLayout.finishOrder.setOnClickListener(this@DriverMapFragment)
+                        view.findViewById<ConstraintLayout>(R.id.driver_order_info_layout).visibility =
+                            View.VISIBLE
 
-                    if (OrdersModel.mCustomer.isWhatsapp)
-                        binding.driverOrderInfoLayout.messengersInfo.text =
-                            activity.resources.getString(R.string.user_available_in_whatsapp)
-                    else if (OrdersModel.mCustomer.isViber)
-                        binding.driverOrderInfoLayout.messengersInfo.text =
-                            activity.resources.getString(R.string.user_available_in_viber)
-                    else if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp)
-                        binding.driverOrderInfoLayout.messengersInfo.text =
-                            activity.resources.getString(R.string.user_available_in_viber_and_whatsapp)
+                        if (OrdersModel.mCustomer.isWhatsapp)
+                            binding.driverOrderInfoLayout.messengersInfo.text =
+                                activity!!.resources.getString(R.string.user_available_in_whatsapp)
+                        else if (OrdersModel.mCustomer.isViber)
+                            binding.driverOrderInfoLayout.messengersInfo.text =
+                                activity!!.resources.getString(R.string.user_available_in_viber)
+                        else if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp)
+                            binding.driverOrderInfoLayout.messengersInfo.text =
+                                activity!!.resources.getString(R.string.user_available_in_viber_and_whatsapp)
 
-                    if (OrdersModel.mCustomer.avatarURL.trim().isNotEmpty()) {
-                        Picasso.with(requireContext())
-                            .load(OrdersModel.mCustomer.avatarURL)
-                            .transform(RoundedCornersTransformation(40, 5))
-                            .resize(160, 160)
-                            .centerCrop()
-                            .into(binding.driverOrderInfoLayout.customerAvatar)
+                        if (OrdersModel.mCustomer.avatarURL.trim().isNotEmpty()) {
+                            Picasso.with(requireContext())
+                                .load(OrdersModel.mCustomer.avatarURL)
+                                .transform(RoundedCornersTransformation(40, 5))
+                                .resize(160, 160)
+                                .centerCrop()
+                                .into(binding.driverOrderInfoLayout.customerAvatar)
+                        } else {
+                            binding.driverOrderInfoLayout.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
+                        }
                     } else {
-                        binding.driverOrderInfoLayout.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
+                        orderTime = 0
+                        taximeterUpdate(binding.taximeter)
                     }
-                } else {
-                    orderTime = 0
-                    taximeterUpdate(binding.taximeter)
-                }
 
+                }
             }
         }
     }

@@ -186,15 +186,17 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 
         thread {
             val user = requests.userRequests.update()
-            requireActivity().runOnUiThread {
-                if (user.type == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientSettingsFragment)
-            }
+            if (user.type == Static.CLIENT_TYPE)
+                activity?.runOnUiThread {
+                    findNavController().navigate(R.id.clientSettingsFragment)
+                }
+
         }
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
+        super.onStop()
         updateDriver()
     }
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fab_settings_description">Settings</string>
-    <string name="avatar_description">Avatar</string>
-    <string name="call_description">Call</string>
-    <string name="back_description">Back</string>
-    <string name="next_description">Next</string>
-    <string name="download_viber_description">download viber</string>
-    <string name="delete_description">Delete</string>
-    <string name="new_photo_description">Make new photo</string>
+    <string name="fab_settings_description" translatable="false">Settings</string>
+    <string name="avatar_description" translatable="false">Avatar</string>
+    <string name="call_description" translatable="false">Call</string>
+    <string name="back_description" translatable="false">Back</string>
+    <string name="next_description" translatable="false">Next</string>
+    <string name="download_viber_description" translatable="false">download viber</string>
+    <string name="delete_description" translatable="false">Delete</string>
+    <string name="new_photo_description" translatable="false">Make new photo</string>
 </resources>

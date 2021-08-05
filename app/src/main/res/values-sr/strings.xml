@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="i_am_driver">Региструјте се као возач</string>
+    <string name="i_am_working">Радим (видљиво клијентима)</string>
+    <string name="next_button">Даље</string>
+    <string name="button_accept">Да прихвати</string>
+    <string name="button_reject">Одбити</string>
+    <string name="button_finish">Завршити</string>
+    <string name="call_taxi">Позвати такси</string>
+    <string name="become_client">Постаните клијент (тада се можете вратити возачима)</string>
+    <string name="become_driver">Постаните возач (тада се можете вратити клијентима)</string>
+    <string name="change_language">Промените језик</string>
+    <string name="add_photos">Додајте фотографије</string>
+    <string name="whatsapp_or_viber_not_chosen">Морате имати инсталиран ВхатсАпп или Вибер</string>
+    <string name="no_phone">Унели сте погрешан број телефона</string>
+    <string name="no_name">Нисте навели своје име</string>
+    <string name="all_drivers_are_busy">Нажалост, сви возачи су заузети, покушајте поново касније</string>
+    <string name="error">Грешка</string>
+    <string name="to_become_driver">Да бисте постали возач, морате имати инсталиране Вибер и ВхатсАпп</string>
+    <string name="copied">Копирано</string>
+    <string name="check_permissions">Проверите дозволе</string>
+    <string name="phone_number">Број телефона</string>
+    <string name="phone_helper_text">Број који користите на ВхатсАпп -у и Виберу</string>
+    <string name="whats_your_name">Твоје име</string>
+    <string name="price_waiting">Цена по чекању</string>
+    <string name="max_searching_distance">Максимална удаљеност претраживања купаца</string>
+    <string name="price_per_minute">Цена по минуту</string>
+    <string name="price_per_km">Цена по км</string>
+    <string name="i_am_in_whatsapp">Имам ВхатсАпп</string>
+    <string name="i_am_in_viber">Имам Вибер</string>
+    <string name="download_messengers">Да бисте користили нашу апликацију, морате имати инсталиран Вхатсапп или Вибер.</string>
+    <string name="to_download_messengers">Кликните на доњи лого ако немате инсталиран један од гласника.</string>
+    <string name="welcome">Добродошли</string>
+    <string name="let_us_meet">Хајде да се упознамо</string>
+    <string name="speak_on_following_languages">Говорим следеће језике:</string>
+    <string name="app_language">Језик апликације</string>
+    <string name="avatar_type">Фотографија возача</string>
+    <string name="car_type">Фотографија аутомобила</string>
+    <string name="car_number_type">Фотографија регистарске таблице</string>
+    <string name="license_type">Лиценца за фотографије</string>
+    <string name="user_available_in_whatsapp">Корисник доступан на Вхатсапп -у</string>
+    <string name="user_available_in_viber">Корисник је доступан на Виберу</string>
+    <string name="user_available_in_viber_and_whatsapp">Корисник је доступан на Вхатсапп -у и Вибер -у</string>
+</resources>

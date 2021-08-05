@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="russian_language">Русский</string>
-    <string name="english_language">English</string>
-    <string name="serbian_language">Српски</string>
-    <string name="russian_language_icon">🇷🇺</string>
-    <string name="english_language_icon">🇬🇧</string>
-    <string name="serbian_language_icon">🇷🇸</string>
-    <string name="select_language">Выберите язык | Select language | Изаберите Jезик</string>
+    <string name="russian_language" translatable="false">Русский</string>
+    <string name="english_language" translatable="false">English</string>
+    <string name="serbian_language" translatable="false">Српски</string>
+    <string name="russian_language_icon" translatable="false">🇷🇺</string>
+    <string name="english_language_icon" translatable="false">🇬🇧</string>
+    <string name="serbian_language_icon" translatable="false">🇷🇸</string>
+    <string name="select_language" translatable="false">Выберите язык | Select language | Изаберите Jезик</string>
 </resources>
