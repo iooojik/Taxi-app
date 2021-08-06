@@ -68,7 +68,7 @@ class SocketService : Service() {
     }
 
     private fun mainTopic(path : String) {
-
+        SocketHelper.resetSubscriptions()
         val topic = SocketHelper.mStompClient.topic(path)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -119,6 +119,7 @@ class SocketService : Service() {
                 }
 
                 MessageType.NO_ORDERS -> {
+                    logInfo("no orders")
                     OrdersModel.isOrdered = false
                     Toast.makeText(applicationContext,
                         resources.getString(R.string.all_drivers_are_busy), Toast.LENGTH_SHORT).show()
@@ -146,14 +147,12 @@ class SocketService : Service() {
                     Toast.makeText(applicationContext, resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
             }
-
-                connectToMainTopics()
-            logInfo("Application was connected to WebSockets path: $path")
+                logInfo("Application was connected to WebSockets path: $path")
+                mainTopic(path)
         }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
-                connectToMainTopics()
-                SocketHelper.resetSubscriptions()
+                mainTopic(path)
             })
         SocketHelper.compositeDisposable.add(topic)
         SocketHelper.mStompClient.connect()
