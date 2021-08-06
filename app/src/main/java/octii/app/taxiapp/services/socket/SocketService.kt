@@ -19,6 +19,7 @@ import octii.app.taxiapp.models.responses.ResponseModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests
 import ua.naiksoftware.stomp.dto.StompMessage
@@ -81,6 +82,8 @@ class SocketService : Service() {
 
                 MessageType.ORDER_ACCEPT -> {
                     logInfo("order accepted")
+                    MyPreferences.userPreferences?.let {
+                        MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0L)}
                     if (responseModel.order != null){
                         val order = requests.orderRequests
                             .getOrderModel(responseModel.order!! as OrdersModel,
@@ -103,7 +106,7 @@ class SocketService : Service() {
                     logInfo("order finished")
                     logError(responseModel.toString())
                     MyPreferences.userPreferences?.let {
-                        MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0) }
+                        MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0L) }
                     OrdersModel.isOrdered = false
                     OrdersModel.isAccepted = false
                     if (responseModel.order != null){

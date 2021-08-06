@@ -64,8 +64,8 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                         if (model != null && model.token.isNotEmpty()){
                             setUserInfo(model)
                             orderRequests.orderCheck(model)
-                            if (response.body()?.order != null){
-                                val order = response.body()?.order
+                            if (response.body()?.lastOrder != null){
+                                val order = response.body()?.lastOrder
                                 if (order != null){
                                     orderRequests
                                         .getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
@@ -121,8 +121,8 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                     val model = response.body()
                     if (model?.user != null && model.user.token.isNotEmpty()) {
                         setUserInfo(model.user)
-                        val order = model.order
-
+                        val order = model.lastOrder
+                        logInfo("order= ${model.user}")
                         if (order != null && !order.isFinished){
                             orderRequests
                                 .getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)

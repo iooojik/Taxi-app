@@ -3,8 +3,10 @@ package octii.app.taxiapp.web.requests
 import android.app.Activity
 import android.view.View
 import com.google.gson.Gson
+import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
@@ -24,9 +26,13 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
         OrdersModel.mIsFinished = order.isFinished
 
         if (order.driver != null){
+
             OrdersModel.mDriver = order.driver!!
-            if (order.driver?.driver?.prices != null)
-                OrdersModel.mDriver.driver.prices = order.driver?.driver?.prices!!
+            if (order.driver?.driver?.prices != null) {
+                DriverModel.mPrices.pricePerKm = order.driver?.driver?.prices!!.pricePerKm
+                DriverModel.mPrices.pricePerMinute = order.driver?.driver?.prices!!.pricePerMinute
+                DriverModel.mPrices.priceWaitingMin = order.driver?.driver?.prices!!.priceWaitingMin
+            }
         }
         if (order.customer != null)
             OrdersModel.mCustomer = order.customer!!

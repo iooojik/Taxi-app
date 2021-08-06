@@ -2,12 +2,15 @@ package octii.app.taxiapp.ui.maps.driver
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.BottomSheetAcceptOrderBinding
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.services.Services
@@ -56,6 +59,8 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
     private fun acceptOrder(){
         finishTimer(timer)
         //Services(activity = activity).startNewService(TaximeterService::class)
+        MyPreferences.userPreferences?.let {
+            MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0L) }
         SocketHelper.acceptOrder(order)
         this@DriverAcceptOrderBottomSheet.hide()
     }

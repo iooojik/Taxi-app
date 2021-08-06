@@ -16,6 +16,7 @@ import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.driver.Prices
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
@@ -23,9 +24,7 @@ import java.util.*
 class TaximeterService : Service() {
 
     companion object{
-        var time : Long =
-            MyPreferences.userPreferences?.getLong(Static.SHARED_PREFERENCES_ORDER_TIME, 0)!!
-        var pricePerKm : Float = DriverModel.mPrices.pricePerKm
+        private var pricePerKm : Float = DriverModel.mPrices.pricePerKm
         var priceWaiting : Float = DriverModel.mPrices.priceWaitingMin
         var pricePerMin : Float = DriverModel.mPrices.pricePerMinute
         var order = OrdersModel()
@@ -33,11 +32,14 @@ class TaximeterService : Service() {
 
 
         fun getTaximeterString(resources : Resources) : String{
-            return "${resources.getString(R.string.taximeter_price,
-                number2digits((pricePerKm * MyLocationListener.distance)),
-                if(time/60 < 1) number2digits(pricePerMin)
-                else number2digits((pricePerMin * (time/60))))} \n" +
-                    "${formatDuration(seconds = time)}\n ${number2digits(MyLocationListener.distance)}"
+            val time = MyPreferences.userPreferences?.getLong(Static.SHARED_PREFERENCES_ORDER_TIME, 0L)
+            return if (time != null)
+                "${resources.getString(R.string.taximeter_price,
+                    number2digits((pricePerKm * MyLocationListener.distance)),
+                    if(time /60 < 1) number2digits(pricePerMin)
+                    else number2digits((pricePerMin * (time/60))))} \n" +
+                        "${formatDuration(seconds = time.toLong())}\n ${number2digits(MyLocationListener.distance)}"
+            else ""
         }
 
         private fun formatDuration(seconds: Long): String = DateUtils.formatElapsedTime(seconds)
@@ -90,9 +92,13 @@ class TaximeterService : Service() {
 
     inner class OrderTime : TimerTask(){
         override fun run() {
-            time+=1
-            MyPreferences.userPreferences?.let {
-                MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, time) }
+            var time = MyPreferences.userPreferences?.getLong(Static.SHARED_PREFERENCES_ORDER_TIME, 0L)
+            if (time != null) {
+                time += 1
+                MyPreferences.userPreferences?.let {
+                    MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, time)
+                }
+            }
         }
     }
 }

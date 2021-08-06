@@ -35,6 +35,7 @@ import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
+import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
@@ -67,7 +68,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private lateinit var orderUpdate : OrderUpdate
     private lateinit var permissions: Permissions
     private lateinit var services: Services
-    private lateinit var googleMap : GoogleMap
+    private var googleMap : GoogleMap? = null
     private var isMoved = false
     private var marker : Marker?  = null
 
@@ -78,6 +79,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentClientMapBinding.inflate(layoutInflater)
+        binding.taximeter.price.text = ""
         setTimer()
         setListeners()
         checkUserType()
@@ -167,18 +169,22 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     binding.clientMapprogressBar.visibility = View.INVISIBLE
                     binding.clientOrderInfoLayout.driverName.text = OrdersModel.mDriver.userName
                     binding.clientOrderInfoLayout.driverPhone.text = OrdersModel.mDriver.phone
+                    //binding.taximeter.price.text = TaximeterService.getTaximeterString(activity.resources)
 
                     if (OrdersModel.mUuid.trim().isNotEmpty()){
                         if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0){
-                            val latLng = LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
-                            if (marker != null) marker!!.remove()
-                            marker = googleMap.addMarker(MarkerOptions()
-                                .position(latLng).title(resources.getString(R.string.driver))
-                                .icon(bitmapFromVector(requireContext(), R.drawable.car)))
+                            if (googleMap != null) {
+                                val latLng =
+                                    LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
+                                if (marker != null) marker!!.remove()
+                                marker = googleMap!!.addMarker(MarkerOptions()
+                                    .position(latLng).title(resources.getString(R.string.driver))
+                                    .icon(bitmapFromVector(requireContext(), R.drawable.car)))
 
-                            if (!isMoved) {
-                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                                isMoved = true
+                                if (!isMoved) {
+                                    googleMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                                    isMoved = true
+                                }
                             }
                         }
                     }
@@ -195,12 +201,14 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     }
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout).visibility = View.VISIBLE
                 } else {
-                    googleMap.clear()
+                    if (googleMap != null)
+                        googleMap!!.clear()
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
                     if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered){
                         binding.callTaxi.show()
                         binding.clientMapprogressBar.visibility = View.INVISIBLE
                     }
+                    //binding.taximeter.price.text = ""
                 }
             }
         }

@@ -1,5 +1,6 @@
 package octii.app.taxiapp.web
 
+import android.annotation.SuppressLint
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -66,64 +67,70 @@ class SocketHelper {
             compositeDisposable = CompositeDisposable()
         }
 
+        @SuppressLint("CheckResult")
         fun makeOrder(){
-            compositeDisposable.add(
-                mStompClient.send("/requests/order.make.${UserModel.mUuid}", toJSON(UserModel())).compose(
-                    applySchedulers()).subscribe({
-                    logInfo("success")
-                }, { throwable ->
-                    logError("ttt :$throwable")
-                    throwable.printStackTrace()
-                }))
+            mStompClient.send("/requests/order.make.${UserModel.mUuid}", toJSON(UserModel())).compose(
+                applySchedulers()).subscribe({
+                logInfo("success")
+            }, { throwable ->
+                logError("ttt :$throwable")
+                throwable.printStackTrace()
+            })
+
         }
 
+        @SuppressLint("CheckResult")
         fun acceptOrder(order : OrdersModel){
-            compositeDisposable.add(mStompClient.send("/requests/order.accept.${UserModel.mUuid}", toJSON(order))
+            mStompClient.send("/requests/order.accept.${UserModel.mUuid}", toJSON(order))
                 .compose(applySchedulers()).subscribe({
                     logInfo("success")
                 }, { throwable ->
                     logError("ttt :$throwable")
                     throwable.printStackTrace()
-                }))
+                })
         }
 
+        @SuppressLint("CheckResult")
         fun rejectOrder(order : OrdersModel){
-            compositeDisposable.add(mStompClient.send("/requests/order.reject.${UserModel.mUuid}", toJSON(order))
+            mStompClient.send("/requests/order.reject.${UserModel.mUuid}", toJSON(order))
                 .compose(applySchedulers()).subscribe({
                 logInfo("success")
             }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
-            }))
+            })
         }
 
+        @SuppressLint("CheckResult")
         fun finishOrder(order : OrdersModel){
-            compositeDisposable.add(mStompClient.send("/requests/order.finish.${UserModel.mUuid}", toJSON(order))
+            mStompClient.send("/requests/order.finish.${UserModel.mUuid}", toJSON(order))
                 .compose(applySchedulers()).subscribe({
                 logInfo("success")
             }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
-            }))
+            })
         }
 
+        @SuppressLint("CheckResult")
         fun updateCoordinates(coordinatesModel: CoordinatesModel){
-            compositeDisposable.add(mStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
+            mStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
                 toJSON(coordinatesModel)).compose(applySchedulers()).subscribe({
                 logInfo("success")
             }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
-            }))
+            })
         }
 
+        @SuppressLint("CheckResult")
         fun taximeterUpdate(taximeterUpdate: TaximeterUpdate){
-            compositeDisposable.add(mStompClient.send("/requests/taximeter.update.${UserModel.mUuid}",
+            mStompClient.send("/requests/taximeter.update.${UserModel.mUuid}",
                 toJSON(taximeterUpdate)).compose(applySchedulers()).subscribe({
             }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
-            }))
+            })
         }
 
         private fun toJSON(model : Any) : String{

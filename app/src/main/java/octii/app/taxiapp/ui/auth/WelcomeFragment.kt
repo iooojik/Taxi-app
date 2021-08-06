@@ -29,7 +29,7 @@ class WelcomeFragment : Fragment(), View.OnClickListener, SettingsFragment, Frag
         MyPreferences.clearAll()
         setListeners()
         blockGoBack(requireActivity(), this)
-        Services(requireActivity()).stopServices()
+
         return binding.root
     }
 

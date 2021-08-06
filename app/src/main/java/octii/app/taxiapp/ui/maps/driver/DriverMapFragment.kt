@@ -38,9 +38,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 
 import com.google.android.gms.maps.model.MarkerOptions
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logInfo
 
 
 class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener, FragmentHelper {
@@ -88,7 +90,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private lateinit var permissions: Permissions
     private lateinit var services: Services
     private var orderTime : Long = 0
-    private lateinit var googleMap : GoogleMap
+    private var googleMap : GoogleMap? = null
     private var isMoved = false
     private var marker : Marker?  = null
 
@@ -109,8 +111,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
     private fun setUiInfo() {
         binding.taximeter.price.text = ""
-        //binding.taximeter.time.text = ""
-        //binding.taximeter.distance.text = ""
     }
 
     override fun onResume() {
@@ -143,7 +143,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun setServices(){
-        services = Services(requireActivity(), Static.MAIN_SERVICES)
+        services = Services(activity, Static.MAIN_SERVICES)
         services.start()
     }
 
@@ -176,8 +176,10 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         OrdersModel.isAccepted = false
         SocketHelper.finishOrder(OrdersModel())
         view?.findViewById<ConstraintLayout>(R.id.driver_order_info_layout)?.visibility = View.GONE
-        googleMap.clear()
+        googleMap?.clear()
         MyLocationListener.distance = 0f
+        MyPreferences.userPreferences?.let {
+            MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0L)}
     }
 
     inner class OrdersUpdate(private val view: View, private val context : Context) : TimerTask() {
@@ -191,6 +193,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                         bottomSheet.show()
                     } else if (OrdersModel.isAccepted) {
                         binding.fabSettings.hide()
+                        //logInfo(TaximeterService.getTaximeterString(activity!!.resources))
                         binding.taximeter.price.text = TaximeterService.getTaximeterString(activity!!.resources)
 
                         orderTime = orderTime.plus(1)
@@ -217,14 +220,16 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                             if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0){
                                 val latLng = LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
                                 if (marker != null) marker!!.remove()
+                                if (googleMap != null) {
+                                    marker = googleMap!!.addMarker(MarkerOptions()
+                                        .position(latLng)
+                                        .title(resources.getString(R.string.customer))
+                                        .icon(bitmapFromVector(requireContext(), R.drawable.user)))
 
-                                marker = googleMap.addMarker(MarkerOptions()
-                                    .position(latLng).title(resources.getString(R.string.customer))
-                                    .icon(bitmapFromVector(requireContext(), R.drawable.user)))
-
-                                if (!isMoved) {
-                                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                                    isMoved = true
+                                    if (!isMoved) {
+                                        googleMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                                        isMoved = true
+                                    }
                                 }
                             }
                         }
@@ -242,7 +247,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     } else {
                         binding.fabSettings.show()
                         orderTime = 0
-                        //taximeterUpdate(binding.taximeter)
                     }
 
                 }

@@ -60,4 +60,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/call_taxi" />
 
+    <include
+        android:id="@+id/taximeter"
+        layout="@layout/taximeter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:layout_marginEnd="@dimen/fab_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

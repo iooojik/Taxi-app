@@ -4,6 +4,8 @@ import android.app.Service
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.IBinder
+import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.ui.Permissions
 
 
 class LocationService : Service() {
@@ -17,21 +19,15 @@ class LocationService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
-        try {
-            setTimer()
-            setLocationListener()
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
+        setLocationListener()
     }
 
     private fun setLocationListener() {
         MyLocationListener.setUpLocationListener(applicationContext)
     }
 
-    private fun setTimer(){
-
+    override fun onDestroy() {
+        super.onDestroy()
+        stopSelf()
     }
-
 }

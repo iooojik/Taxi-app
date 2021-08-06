@@ -8,7 +8,9 @@ import androidx.navigation.findNavController
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.locale.Application
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.requests.Requests
+import java.security.Permissions
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,18 +47,19 @@ class MainActivity : AppCompatActivity() {
     private fun checkAuth() {
         requests = Requests(activity = this)
         val token = getToken()
-
-        if (token.isEmpty()) {
-            navigateToStartPage()
-        } else {
-            requests.userRequests.loginWithToken(token)
-            getStartLocation()
-        }
+        if (token != null && octii.app.taxiapp.ui.Permissions(this, this).checkPermissions()) {
+            if (token.isEmpty()) {
+                navigateToStartPage()
+            } else {
+                requests.userRequests.loginWithToken(token)
+                getStartLocation()
+            }
+        } else navigateToStartPage()
     }
 
-    private fun getToken() : String{
+    private fun getToken() : String?{
         return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "").isNullOrEmpty()) ""
-        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")!!
+        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")
     }
 
     private fun getSavedUserType() : String{
