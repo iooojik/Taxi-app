@@ -122,7 +122,8 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                     if (model?.user != null && model.user.token.isNotEmpty()) {
                         setUserInfo(model.user)
                         val order = model.order
-                        if (order != null){
+
+                        if (order != null && !order.isFinished){
                             orderRequests
                                 .getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
                         }

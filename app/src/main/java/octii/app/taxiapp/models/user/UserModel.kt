@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import octii.app.taxiapp.locale.LocaleUtils
-import octii.app.taxiapp.models.CoordinatesModel
+import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.driver.DriverModel
@@ -74,7 +74,7 @@ class UserModel(
         var uIsViber : Boolean = false
 
         @JvmStatic
-        var mUuid: String = UUID.randomUUID().toString()
+        var mUuid: String = ""
 
         @JvmStatic
         var mIsOnlyClient : Boolean = true

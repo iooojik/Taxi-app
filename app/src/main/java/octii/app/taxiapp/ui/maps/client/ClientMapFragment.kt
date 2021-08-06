@@ -15,8 +15,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
@@ -24,12 +28,18 @@ import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
+import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.Services
+import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
+
+
+
 
 
 class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener, FragmentHelper {
@@ -46,8 +56,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
          * user has installed Google Play services and returned to the app.
          */
 
-
         googleMap.isMyLocationEnabled = true
+        this.googleMap = googleMap
 
 
     }
@@ -56,6 +66,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private lateinit var orderUpdate : OrderUpdate
     private lateinit var permissions: Permissions
     private lateinit var services: Services
+    private lateinit var googleMap : GoogleMap
+    private var isMoved = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,7 +127,10 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
     }
+
+
 
     override fun onClick(v: View?) {
         when(v!!.id){
@@ -149,6 +164,20 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     binding.clientMapprogressBar.visibility = View.INVISIBLE
                     binding.clientOrderInfoLayout.driverName.text = OrdersModel.mDriver.userName
                     binding.clientOrderInfoLayout.driverPhone.text = OrdersModel.mDriver.phone
+
+                    if (OrdersModel.mUuid.trim().isNotEmpty()){
+                        if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
+                            val latLng =
+                                LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
+                            googleMap.addMarker(MarkerOptions()
+                                .position(latLng).title(resources.getString(R.string.driver))
+                                .icon(bitmapFromVector(requireContext(), R.drawable.car)))
+                            if (!isMoved) {
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                                isMoved = true
+                            }
+                        }
+                    }
 
                     if (OrdersModel.mDriver.avatarURL.isNotEmpty()){
                         Picasso.with(context)

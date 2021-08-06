@@ -41,4 +41,6 @@
     <string name="user_available_in_whatsapp">User available on Whatsapp</string>
     <string name="user_available_in_viber">User is available on Viber</string>
     <string name="user_available_in_viber_and_whatsapp">The user is available on Whatsapp and Viber</string>
+    <string name="customer">Client</string>
+    <string name="driver">Driver</string>
 </resources>

@@ -76,6 +76,26 @@
 
         </receiver>
 
+        <service
+            android:name=".services.taximeter.TaximeterService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <receiver
+            android:name=".services.taximeter.TaximeterReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:enabled="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.REBOOT"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </receiver>
+
         <activity android:name=".MainActivity"
             android:configChanges="keyboardHidden|locale|layoutDirection">
             <nav-graph android:value="@navigation/nav_graph" />

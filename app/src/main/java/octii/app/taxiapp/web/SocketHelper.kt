@@ -7,7 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import octii.app.taxiapp.constants.Static
-import octii.app.taxiapp.models.CoordinatesModel
+import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
@@ -16,6 +16,7 @@ import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import io.reactivex.CompletableTransformer
+import octii.app.taxiapp.models.TaximeterUpdate
 
 
 class SocketHelper {
@@ -110,6 +111,15 @@ class SocketHelper {
             compositeDisposable.add(mStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
                 toJSON(coordinatesModel)).compose(applySchedulers()).subscribe({
                 logInfo("success")
+            }, { throwable ->
+                logError("ttt :$throwable")
+                throwable.printStackTrace()
+            }))
+        }
+
+        fun taximeterUpdate(taximeterUpdate: TaximeterUpdate){
+            compositeDisposable.add(mStompClient.send("/requests/taximeter.update.${UserModel.mUuid}",
+                toJSON(taximeterUpdate)).compose(applySchedulers()).subscribe({
             }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()

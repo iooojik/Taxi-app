@@ -17,4 +17,6 @@
     <string name="user_available_in_whatsapp">Пользователь доступен в Whatsapp</string>
     <string name="user_available_in_viber">Пользователь доступен в Viber</string>
     <string name="user_available_in_viber_and_whatsapp">Пользователь доступен в Whatsapp и Viber</string>
+    <string name="driver">Водитель</string>
+    <string name="customer">Клиент</string>
 </resources>

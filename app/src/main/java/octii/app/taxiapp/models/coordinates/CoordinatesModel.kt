@@ -1,4 +1,4 @@
-package octii.app.taxiapp.models
+package octii.app.taxiapp.models.coordinates
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

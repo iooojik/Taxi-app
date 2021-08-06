@@ -7,7 +7,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import octii.app.taxiapp.models.CoordinatesModel
+import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.web.SocketHelper

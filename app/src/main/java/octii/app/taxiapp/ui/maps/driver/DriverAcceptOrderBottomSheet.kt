@@ -10,10 +10,12 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.BottomSheetAcceptOrderBinding
 import octii.app.taxiapp.models.orders.OrdersModel
+import octii.app.taxiapp.services.Services
+import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
-class DriverAcceptOrderBottomSheet (context: Context, activity: Activity, private val order : OrdersModel) :
+class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, private val order : OrdersModel) :
     BottomSheetDialog(context), View.OnClickListener {
 
     private var binding: BottomSheetAcceptOrderBinding =
@@ -53,6 +55,7 @@ class DriverAcceptOrderBottomSheet (context: Context, activity: Activity, privat
 
     private fun acceptOrder(){
         finishTimer(timer)
+        //Services(activity = activity).startNewService(TaximeterService::class)
         SocketHelper.acceptOrder(order)
         this@DriverAcceptOrderBottomSheet.hide()
     }

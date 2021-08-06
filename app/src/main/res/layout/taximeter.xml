@@ -14,7 +14,7 @@
         android:layout_gravity="end"
         android:text="@string/taximeter_price"
         android:textSize="24sp" />
-
+<!--
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
@@ -31,5 +31,5 @@
         android:layout_gravity="end"
         android:layout_weight="1"
         android:text="0 km"
-        android:textSize="24sp" />
+        android:textSize="24sp" />-->
 </LinearLayout>

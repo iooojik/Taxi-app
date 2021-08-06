@@ -16,9 +16,7 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
     private val gson = Gson()
 
     fun getOrderModel(order : OrdersModel, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel {
-        //val order = gson.fromJson(gson.toJson(json), OrdersModel::class.java)
-        logInfo("order request $order")
-
+        logInfo("order $order")
         OrdersModel.mId = order.id
         OrdersModel.mDriverID = order.driverID
         OrdersModel.mCustomerID = order.customerID

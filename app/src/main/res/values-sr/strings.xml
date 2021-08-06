@@ -41,4 +41,6 @@
     <string name="user_available_in_whatsapp">Корисник доступан на Вхатсапп -у</string>
     <string name="user_available_in_viber">Корисник је доступан на Виберу</string>
     <string name="user_available_in_viber_and_whatsapp">Корисник је доступан на Вхатсапп -у и Вибер -у</string>
+    <string name="driver">Дривер</string>
+    <string name="customer">Клијент</string>
 </resources>

@@ -14,24 +14,33 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.FragmentHelper
-import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
-import octii.app.taxiapp.databinding.FragmentDriverMapBinding
-import octii.app.taxiapp.databinding.TaximeterBinding
+import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
+import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
+import com.google.android.gms.maps.model.LatLng
+
+import com.google.android.gms.maps.model.MarkerOptions
+import octii.app.taxiapp.R
+import octii.app.taxiapp.databinding.FragmentDriverMapBinding
+import octii.app.taxiapp.scripts.logError
+
 
 class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener, FragmentHelper {
 
@@ -68,10 +77,8 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
             e.printStackTrace()
             Log.e(TAG, "err: $e" )
         }*/
-
         googleMap.isMyLocationEnabled = true
-
-
+        this.googleMap = googleMap
     }
 
     private lateinit var binding: FragmentDriverMapBinding
@@ -80,6 +87,8 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private lateinit var permissions: Permissions
     private lateinit var services: Services
     private var orderTime : Long = 0
+    private lateinit var googleMap : GoogleMap
+    private var isMoved = false
 
 
     override fun onCreateView(
@@ -97,10 +106,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun setUiInfo() {
-        binding.taximeter.price.text = resources.getString(R.string.taximeter_price,
-            "0", "0")
-        binding.taximeter.time.text = formatDuration(orderTime)
-        binding.taximeter.distance.text = resources.getString(R.string.taximeter_distance, MyLocationListener.distance.toString()  )
+        binding.taximeter.price.text = ""
+        //binding.taximeter.time.text = ""
+        //binding.taximeter.distance.text = ""
     }
 
     override fun onResume() {
@@ -179,8 +187,11 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                             DriverAcceptOrderBottomSheet(context, activity!!, OrdersModel())
                         bottomSheet.show()
                     } else if (OrdersModel.isAccepted) {
+                        binding.fabSettings.hide()
+                        binding.taximeter.price.text = TaximeterService.getTaximeterString(activity!!.resources)
+
                         orderTime = orderTime.plus(1)
-                        taximeterUpdate(binding.taximeter)
+                        //taximeterUpdate(binding.taximeter)
                         binding.driverOrderInfoLayout.customerName.text =
                             OrdersModel.mCustomer.userName
                         binding.driverOrderInfoLayout.customerPhone.text =
@@ -199,6 +210,18 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                             binding.driverOrderInfoLayout.messengersInfo.text =
                                 activity!!.resources.getString(R.string.user_available_in_viber)
 
+                        if (OrdersModel.mUuid.trim().isNotEmpty()){
+                            if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0){
+                                val latLng = LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
+                                googleMap.addMarker(MarkerOptions()
+                                    .position(latLng).title(resources.getString(R.string.customer))
+                                    .icon(bitmapFromVector(requireContext(), R.drawable.user)))
+                                if (!isMoved) {
+                                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                                    isMoved = true
+                                }
+                            }
+                        }
 
                         if (OrdersModel.mCustomer.avatarURL.trim().isNotEmpty()) {
                             Picasso.with(requireContext())
@@ -211,8 +234,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                             binding.driverOrderInfoLayout.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
                         }
                     } else {
+                        binding.fabSettings.show()
                         orderTime = 0
-                        taximeterUpdate(binding.taximeter)
+                        //taximeterUpdate(binding.taximeter)
                     }
 
                 }
@@ -233,16 +257,5 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         return true
     }
 
-    private fun formatDuration(seconds: Long): String = DateUtils.formatElapsedTime(seconds)
 
-    private fun taximeterUpdate(taximeterBinding: TaximeterBinding){
-        taximeterBinding.time.text = formatDuration(seconds = orderTime)
-        taximeterBinding.distance.text = MyLocationListener.distance.toString()
-        taximeterBinding.price.text = resources.getString(
-            R.string.taximeter_price,
-            (DriverModel.mPrices.pricePerKm * MyLocationListener.distance).toString(),
-            if(orderTime/60 < 1) DriverModel.mPrices.pricePerMinute.toString()
-            else (DriverModel.mPrices.pricePerMinute * (orderTime/60))
-        )
-    }
 }
