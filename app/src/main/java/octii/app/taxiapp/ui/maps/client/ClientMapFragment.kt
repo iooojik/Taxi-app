@@ -113,7 +113,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun setServices(){
-        services = Services(requireActivity(), Static.MAIN_SERVICES)
+        services = Services(activity, Static.MAIN_SERVICES)
         services.start()
     }
 
@@ -166,6 +166,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
                 if (OrdersModel.isAccepted && OrdersModel.mDriverID > 0) {
                     binding.callTaxi.hide()
+                    binding.fabSettings.hide()
                     binding.clientMapprogressBar.visibility = View.INVISIBLE
                     binding.clientOrderInfoLayout.driverName.text = OrdersModel.mDriver.userName
                     binding.clientOrderInfoLayout.driverPhone.text = OrdersModel.mDriver.phone
@@ -206,6 +207,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
                     if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered){
                         binding.callTaxi.show()
+                        binding.fabSettings.show()
                         binding.clientMapprogressBar.visibility = View.INVISIBLE
                     }
                     //binding.taximeter.price.text = ""

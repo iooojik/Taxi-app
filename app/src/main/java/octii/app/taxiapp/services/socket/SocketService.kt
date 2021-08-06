@@ -19,6 +19,7 @@ import octii.app.taxiapp.models.responses.ResponseModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.logService
 import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests
@@ -37,7 +38,7 @@ class SocketService : Service() {
     override fun onCreate() {
         super.onCreate()
         requests = Requests()
-
+        logService("socket service is running")
         SocketHelper.connect()
         connectToMainTopics()
         setTimer()

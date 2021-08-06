@@ -17,6 +17,8 @@ import octii.app.taxiapp.models.driver.Prices
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.logService
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
@@ -28,6 +30,7 @@ class TaximeterService : Service() {
         var priceWaiting : Float = DriverModel.mPrices.priceWaitingMin
         var pricePerMin : Float = DriverModel.mPrices.pricePerMinute
         var order = OrdersModel()
+        var isRunning = false
         private fun number2digits(number : Float) : String = String.format("%.2f", number)
 
 
@@ -55,17 +58,21 @@ class TaximeterService : Service() {
         return null
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        setTimer()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        logService("taximeter service is running")
+        if ((getTime() != null && getTime()!! == 0L) || !isRunning) setTimer()
+        return super.onStartCommand(intent, flags, startId)
     }
 
     private fun setTimer(){
+        isRunning = true
         taximeterTimer = Timer()
         timer = Timer()
-        taximeterTimer.schedule(taximeterUpdate, 0, 10000)
+        taximeterTimer.schedule(taximeterUpdate, 0, 1000)
         timer.schedule(orderTime, 0, 1000)
     }
+
+    private fun getTime() : Long? = MyPreferences.userPreferences?.getLong(Static.SHARED_PREFERENCES_ORDER_TIME, 0L)
 
     inner class TaximeterUpdate : TimerTask() {
         override fun run() {
@@ -100,5 +107,10 @@ class TaximeterService : Service() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        logError("destroy")
     }
 }

@@ -191,7 +191,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                         val bottomSheet =
                             DriverAcceptOrderBottomSheet(context, activity!!, OrdersModel())
                         bottomSheet.show()
-                    } else if (OrdersModel.isAccepted) {
+                    } else if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
                         binding.fabSettings.hide()
                         //logInfo(TaximeterService.getTaximeterString(activity!!.resources))
                         binding.taximeter.price.text = TaximeterService.getTaximeterString(activity!!.resources)

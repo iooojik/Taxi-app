@@ -18,6 +18,8 @@ import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import io.reactivex.CompletableTransformer
 import octii.app.taxiapp.models.TaximeterUpdate
+import octii.app.taxiapp.web.requests.Requests
+import kotlin.concurrent.thread
 
 
 class SocketHelper {
@@ -110,6 +112,10 @@ class SocketHelper {
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
             })
+            thread {
+                UserModel.mDriver.isWorking = true
+                Requests().userRequests.update()
+            }
         }
 
         @SuppressLint("CheckResult")

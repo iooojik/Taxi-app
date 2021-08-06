@@ -6,6 +6,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import octii.app.taxiapp.constants.Static
+import octii.app.taxiapp.scripts.logError
 import kotlin.reflect.KClass
 
 class Services(private val activity: Activity?,
@@ -29,18 +30,13 @@ class Services(private val activity: Activity?,
         val intentService = Intent(activity, serviceName.java)
         //запуск сервиса. Если метод возвращает true, то сервис был запущен,
         // если сервис был остановлен, то false
-        touchService(intentService, serviceName)
-    }
-
-    fun stopServices(){
-        Static.MAIN_SERVICES.forEach {
-            activity?.stopService(Intent(activity, it.java))
-        }
+        logError("${touchService(intentService, serviceName)} $serviceName")
     }
 
     private fun touchService(intentService : Intent, serviceName : KClass<out Service>) : Boolean {
         return if (!isMyServiceRunning(serviceName)) {activity?.startService(intentService); true}
         else {activity?.stopService(intentService); false}
+        //else false
     }
 
     private fun isMyServiceRunning(serviceName : KClass<out Service>): Boolean {

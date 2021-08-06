@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.IBinder
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.logService
 import octii.app.taxiapp.ui.Permissions
 
 
@@ -20,6 +21,7 @@ class LocationService : Service() {
     override fun onCreate() {
         super.onCreate()
         setLocationListener()
+        logService("location service is running")
     }
 
     private fun setLocationListener() {

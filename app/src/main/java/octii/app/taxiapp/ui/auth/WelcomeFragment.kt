@@ -63,13 +63,13 @@ class WelcomeFragment : Fragment(), View.OnClickListener, SettingsFragment, Frag
             .setItems(items) { _, which ->
                 when(which){
                     0 -> {
-                        setLanguage(LocaleUtils.SERBIAN, requireActivity())
+                        setLanguage(LocaleUtils.SERBIAN, activity)
                     }
                     1 -> {
-                        setLanguage(LocaleUtils.ENGLISH, requireActivity())
+                        setLanguage(LocaleUtils.ENGLISH, activity)
                     }
                     2 -> {
-                        setLanguage(LocaleUtils.RUSSIAN, requireActivity())
+                        setLanguage(LocaleUtils.RUSSIAN, activity)
                     }
                 }
             }

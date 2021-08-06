@@ -5,12 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.locale.Application
+import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.requests.Requests
 import java.security.Permissions
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -75,5 +78,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToStartPage(){
         runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment) }
+    }
+
+    override fun onDestroy() {
+        thread {
+            UserModel.mDriver.isWorking = false
+            requests.userRequests.update()
+        }
+        super.onDestroy()
     }
 }

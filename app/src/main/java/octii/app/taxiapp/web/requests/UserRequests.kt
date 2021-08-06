@@ -12,6 +12,8 @@ import octii.app.taxiapp.models.AuthorizationModel
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logDebug
+import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logExeption
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
@@ -173,6 +175,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
             }
         }catch (e : Exception){
             showSnackBarError()
+            logExeption(e)
             e.printStackTrace()
         }
         return UserModel()
@@ -183,6 +186,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
             activity?.findNavController(R.id.nav_host_fragment)?.navigate(fragment)
         } catch (e : java.lang.Exception){
             e.printStackTrace()
+            logExeption(e)
             showSnackBarError()
         }
 

@@ -131,15 +131,15 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             }
             R.id.russian_language -> {
                 if (isChecked)
-                    setLanguage(LocaleUtils.RUSSIAN, requireActivity())
+                    setLanguage(LocaleUtils.RUSSIAN, activity)
             }
             R.id.english_language -> {
                 if (isChecked)
-                    setLanguage(LocaleUtils.ENGLISH, requireActivity())
+                    setLanguage(LocaleUtils.ENGLISH, activity)
             }
             R.id.serbian_language -> {
                 if (isChecked)
-                    setLanguage(LocaleUtils.SERBIAN, requireActivity())
+                    setLanguage(LocaleUtils.SERBIAN, activity)
             }
             R.id.button_russian_language ->{
                 changeSpeakingLanguage(LocaleUtils.RUSSIAN, isChecked)
@@ -183,15 +183,14 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-
         thread {
             val user = requests.userRequests.update()
             if (user.type == Static.CLIENT_TYPE)
                 activity?.runOnUiThread {
                     findNavController().navigate(R.id.clientSettingsFragment)
                 }
-
         }
+
 
     }
 
