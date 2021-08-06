@@ -97,7 +97,9 @@
         </receiver>
 
         <activity android:name=".MainActivity"
-            android:configChanges="keyboardHidden|locale|layoutDirection">
+            android:configChanges="keyboardHidden|locale|layoutDirection"
+            android:screenOrientation="portrait">
+
             <nav-graph android:value="@navigation/nav_graph" />
 
             <intent-filter>

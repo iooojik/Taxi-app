@@ -8,7 +8,9 @@ import android.widget.Toast
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.MessageType
 import octii.app.taxiapp.models.TaximeterModel
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
@@ -100,6 +102,8 @@ class SocketService : Service() {
                 MessageType.ORDER_FINISHED -> {
                     logInfo("order finished")
                     logError(responseModel.toString())
+                    MyPreferences.userPreferences?.let {
+                        MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0) }
                     OrdersModel.isOrdered = false
                     OrdersModel.isAccepted = false
                     if (responseModel.order != null){

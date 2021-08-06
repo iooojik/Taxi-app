@@ -20,6 +20,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
@@ -68,6 +69,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private lateinit var services: Services
     private lateinit var googleMap : GoogleMap
     private var isMoved = false
+    private var marker : Marker?  = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -166,12 +169,13 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     binding.clientOrderInfoLayout.driverPhone.text = OrdersModel.mDriver.phone
 
                     if (OrdersModel.mUuid.trim().isNotEmpty()){
-                        if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
-                            val latLng =
-                                LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
-                            googleMap.addMarker(MarkerOptions()
+                        if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0){
+                            val latLng = LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
+                            if (marker != null) marker!!.remove()
+                            marker = googleMap.addMarker(MarkerOptions()
                                 .position(latLng).title(resources.getString(R.string.driver))
                                 .icon(bitmapFromVector(requireContext(), R.drawable.car)))
+
                             if (!isMoved) {
                                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
                                 isMoved = true
@@ -191,6 +195,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                     }
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout).visibility = View.VISIBLE
                 } else {
+                    googleMap.clear()
                     view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
                     if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered){
                         binding.callTaxi.show()

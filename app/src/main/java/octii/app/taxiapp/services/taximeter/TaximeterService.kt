@@ -5,8 +5,10 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.IBinder
 import android.text.format.DateUtils
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.OrderActions
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.TaximeterModel
 import octii.app.taxiapp.models.TaximeterUpdate
@@ -21,7 +23,8 @@ import java.util.*
 class TaximeterService : Service() {
 
     companion object{
-        var time : Long = 0
+        var time : Long =
+            MyPreferences.userPreferences?.getLong(Static.SHARED_PREFERENCES_ORDER_TIME, 0)!!
         var pricePerKm : Float = DriverModel.mPrices.pricePerKm
         var priceWaiting : Float = DriverModel.mPrices.priceWaitingMin
         var pricePerMin : Float = DriverModel.mPrices.pricePerMinute
@@ -88,6 +91,8 @@ class TaximeterService : Service() {
     inner class OrderTime : TimerTask(){
         override fun run() {
             time+=1
+            MyPreferences.userPreferences?.let {
+                MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, time) }
         }
     }
 }

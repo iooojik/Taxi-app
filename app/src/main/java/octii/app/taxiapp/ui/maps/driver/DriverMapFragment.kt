@@ -35,6 +35,7 @@ import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 
 import com.google.android.gms.maps.model.MarkerOptions
 import octii.app.taxiapp.R
@@ -89,6 +90,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private var orderTime : Long = 0
     private lateinit var googleMap : GoogleMap
     private var isMoved = false
+    private var marker : Marker?  = null
 
 
     override fun onCreateView(
@@ -174,6 +176,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         OrdersModel.isAccepted = false
         SocketHelper.finishOrder(OrdersModel())
         view?.findViewById<ConstraintLayout>(R.id.driver_order_info_layout)?.visibility = View.GONE
+        googleMap.clear()
         MyLocationListener.distance = 0f
     }
 
@@ -213,9 +216,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                         if (OrdersModel.mUuid.trim().isNotEmpty()){
                             if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0){
                                 val latLng = LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
-                                googleMap.addMarker(MarkerOptions()
+                                if (marker != null) marker!!.remove()
+
+                                marker = googleMap.addMarker(MarkerOptions()
                                     .position(latLng).title(resources.getString(R.string.customer))
                                     .icon(bitmapFromVector(requireContext(), R.drawable.user)))
+
                                 if (!isMoved) {
                                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
                                     isMoved = true

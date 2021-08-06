@@ -23,8 +23,11 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
         OrdersModel.mUuid = order.uuid
         OrdersModel.mIsFinished = order.isFinished
 
-        if (order.driver != null)
+        if (order.driver != null){
             OrdersModel.mDriver = order.driver!!
+            if (order.driver?.driver?.prices != null)
+                OrdersModel.mDriver.driver.prices = order.driver?.driver?.prices!!
+        }
         if (order.customer != null)
             OrdersModel.mCustomer = order.customer!!
 
