@@ -44,7 +44,7 @@ class UserModel(
 
     var languages : List<SpeakingLanguagesModel> = mLanguages,
 
-    var coordinates : CoordinatesModel = mCoordinates,
+    var coordinates : CoordinatesModel? = mCoordinates,
 
     var driver : DriverModel = mDriver,
 
@@ -85,7 +85,7 @@ class UserModel(
         var mLanguages : List<SpeakingLanguagesModel> = listOf(SpeakingLanguagesModel(language = LocaleUtils.SERBIAN))
 
         @JvmStatic
-        var mCoordinates : CoordinatesModel = CoordinatesModel()
+        var mCoordinates : CoordinatesModel? = CoordinatesModel()
 
         @JvmStatic
         var mDriver : DriverModel = DriverModel()

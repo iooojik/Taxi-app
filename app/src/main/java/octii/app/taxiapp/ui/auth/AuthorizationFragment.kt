@@ -82,13 +82,33 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.i_am_in_whatsapp -> {
+                if (UserModel.uType == Static.DRIVER_TYPE && binding.iAmInViber.isChecked && !isChecked) {
+                    Snackbar.make(requireView(),
+                        resources.getString(R.string.to_become_driver),
+                        Snackbar.LENGTH_LONG).show()
+                    binding.iAmInWhatsapp.isChecked = true
+                }
                 UserModel.uIsWhatsapp = isChecked
+
             }
             R.id.i_am_in_viber -> {
+                if (UserModel.uType == Static.DRIVER_TYPE && binding.iAmInWhatsapp.isChecked && !isChecked) {
+                    Snackbar.make(requireView(),
+                        resources.getString(R.string.to_become_driver),
+                        Snackbar.LENGTH_LONG).show()
+                    binding.iAmInViber.isChecked = true
+                }
                 UserModel.uIsViber = isChecked
             }
             R.id.i_am_driver -> {
-                if (isChecked) UserModel.uType = Static.DRIVER_TYPE
+                if (isChecked) {
+                    if (!binding.iAmInWhatsapp.isChecked || !binding.iAmInViber.isChecked) {
+                        Snackbar.make(requireView(),
+                            resources.getString(R.string.to_become_driver),
+                            Snackbar.LENGTH_LONG).show()
+                        binding.iAmDriver.isChecked = false
+                    } else UserModel.uType = Static.DRIVER_TYPE
+                }
                 else UserModel.uType = Static.CLIENT_TYPE
             }
         }
