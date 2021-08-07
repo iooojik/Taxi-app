@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import octii.app.taxiapp.LogSender
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.R
 import octii.app.taxiapp.SettingsFragment
@@ -51,6 +52,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             binding.fabBack.setOnClickListener(this)
             binding.working.setOnCheckedChangeListener(this)
             binding.addPhotos.setOnClickListener(this)
+            binding.sendLogs.setOnClickListener(this)
             //radio buttons
             binding.languageSelectors.russianLanguage.setOnCheckedChangeListener(this)
             binding.languageSelectors.englishLanguage.setOnCheckedChangeListener(this)
@@ -118,6 +120,9 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             }
             R.id.add_photos -> {
                 findNavController().navigate(R.id.editPhotoListFragment)
+            }
+            R.id.send_logs -> {
+                LogSender().sendLogs(requireActivity())
             }
         }
     }

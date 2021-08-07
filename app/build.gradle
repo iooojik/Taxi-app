@@ -9,9 +9,9 @@ android {
 
     defaultConfig {
         applicationId "octii.app.taxiapp"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 30
-        versionCode 3
+        versionCode 4
         versionName "0.1"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

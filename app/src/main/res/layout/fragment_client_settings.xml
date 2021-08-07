@@ -104,12 +104,19 @@
                 android:orientation="vertical">
 
                 <Button
+                    android:id="@+id/send_logs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send_logs" />
+
+                <Button
                     android:id="@+id/become_driver"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="80dp"
                     android:text="@string/become_driver"
                     android:visibility="invisible" />
+
             </LinearLayout>
 
         </LinearLayout>

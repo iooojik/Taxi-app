@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import octii.app.taxiapp.LogSender
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.R
 import octii.app.taxiapp.SettingsFragment
@@ -103,6 +104,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
             //buttons
             binding.becomeDriver.setOnClickListener(this)
             binding.fabBack.setOnClickListener(this)
+            binding.sendLogs.setOnClickListener(this)
             //radio buttons
             binding.languageSelectors.russianLanguage.setOnCheckedChangeListener(this)
             binding.languageSelectors.englishLanguage.setOnCheckedChangeListener(this)
@@ -129,6 +131,9 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
             }
             R.id.fab_back -> {
                 findNavController().navigate(R.id.clientMapFragment)
+            }
+            R.id.send_logs -> {
+                LogSender().sendLogs(requireActivity())
             }
         }
     }

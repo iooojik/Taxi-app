@@ -9,4 +9,5 @@
     <string name="become_driver">Стать водителем(потом можно вернуться в клиенты)</string>
     <string name="change_language">Изменить язык</string>
     <string name="add_photos">Добавить фотографии</string>
+    <string name="send_logs">Отправить логи</string>
 </resources>
