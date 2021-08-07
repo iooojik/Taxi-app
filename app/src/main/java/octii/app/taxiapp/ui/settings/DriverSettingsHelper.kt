@@ -18,12 +18,13 @@ import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
 import kotlin.concurrent.thread
 
 
 class DriverSettingsHelper : Fragment(), View.OnClickListener,
-    CompoundButton.OnCheckedChangeListener, SettingsHelper {
+    CompoundButton.OnCheckedChangeListener, SettingsHelper, FragmentHelper {
 
     private lateinit var binding : FragmentDriverSettingsBinding
     private lateinit var requests: Requests
