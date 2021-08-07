@@ -5,14 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.requests.Requests
-import java.security.Permissions
 import kotlin.concurrent.thread
 
 
@@ -50,12 +49,14 @@ class MainActivity : AppCompatActivity() {
     private fun checkAuth() {
         requests = Requests(activity = this)
         val token = getToken()
-        if (token != null && octii.app.taxiapp.ui.Permissions(this, this).checkPermissions()) {
+        if (token != null && Permissions(this, this).checkPermissions()) {
             if (token.isEmpty()) {
                 navigateToStartPage()
             } else {
-                requests.userRequests.loginWithToken(token)
                 getStartLocation()
+                requests.userRequests.loginWithToken(token) {
+                    getStartLocation()
+                }
             }
         } else navigateToStartPage()
     }
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getStartLocation(){
         val uType = getSavedUserType()
+        logInfo("uType: $uType ${uType == Static.DRIVER_TYPE}")
         if (uType == Static.DRIVER_TYPE) findNavController(R.id.nav_host_fragment).navigate(R.id.driverMapFragment)
         else findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
     }

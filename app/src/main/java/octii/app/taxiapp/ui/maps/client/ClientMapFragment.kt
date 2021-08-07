@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.FragmentHelper
+import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
@@ -80,6 +81,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     ): View {
         binding = FragmentClientMapBinding.inflate(layoutInflater)
         binding.taximeter.price.text = ""
+        logInfo("client map starter")
         setTimer()
         setListeners()
         checkUserType()
@@ -109,7 +111,12 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun checkUserType(){
-        if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
+        if (getSavedUserType() == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
+    }
+
+    private fun getSavedUserType() : String{
+        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
+        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
     }
 
     private fun setServices(){

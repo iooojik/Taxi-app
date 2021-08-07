@@ -12,7 +12,6 @@ import octii.app.taxiapp.models.AuthorizationModel
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logDebug
-import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logExeption
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.HttpHelper
@@ -57,7 +56,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         return UserModel()
     }
 
-    fun loginWithToken(token : String){
+    fun loginWithToken(token: String, runnable: Runnable){
         HttpHelper.USER_API.loginWithToken(UserModel(token = token)).enqueue(object : Callback<AuthorizationModel>{
             override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
                 if (response.isSuccessful){
@@ -75,7 +74,8 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                             }
                         }
                     }
-
+                    runnable.run()
+                    /*
                     activity?.runOnUiThread {
                         if (UserModel.uToken.isEmpty())
                             activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
@@ -85,6 +85,8 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                         else
                             activity.findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
                     }
+
+                     */
 
                 } else {
                     activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment) }

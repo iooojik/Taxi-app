@@ -127,7 +127,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     }
 
     private fun checkUserType(){
-        if (UserModel.uType == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientMapFragment)
+        if (getSavedUserType() == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientMapFragment)
+    }
+
+    private fun getSavedUserType() : String{
+        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
+        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
     }
 
     private fun setListeners(){
