@@ -25,27 +25,22 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
-import octii.app.taxiapp.FragmentHelper
-import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.Services
-import octii.app.taxiapp.services.location.MyLocationListener
-import octii.app.taxiapp.services.taximeter.TaximeterService
+import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
 
-
-
-
-class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener, FragmentHelper {
+class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener,
+    FragmentHelper {
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->

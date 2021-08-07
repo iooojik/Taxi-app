@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "octii.app.taxiapp"
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 4
         versionName "0.1"

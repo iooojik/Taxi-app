@@ -1,7 +1,6 @@
-package octii.app.taxiapp
+package octii.app.taxiapp.scripts
 
 import android.content.SharedPreferences
-import octii.app.taxiapp.constants.Static
 
 class MyPreferences {
 

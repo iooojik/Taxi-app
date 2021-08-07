@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import octii.app.taxiapp.models.TaximeterModel
 import octii.app.taxiapp.models.user.UserModel
-import java.util.*
 
 @Entity
 class OrdersModel(

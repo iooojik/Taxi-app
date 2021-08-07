@@ -1,27 +1,22 @@
-package octii.app.taxiapp
+package octii.app.taxiapp.ui
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-
-import android.graphics.Bitmap
-import android.graphics.Canvas
-
 import androidx.core.content.ContextCompat
-
-import android.graphics.drawable.Drawable
-
+import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.model.BitmapDescriptor
-
-
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import octii.app.taxiapp.locale.LocaleUtils
+import octii.app.taxiapp.models.SpeakingLanguagesModel
+import octii.app.taxiapp.models.user.UserModel
 
 
 interface FragmentHelper {
@@ -79,5 +74,24 @@ interface FragmentHelper {
 
         // after generating our bitmap we are returning our bitmap.
         return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    fun setLanguage(language : String, activity: Activity?) {
+        LocaleUtils.setSelectedLanguageId(language)
+        activity?.recreate()
+    }
+
+    fun changeSpeakingLanguage(lang: String, isChecked: Boolean){
+        val languages = arrayListOf<SpeakingLanguagesModel>()
+        if (isChecked){
+            for (spLang in UserModel.mLanguages) languages.add(spLang)
+            languages.add(SpeakingLanguagesModel(language = lang))
+        } else {
+            for (spLang in UserModel.mLanguages) {
+                if (spLang.language != lang) languages.add(spLang)
+            }
+        }
+        UserModel.mLanguages = languages.toList()
+
     }
 }

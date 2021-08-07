@@ -4,13 +4,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
-import octii.app.taxiapp.FragmentHelper
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.EditPhotoItemBinding
@@ -18,6 +17,7 @@ import octii.app.taxiapp.databinding.FragmentEditPhotoListBinding
 import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.HttpHelper
 import octii.app.taxiapp.web.requests.Requests

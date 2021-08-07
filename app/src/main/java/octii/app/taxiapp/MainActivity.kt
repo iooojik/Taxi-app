@@ -9,6 +9,7 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.requests.Requests

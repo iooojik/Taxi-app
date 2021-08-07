@@ -2,19 +2,16 @@ package octii.app.taxiapp.ui.maps.driver
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
-import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.BottomSheetAcceptOrderBinding
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.services.Services
-import octii.app.taxiapp.services.taximeter.TaximeterService
+import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 

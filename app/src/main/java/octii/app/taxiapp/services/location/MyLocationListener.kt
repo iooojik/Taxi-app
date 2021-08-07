@@ -1,15 +1,12 @@
 package octii.app.taxiapp.services.location
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logError

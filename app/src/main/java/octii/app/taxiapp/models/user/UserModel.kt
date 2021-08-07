@@ -4,11 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import octii.app.taxiapp.locale.LocaleUtils
-import octii.app.taxiapp.models.coordinates.CoordinatesModel
-import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.SpeakingLanguagesModel
+import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.driver.DriverModel
-import java.util.*
+import octii.app.taxiapp.models.files.FileModel
 
 @Entity
 class UserModel(

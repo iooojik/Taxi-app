@@ -10,20 +10,20 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
-import octii.app.taxiapp.LogSender
-import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.R
-import octii.app.taxiapp.SettingsFragment
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentClientSettingsBinding
+import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.LogSender
+import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
 import kotlin.concurrent.thread
 
 
-class ClientSettingsFragment : Fragment(), View.OnClickListener,
-    CompoundButton.OnCheckedChangeListener, SettingsFragment {
+class ClientSettingsHelper : Fragment(), View.OnClickListener,
+    CompoundButton.OnCheckedChangeListener, SettingsHelper, FragmentHelper {
 
     private lateinit var binding : FragmentClientSettingsBinding
     private lateinit var requests : Requests

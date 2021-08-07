@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,34 +17,29 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
-import octii.app.taxiapp.FragmentHelper
+import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
+import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.models.driver.DriverModel
-import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.services.taximeter.TaximeterService
+import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-
-import com.google.android.gms.maps.model.MarkerOptions
-import octii.app.taxiapp.MyPreferences
-import octii.app.taxiapp.R
-import octii.app.taxiapp.databinding.FragmentDriverMapBinding
-import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.scripts.logInfo
 
 
-class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener, FragmentHelper {
+class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener,
+    FragmentHelper {
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->

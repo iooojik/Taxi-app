@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import octii.app.taxiapp.*
+import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
 import octii.app.taxiapp.locale.LocaleUtils
-import octii.app.taxiapp.services.Services
+import octii.app.taxiapp.scripts.MyPreferences
+import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 
 
-class WelcomeFragment : Fragment(), View.OnClickListener, SettingsFragment, FragmentHelper {
+class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
 
     private lateinit var binding : FragmentWelcomeBinding
     private lateinit var permissions: Permissions
@@ -39,13 +40,7 @@ class WelcomeFragment : Fragment(), View.OnClickListener, SettingsFragment, Frag
         permissions.requestPermissions()
     }
 
-    override fun setLanguageSelector() {}
-
-    override fun getSettingsInformation() {}
-
-    override fun updateUiInfo() {}
-
-    override fun setListeners(){
+    private fun setListeners(){
         binding.nextButton.setOnClickListener(this)
         binding.whatsapp.setOnClickListener(this)
         binding.viber.setOnClickListener(this)

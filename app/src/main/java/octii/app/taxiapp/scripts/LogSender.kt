@@ -1,19 +1,14 @@
-package octii.app.taxiapp
-
-import android.os.StatFs
-
-import android.os.Environment
-
-import android.content.Intent
+package octii.app.taxiapp.scripts
 
 import android.app.Activity
+import android.content.Intent
+import android.os.Environment
 import android.os.Process
+import android.os.StatFs
 import android.util.Log
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
-import java.lang.Exception
-import java.lang.StringBuilder
 
 
 class LogSender {

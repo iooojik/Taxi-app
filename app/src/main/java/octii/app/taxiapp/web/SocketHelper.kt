@@ -3,22 +3,22 @@ package octii.app.taxiapp.web
 import android.annotation.SuppressLint
 import com.google.gson.Gson
 import io.reactivex.Completable
+import io.reactivex.CompletableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import octii.app.taxiapp.constants.Static
+import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.web.requests.Requests
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
-import io.reactivex.CompletableTransformer
-import octii.app.taxiapp.models.TaximeterUpdate
-import octii.app.taxiapp.web.requests.Requests
 import kotlin.concurrent.thread
 
 

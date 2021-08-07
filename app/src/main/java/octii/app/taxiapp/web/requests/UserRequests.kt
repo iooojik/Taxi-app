@@ -5,12 +5,12 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
-import octii.app.taxiapp.MyPreferences
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.AuthorizationModel
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logExeption
 import octii.app.taxiapp.scripts.logInfo
