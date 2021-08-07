@@ -170,6 +170,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                 if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0){
                     val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
                     googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
+                    googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
                     cameraMoved = true
                 }
                 if (OrdersModel.isAccepted && OrdersModel.mDriverID > 0) {
