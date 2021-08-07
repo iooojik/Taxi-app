@@ -56,6 +56,19 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         return UserModel()
     }
 
+    private fun setDriverInfo(driver : DriverModel?) {
+        if (driver != null) {
+            logDebug(driver)
+            DriverModel.mId = driver.id
+            DriverModel.mIsWorking = driver.isWorking
+            DriverModel.mPrices.pricePerMinute = driver.prices.pricePerMinute
+            DriverModel.mRideDistance = driver.rideDistance
+            DriverModel.mPrices.pricePerKm = driver.prices.pricePerKm
+            DriverModel.mPrices.priceWaitingMin = driver.prices.priceWaitingMin
+            logDebug(DriverModel)
+        }
+    }
+
     fun loginWithToken(token: String, runnable: Runnable){
         HttpHelper.USER_API.loginWithToken(UserModel(token = token)).enqueue(object : Callback<AuthorizationModel>{
             override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
@@ -75,19 +88,6 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                         }
                     }
                     runnable.run()
-                    /*
-                    activity?.runOnUiThread {
-                        if (UserModel.uToken.isEmpty())
-                            activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
-
-                        if (UserModel.uType == Static.DRIVER_TYPE)
-                            activity.findNavController(R.id.nav_host_fragment).navigate(R.id.driverMapFragment)
-                        else
-                            activity.findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
-                    }
-
-                     */
-
                 } else {
                     activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment) }
                     showSnackBarError()
@@ -102,20 +102,7 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         })
     }
 
-    private fun setDriverInfo(driver : DriverModel?) {
-        if (driver != null) {
-            logDebug(driver)
-            DriverModel.mId = driver.id
-            DriverModel.mIsWorking = driver.isWorking
-            DriverModel.mPrices.pricePerMinute = driver.prices.pricePerMinute
-            DriverModel.mRideDistance = driver.rideDistance
-            DriverModel.mPrices.pricePerKm = driver.prices.pricePerKm
-            DriverModel.mPrices.priceWaitingMin = driver.prices.priceWaitingMin
-            logDebug(DriverModel)
-        }
-    }
-
-    fun login(phoneNum : String, name : String, progressBar: ProgressBar? = null){
+    fun login(phoneNum : String, name : String, progressBar: ProgressBar? = null, runnable: Runnable){
         showProgressBar(progressBar)
 
         HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name)).enqueue(object :
@@ -128,11 +115,9 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                         val order = model.lastOrder
                         logInfo("order= ${model.user}")
                         if (order != null && !order.isFinished){
-                            orderRequests
-                                .getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
+                            orderRequests.getOrderModel(order, false, if (!order.isFinished) !order.isFinished else false)
                         }
-                        if (model.user.type == Static.DRIVER_TYPE) navigateToFragment(R.id.driverMapFragment)
-                        else navigateToFragment(R.id.clientMapFragment)
+                        runnable.run()
                     }
                 } else {
                     hideProgressBar(progressBar)

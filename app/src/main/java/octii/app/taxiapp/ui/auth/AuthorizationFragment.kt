@@ -63,7 +63,10 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         resources.getString(R.string.no_name),
                         Snackbar.LENGTH_SHORT).show()
                 } else {
-                    requests.userRequests.login("+$phoneNumber", userName, binding.progressBar)
+                    requests.userRequests.login("+$phoneNumber", userName, binding.progressBar){
+                        if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
+                        else  findNavController().navigate(R.id.clientMapFragment)
+                    }
                 }
             }
             R.id.main_auth -> {
