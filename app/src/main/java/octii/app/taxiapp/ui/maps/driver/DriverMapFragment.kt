@@ -26,9 +26,11 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
+import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.services.taximeter.TaximeterService
@@ -74,6 +76,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
             e.printStackTrace()
             Log.e(TAG, "err: $e" )
         }*/
+        logError("2")
         googleMap.isMyLocationEnabled = true
         this.googleMap = googleMap
     }
@@ -87,6 +90,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private var googleMap : GoogleMap? = null
     private var isMoved = false
     private var marker : Marker?  = null
+    private var cameraMoved = false
 
 
     override fun onCreateView(
@@ -149,6 +153,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private fun setMap(){
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        logError("1")
+        logError("3")
+
     }
 
     private fun checkPermissions(){
@@ -186,6 +193,11 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         override fun run() {
             if (activity != null) {
                 activity!!.runOnUiThread {
+                    if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0){
+                        val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
+                        googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
+                        cameraMoved = true
+                    }
                     if (OrdersModel.isOrdered) {
                         val bottomSheet =
                             DriverAcceptOrderBottomSheet(context, activity!!, OrdersModel())
@@ -265,6 +277,5 @@ class DriverMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
         }
         return true
     }
-
 
 }

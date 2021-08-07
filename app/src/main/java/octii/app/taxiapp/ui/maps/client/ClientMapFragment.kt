@@ -33,6 +33,7 @@ import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.Services
+import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
@@ -67,6 +68,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
     private var googleMap : GoogleMap? = null
     private var isMoved = false
     private var marker : Marker?  = null
+    private var cameraMoved = false
 
 
     override fun onCreateView(
@@ -165,7 +167,11 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
         override fun run() {
             activity.runOnUiThread {
-
+                if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0){
+                    val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
+                    googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
+                    cameraMoved = true
+                }
                 if (OrdersModel.isAccepted && OrdersModel.mDriverID > 0) {
                     binding.callTaxi.hide()
                     binding.fabSettings.hide()
