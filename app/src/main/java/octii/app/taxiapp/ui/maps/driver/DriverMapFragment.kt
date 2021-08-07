@@ -26,7 +26,6 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
-import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
