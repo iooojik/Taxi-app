@@ -63,7 +63,7 @@ class LogSender {
     private val availableInternalMemorySize: String
         private get() {
             val path: File = Environment.getDataDirectory()
-            val stat = StatFs(path.getPath())
+            val stat = StatFs(path.path)
             val blockSize = stat.blockSizeLong
             val availableBlocks = stat.availableBlocksLong
             return formatSize(availableBlocks * blockSize)
@@ -71,7 +71,7 @@ class LogSender {
     private val totalInternalMemorySize: String
         private get() {
             val path: File = Environment.getDataDirectory()
-            val stat = StatFs(path.getPath())
+            val stat = StatFs(path.path)
             val blockSize = stat.blockSizeLong
             val totalBlocks = stat.blockCountLong
             return formatSize(totalBlocks * blockSize)
@@ -79,7 +79,7 @@ class LogSender {
     private val availableExternalMemorySize: String
         private get() = if (externalMemoryAvailable()) {
             val path: File = Environment.getExternalStorageDirectory()
-            val stat = StatFs(path.getPath())
+            val stat = StatFs(path.path)
             val blockSize = stat.blockSizeLong
             val availableBlocks = stat.availableBlocksLong
             formatSize(availableBlocks * blockSize)
@@ -90,7 +90,7 @@ class LogSender {
         private get() {
             return if (externalMemoryAvailable()) {
                 val path: File = Environment.getExternalStorageDirectory()
-                val stat = StatFs(path.getPath())
+                val stat = StatFs(path.path)
                 val blockSize = stat.blockSizeLong
                 val totalBlocks = stat.blockCountLong
                 formatSize(totalBlocks * blockSize)

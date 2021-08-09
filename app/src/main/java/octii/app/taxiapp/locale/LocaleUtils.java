@@ -22,11 +22,11 @@ public class LocaleUtils {
         setLocale(context, defaultLanguage);
     }
 
-    public static boolean setLocale(Context context, String language) {
-        return updateResources(context, language);
+    public static void setLocale(Context context, String language) {
+        updateResources(context, language);
     }
 
-    static boolean updateResources(Context context, String language) {
+    static void updateResources(Context context, String language) {
         Resources resources = context.getResources();
         Configuration configuration = resources.getConfiguration();
         Locale locale = new Locale(language);
@@ -37,24 +37,12 @@ public class LocaleUtils {
             setSystemLocaleLegacy(configuration, locale);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context = context.createConfigurationContext(configuration);
+            context.createConfigurationContext(configuration);
         } else {
             context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
         }
-        return true;
     }
 
-    @SuppressWarnings("deprecation")
-    public static Locale getSystemLocaleLegacy(Configuration config){
-        return config.locale;
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    public static Locale getSystemLocale(Configuration config){
-        return config.getLocales().get(0);
-    }
-
-    @SuppressWarnings("deprecation")
     public static void setSystemLocaleLegacy(Configuration config, Locale locale){
         config.locale = locale;
     }

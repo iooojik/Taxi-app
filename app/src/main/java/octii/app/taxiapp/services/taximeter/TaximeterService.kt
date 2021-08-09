@@ -15,7 +15,6 @@ import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
-import kotlin.math.log
 
 class TaximeterService : Service() {
 

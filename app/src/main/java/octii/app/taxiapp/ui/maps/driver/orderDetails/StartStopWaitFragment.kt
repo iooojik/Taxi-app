@@ -16,8 +16,6 @@ import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
 
 

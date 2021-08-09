@@ -13,8 +13,8 @@
     <string name="change_language">Изменить язык</string>
     <string name="add_photos">Добавить фотографии</string>
     <string name="send_logs">Отправить логи</string>
-    <string name="ok_button">OK</string>
+    <string name="ok_button" translatable="false">OK</string>
     <string name="button_start">Старт</string>
     <string name="look_photos">Посмотреть фотографии</string>
-    <string name="fab_show_order_details">fab_show_order_details</string>
+    <string name="fab_show_order_details" translatable="false">fab_show_order_details</string>
 </resources>

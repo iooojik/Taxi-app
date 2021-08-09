@@ -16,10 +16,10 @@ import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.constants.sockets.MessageType
 import octii.app.taxiapp.constants.sockets.TaximeterType
-import octii.app.taxiapp.models.responses.TaximeterResponseModel
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.responses.OrdersResponseModel
+import octii.app.taxiapp.models.responses.TaximeterResponseModel
 import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper

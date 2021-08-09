@@ -44,4 +44,21 @@
     <string name="driver">Дривер</string>
     <string name="customer">Клијент</string>
     <string name="send_logs">Пошаљите дневнике</string>
+    <string name="button_start">Почетак</string>
+    <string name="look_photos">Погледајте фотографије</string>
+    <string name="deal_price">Цена по договору</string>
+    <string name="deal_price_helper_text">Цена се може променити само једном</string>
+    <string name="open_in">Отварање у ...</string>
+    <string name="finish_order_dialog">Јесте ли сигурни да желите довршити поруџбину?</string>
+    <string name="per_trip">По путовању:</string>
+    <string name="per_waiting">За чекање:</string>
+    <string name="total_price">Укупни трошкови:</string>
+    <string name="taximeter_starts_working">Таксиметар ће почети са радом</string>
+    <string name="only_one_photo_upload">Фотографије се могу учитати само једном! Молимо вас да их проверите пре преузимања!</string>
+    <string name="trip_distance">Пређена удаљеност:</string>
+    <string name="trip_time">Време путовања:</string>
+    <string name="check_photos">Да бисте радили као возач, морате да поставите све фотографије.</string>
+    <string name="button_no">Не</string>
+    <string name="button_yes">Да</string>
+    <string name="button_waiting">Очекивање</string>
 </resources>

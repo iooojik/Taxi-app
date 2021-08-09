@@ -21,13 +21,13 @@
     <string name="customer">Клиент</string>
     <string name="open_in">Открыть в…</string>
     <string name="finish_order_dialog">Вы действительно хотите завершить заказ?</string>
-    <string name="zero">0</string>
+    <string name="zero" translatable="false">0</string>
     <string name="per_trip">За поездку:</string>
-    <string name="euro_km">€(km)</string>
-    <string name="euro_min">€(min)</string>
+    <string name="euro_km" translatable="false">€(km)</string>
+    <string name="euro_min" translatable="false">€(min)</string>
     <string name="per_waiting">За ожидание:</string>
     <string name="total_price">Итоговая стоимость:</string>
-    <string name="km">km</string>
+    <string name="km" translatable="false">km</string>
     <string name="taximeter_starts_working">Начнёт работать таксиметр</string>
     <string name="only_one_photo_upload">Фотографии можно загрузить только один раз! Пожалуйста, проверяйте их перед загрузкой!</string>
 
