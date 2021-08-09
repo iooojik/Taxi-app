@@ -150,7 +150,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                     activity?.runOnUiThread {
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
 
-                        if (googleMap != null) {
+                        if (googleMap != null && OrdersModel.isOrdered) {
                             val latLng =
                                 LatLng(OrdersModel.mCustomer.coordinates!!.latitude, OrdersModel.mCustomer.coordinates!!.longitude)
                             if (marker != null) marker!!.remove()
