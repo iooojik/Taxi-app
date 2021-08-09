@@ -4,10 +4,17 @@
     <string name="button_accept">Принять</string>
     <string name="button_reject">Отклонить</string>
     <string name="button_finish">Закончить</string>
+    <string name="button_waiting">Ожидание</string>
+    <string name="button_yes">Да</string>
+    <string name="button_no">Нет</string>
     <string name="call_taxi">Вызвать такси</string>
     <string name="become_client">Стать клиентом(потом можно вернуться в водители)</string>
     <string name="become_driver">Стать водителем(потом можно вернуться в клиенты)</string>
     <string name="change_language">Изменить язык</string>
     <string name="add_photos">Добавить фотографии</string>
     <string name="send_logs">Отправить логи</string>
+    <string name="ok_button">OK</string>
+    <string name="button_start">Старт</string>
+    <string name="look_photos">Посмотреть фотографии</string>
+    <string name="fab_show_order_details">fab_show_order_details</string>
 </resources>

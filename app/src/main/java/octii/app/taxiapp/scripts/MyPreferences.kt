@@ -9,6 +9,8 @@ class MyPreferences {
         var userPreferences : SharedPreferences? = null
         @JvmStatic
         var applicationPreferences : SharedPreferences? = null
+        @JvmStatic
+        var taximeterPreferences : SharedPreferences? = null
 
         fun saveToPreferences(preferences: SharedPreferences, key : String, value : String){
             preferences.edit().putString(key, value).apply()
@@ -37,6 +39,10 @@ class MyPreferences {
         fun clearAll(){
             userPreferences?.edit()?.clear()?.apply()
             applicationPreferences?.edit()?.clear()?.apply()
+        }
+
+        fun clearTaximeter(){
+            taximeterPreferences?.edit()?.clear()?.apply()
         }
     }
 

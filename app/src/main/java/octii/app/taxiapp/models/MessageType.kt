@@ -1,5 +1,0 @@
-package octii.app.taxiapp.models
-
-enum class MessageType {
-    ORDER_REJECT, ORDER_REQUEST, ORDER_ACCEPT, ORDER_FINISHED, NO_ORDERS, TAXIMETER_UPDATE, COORDINATES_UPDATE
-}

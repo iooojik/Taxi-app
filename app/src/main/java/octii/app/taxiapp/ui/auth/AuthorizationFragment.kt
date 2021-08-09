@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
 
@@ -63,7 +65,8 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         resources.getString(R.string.no_name),
                         Snackbar.LENGTH_SHORT).show()
                 } else {
-                    requests.userRequests.login("+$phoneNumber", userName, binding.progressBar){
+                    requests.userRequests.login("+$phoneNumber", userName,
+                        LatLng(MyLocationListener.latitude, MyLocationListener.longitude), binding.progressBar){
                         if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
                         else  findNavController().navigate(R.id.clientMapFragment)
                     }

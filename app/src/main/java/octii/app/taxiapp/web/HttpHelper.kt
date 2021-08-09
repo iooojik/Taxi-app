@@ -5,7 +5,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
-import octii.app.taxiapp.constants.Static
+import octii.app.taxiapp.constants.StaticWeb
 import octii.app.taxiapp.models.driver.DriverApi
 import octii.app.taxiapp.models.files.FileApi
 import octii.app.taxiapp.models.orders.OrdersApi
@@ -42,7 +42,7 @@ class HttpHelper {
             interceptor.apply { interceptor.level = HttpLoggingInterceptor.Level.BODY }
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
             retrofit = Retrofit.Builder()
-                .baseUrl(Static.REST_URL)
+                .baseUrl(StaticWeb.REST_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

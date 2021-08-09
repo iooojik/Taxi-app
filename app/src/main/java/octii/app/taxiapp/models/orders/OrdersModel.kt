@@ -3,7 +3,6 @@ package octii.app.taxiapp.models.orders
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import octii.app.taxiapp.models.TaximeterModel
 import octii.app.taxiapp.models.user.UserModel
 
 @Entity
@@ -22,8 +21,7 @@ class OrdersModel(
     @ColumnInfo(name = "is_new")
     var isNew : Boolean = false,
     var driver : UserModel? = mDriver,
-    var customer : UserModel? = mCustomer,
-    var taximeterModel: TaximeterModel? = null
+    var customer : UserModel? = mCustomer
 ) {
     companion object{
         @JvmStatic

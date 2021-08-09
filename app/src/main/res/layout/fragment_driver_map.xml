@@ -23,27 +23,29 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:contentDescription="@string/fab_settings_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/outline_settings_24"
-        android:contentDescription="@string/fab_settings_description" />
+        app:srcCompat="@drawable/outline_settings_24" />
 
-    <include
-        android:id="@+id/driver_order_info_layout"
-        layout="@layout/bottom_sheet_driver_order"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/orderDetails"
+        android:name="octii.app.taxiapp.ui.maps.driver.orderDetails.OrderDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/map"/>
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <include
-        android:id="@+id/taximeter"
-        layout="@layout/taximeter"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_show_order_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:layout_marginEnd="@dimen/fab_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/fab_show_order_details"
+        android:src="@drawable/outline_expand_more_24"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/orderDetails"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

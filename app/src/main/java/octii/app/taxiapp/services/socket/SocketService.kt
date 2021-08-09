@@ -4,21 +4,24 @@ import android.app.Service
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.widget.Toast
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
-import octii.app.taxiapp.models.MessageType
+import octii.app.taxiapp.constants.StaticCoordinates
+import octii.app.taxiapp.constants.StaticOrders
+import octii.app.taxiapp.constants.StaticTaximeter
+import octii.app.taxiapp.constants.sockets.MessageType
+import octii.app.taxiapp.constants.sockets.TaximeterType
+import octii.app.taxiapp.models.responses.TaximeterResponseModel
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.models.responses.ResponseModel
-import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.scripts.logInfo
-import octii.app.taxiapp.scripts.logService
+import octii.app.taxiapp.models.responses.OrdersResponseModel
+import octii.app.taxiapp.scripts.*
+import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests
 import ua.naiksoftware.stomp.dto.StompMessage
@@ -26,18 +29,18 @@ import ua.naiksoftware.stomp.dto.StompMessage
 class SocketService : Service() {
 
     private val gson = Gson()
-    private val uuid : String = UserModel.mUuid
-    private val mainTopic : String = "/topic/${UserModel.mUuid}"
     private lateinit var requests: Requests
-    private val timer = Handler()
-    private val handler = Handler()
+    private val timer = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
     private var running = true
+    private val orderIntent = Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
+    private val taximeterIntent = Intent(StaticTaximeter.TAXIMETER_STATUS_INTENT_FILTER)
+    private val coordinatesIntent = Intent(StaticOrders.ORDER_STATUS_COORDINATES_STATUS)
 
     override fun onCreate() {
         super.onCreate()
         requests = Requests()
         logService("socket service is running")
-        SocketHelper.connect()
         connectToMainTopics()
         setTimer()
     }
@@ -47,8 +50,6 @@ class SocketService : Service() {
         timer.post(object : Runnable {
             override fun run() {
                 if (running){
-                    //if (!SocketHelper.mStompClient.isConnected) SocketHelper.connect()
-                    //logInfo(SocketHelper.mStompClient.isConnected)
                     handler.postDelayed(this, 10000)
                 }
             }
@@ -61,100 +62,96 @@ class SocketService : Service() {
          * Когда пользователь проходит авторизацию, то сохраняем UUID и токен в SharedPrefs,
          * и слушаем события об авторизации каждые N секунд, и обновляем данные
          */
-        logInfo(mainTopic)
-        mainTopic(mainTopic)
-        taximeterTopic("$mainTopic/taximeter")
+        SocketHelper.connect()
+        val userUUUID = getUserUUID()
+        if (userUUUID != null && userUUUID.trim().isNotEmpty()) {
+            val mainTopicURL = "/topic/$userUUUID"
+            orderTopic(mainTopicURL)
+            taximeterTopic("$mainTopicURL/taximeter")
+            SocketHelper.mStompClient.connect()
+            logInfo(mainTopicURL)
+        }
     }
 
-    private fun mainTopic(path : String) {
-        SocketHelper.resetSubscriptions()
+    private fun orderTopic(path : String) {
         val topic = SocketHelper.mStompClient.topic(path)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ topicMessage : StompMessage ->
 
-            logInfo("topic msg: $topicMessage")
+                logError("topic msg: $topicMessage")
 
-            val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
+                val responseModel : OrdersResponseModel = gson.fromJson(topicMessage.payload, OrdersResponseModel::class.java)
 
-            when(responseModel.type){
+                when(responseModel.type){
 
-                MessageType.ORDER_ACCEPT -> {
-                    logInfo("order accepted")
-                    MyPreferences.userPreferences?.let {
-                        MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0L)}
-                    if (responseModel.order != null){
-                        val order = requests.orderRequests
-                            .getOrderModel(responseModel.order!! as OrdersModel,
-                                isOrdered = false,
-                                isAccepted = true)
+                    MessageType.ORDER_ACCEPT -> {
+                        logInfo("order accepted")
+                        if (responseModel.order != null) {
+                            requests.orderRequests.getOrderModel(responseModel.order!!, isOrdered = false, isAccepted = true)
+                        }
+                        MyPreferences.clearTaximeter()
+                        MyLocationListener.distance = 0f
+                        MyPreferences.taximeterPreferences?.let {
+                            MyPreferences.saveToPreferences(it,
+                                StaticTaximeter.SHARED_PREFERENCES_UPDATING_COORDINATES, true)
+                        }
+                        sendBroadcast(orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_ACCEPTED))
                     }
 
-                }
+                    MessageType.ORDER_REJECT -> {
+                        logInfo("order rejected")
+                        if (responseModel.order != null){
+                            requests.orderRequests.getOrderModel(responseModel.order!!, false)
+                        }
+                    }
 
-                MessageType.ORDER_REJECT -> {
-                    logInfo("order rejected")
-                    if (responseModel.order != null){
-                        //logError(responseModel.body.toString())
-                        val order = requests.orderRequests
-                            .getOrderModel(responseModel.order!! as OrdersModel, false)
+                    MessageType.ORDER_FINISHED -> {
+                        logInfo("order finished")
+
+                        OrdersModel.isOrdered = false
+                        OrdersModel.isAccepted = false
+                        if (responseModel.order != null){
+                            requests.orderRequests.getOrderModel(responseModel.order!!, isOrdered = false, isAccepted = false)
+                        }
+                        MyPreferences.taximeterPreferences?.let {
+                            MyPreferences.saveToPreferences(it,
+                                StaticTaximeter.SHARED_PREFERENCES_UPDATING_COORDINATES, false)
+                        }
+                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED)
+                        sendBroadcast(orderIntent)
+                    }
+
+                    MessageType.NO_ORDERS -> {
+                        logInfo("no orders")
+                        OrdersModel.isOrdered = false
+                        showSnackbar(this, resources.getString(R.string.all_drivers_are_busy))
+                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED)
+                        sendBroadcast(orderIntent)
+                    }
+
+                    MessageType.ORDER_REQUEST -> {
+                        logError("order request")
+                        logError("resp: $responseModel")
+                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_ORDERED)
+                        sendBroadcast(orderIntent)
+                        logInfo(responseModel.order != null)
+                        if (responseModel.order != null){
+                            requests.orderRequests.getOrderModel(responseModel.order!!, true)
+                        }
+                    }
+
+                    else -> {
+                        logInfo("No matchable types")
+                        showSnackbar(this, resources.getString(R.string.error))
                     }
                 }
-
-                MessageType.ORDER_FINISHED -> {
-                    logInfo("order finished")
-                    logError(responseModel.toString())
-                    MyPreferences.userPreferences?.let {
-                        MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0L) }
-                    OrdersModel.isOrdered = false
-                    OrdersModel.isAccepted = false
-                    if (responseModel.order != null){
-                        logError(responseModel.order.toString())
-                        val order = requests.orderRequests
-                            .getOrderModel(responseModel.order!! as OrdersModel,
-                                isOrdered = false,
-                                isAccepted = false)
-                    }
-                }
-
-                MessageType.NO_ORDERS -> {
-                    logInfo("no orders")
-                    OrdersModel.isOrdered = false
-                    Toast.makeText(applicationContext,
-                        resources.getString(R.string.all_drivers_are_busy), Toast.LENGTH_SHORT).show()
-                }
-
-                MessageType.ORDER_REQUEST -> {
-                    logInfo("order request")
-                    logInfo("resp: $responseModel")
-                    logInfo(responseModel.order != null)
-                    if (responseModel.order != null){
-                        //logError(responseModel.body.toString())
-                        val order = requests.orderRequests
-                            .getOrderModel(responseModel.order!!, true)
-                    }
-                    SocketHelper.resetSubscriptions()
-
-                }
-
-                MessageType.COORDINATES_UPDATE -> {
-
-                }
-
-                else -> {
-                    logInfo("No matchable types")
-                    Toast.makeText(applicationContext, resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
-                }
-            }
                 logInfo("Application was connected to WebSockets path: $path")
-                mainTopic(path)
-        }, { throwable ->
+            }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
-                mainTopic(path)
             })
         SocketHelper.compositeDisposable.add(topic)
-        SocketHelper.mStompClient.connect()
     }
 
     private fun taximeterTopic(path: String){
@@ -163,19 +160,38 @@ class SocketService : Service() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ topicMessage : StompMessage ->
 
-                logInfo("taximeter: $topicMessage")
+                logError("taximeter: $topicMessage")
 
-                val responseModel : ResponseModel = gson.fromJson(topicMessage.payload, ResponseModel::class.java)
+                val responseModel : TaximeterResponseModel =
+                    gson.fromJson(topicMessage.payload, TaximeterResponseModel::class.java)
 
                 when(responseModel.type){
 
-                    MessageType.TAXIMETER_UPDATE -> {
-
+                    TaximeterType.TAXIMETER_UPDATE -> {
                         val coordinatesModel = responseModel.coordinates
+                        logError(coordinatesModel.toString())
                         if (coordinatesModel != null){
                             RemoteCoordinates.remoteLat = coordinatesModel.latitude
                             RemoteCoordinates.remoteLon = coordinatesModel.longitude
                         }
+                        sendBroadcast(coordinatesIntent.putExtra(StaticCoordinates.COORDINATES_STATUS_UPDATE, StaticCoordinates.COORDINATES_STATUS_UPDATE_))
+                    }
+
+                    TaximeterType.TAXIMETER_START -> {
+                        sendBroadcast(taximeterIntent.putExtra(StaticTaximeter.TAXIMETER_STATUS, TaximeterType.TAXIMETER_START))
+                    }
+
+                    TaximeterType.TAXIMETER_WAITING -> {
+                        MyPreferences.taximeterPreferences?.let {
+                            MyPreferences.saveToPreferences(it,
+                                StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+                                responseModel.isWaiting)
+                        }
+                        sendBroadcast(taximeterIntent.putExtra(StaticTaximeter.TAXIMETER_STATUS, TaximeterType.TAXIMETER_WAITING))
+                    }
+
+                    TaximeterType.TAXIMETER_STOP -> {
+                        sendBroadcast(taximeterIntent.putExtra(StaticTaximeter.TAXIMETER_STATUS, TaximeterType.TAXIMETER_STOP))
                     }
 
                     else -> {
@@ -183,17 +199,17 @@ class SocketService : Service() {
                         Toast.makeText(applicationContext, resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
                     }
                 }
-
-                //taximeterTopic(path)
                 logInfo("Application was connected to WebSockets path: $path")
             }, { throwable ->
                 logError("ttt :$throwable")
                 throwable.printStackTrace()
-                taximeterTopic(path)
-                SocketHelper.resetSubscriptions()
             })
+
         SocketHelper.compositeDisposable.add(topic)
     }
+
+    private fun getUserUUID() : String? =
+        MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_UUID, "")
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

@@ -17,5 +17,6 @@
     <color name="background_text_input">#e9e9ee</color>
 
     <color name="colorWarning">#F37468</color>
+    <color name="colorAccept">#99d98c</color>
     <color name="colorGrey">#858585</color>
 </resources>

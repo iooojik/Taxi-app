@@ -2,16 +2,16 @@ package octii.app.taxiapp.ui.maps.driver
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
-import octii.app.taxiapp.constants.Static
+import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.BottomSheetAcceptOrderBinding
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
@@ -39,7 +39,7 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
                     .into(binding.customerAvatar)
             } else binding.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
         }
-
+        show()
         val timerToReject = TimerToReject(binding.timer, activity)
         timer = Timer()
         timer.schedule(timerToReject, 0, 1000)
@@ -55,9 +55,8 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
 
     private fun acceptOrder(){
         finishTimer(timer)
-        //Services(activity = activity).startNewService(TaximeterService::class)
-        MyPreferences.userPreferences?.let {
-            MyPreferences.saveToPreferences(it, Static.SHARED_PREFERENCES_ORDER_TIME, 0L) }
+        activity.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
+            .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_ACCEPTED))
         SocketHelper.acceptOrder(order)
         this@DriverAcceptOrderBottomSheet.hide()
     }
@@ -75,7 +74,7 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
 
     inner class TimerToReject(private val view: TextView, private val activity: Activity) : TimerTask() {
 
-        private var seconds = 10
+        private var seconds = 15
 
         override fun run() {
             activity.runOnUiThread {

@@ -1,6 +1,5 @@
 package octii.app.taxiapp.ui.settings
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +16,12 @@ import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
-import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
-import kotlin.concurrent.thread
 
 
-class DriverSettingsHelper : Fragment(), View.OnClickListener,
+class DriverSettingsFragment : Fragment(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener, SettingsHelper, FragmentHelper {
 
     private lateinit var binding : FragmentDriverSettingsBinding
@@ -115,7 +113,6 @@ class DriverSettingsHelper : Fragment(), View.OnClickListener,
                 updateDriver()
             }
             R.id.fab_back -> {
-                updateDriver()
                 findNavController().navigate(R.id.driverMapFragment)
             }
             R.id.add_photos -> {
@@ -130,9 +127,10 @@ class DriverSettingsHelper : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.working -> {
-                UserModel.mDriver.isWorking = isChecked
-                logError(isChecked)
-                updateDriver()
+                //if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) { TODO
+                    UserModel.mDriver.isWorking = isChecked
+                    updateDriver()
+                //} else showSnackbar(requireContext(), resources.getString(R.string.check_photos))
             }
             R.id.russian_language -> {
                 if (isChecked)
@@ -161,16 +159,6 @@ class DriverSettingsHelper : Fragment(), View.OnClickListener,
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        logError(requestCode)
-        when(requestCode){
-            Static.PICK_IMAGE_AVATAR -> {
-                logError("image picked")
-            }
-        }
-    }
-
     private fun updateDriver(){
 
         val prices = listOf(
@@ -188,12 +176,9 @@ class DriverSettingsHelper : Fragment(), View.OnClickListener,
         UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-        thread {
-            val user = requests.userRequests.update()
-            if (user.type == Static.CLIENT_TYPE)
-                activity?.runOnUiThread {
-                    findNavController().navigate(R.id.clientSettingsFragment)
-                }
+        requests.userRequests.update{
+            if (UserModel.uType == Static.CLIENT_TYPE)
+                findNavController().navigate(R.id.clientSettingsFragment)
         }
 
 

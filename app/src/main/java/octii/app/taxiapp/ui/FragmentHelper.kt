@@ -2,6 +2,7 @@ package octii.app.taxiapp.ui
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
@@ -93,5 +94,18 @@ interface FragmentHelper {
         }
         UserModel.mLanguages = languages.toList()
 
+    }
+
+    fun goToApplication(packageName : String, activity: Activity){
+        var intent = activity.packageManager.getLaunchIntentForPackage(packageName)
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activity.startActivity(intent)
+        } else {
+            intent = Intent(Intent.ACTION_VIEW)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.data = Uri.parse("market://details?id=$packageName")
+            activity.startActivity(intent)
+        }
     }
 }

@@ -36,10 +36,9 @@
         android:layout_margin="@dimen/fab_margin"
         android:text="@string/call_taxi"
         android:gravity="center"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
     <ProgressBar
         android:id="@+id/clientMapprogressBar"
@@ -53,21 +52,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.71000004" />
 
-    <include
-        android:id="@+id/client_order_info_layout"
-        layout="@layout/bottom_sheet_client_order"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/orderDetails"
+        android:name="octii.app.taxiapp.ui.maps.client.orderDetails.OrderDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/call_taxi" />
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <include
-        android:id="@+id/taximeter"
-        layout="@layout/taximeter"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_show_order_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:layout_marginEnd="@dimen/fab_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/fab_show_order_details"
+        android:src="@drawable/outline_expand_more_24"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/orderDetails"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

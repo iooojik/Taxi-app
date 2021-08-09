@@ -1,18 +1,14 @@
 package octii.app.taxiapp.ui.maps.client
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -23,24 +19,26 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
+import octii.app.taxiapp.constants.StaticCoordinates
+import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.down
+import octii.app.taxiapp.scripts.fadeTo
+import octii.app.taxiapp.scripts.up
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
-import java.util.*
+import kotlin.concurrent.thread
 
 
-class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickListener,
+class ClientMapFragment : Fragment(), View.OnClickListener,
     FragmentHelper {
 
     @SuppressLint("MissingPermission")
@@ -61,127 +59,54 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
 
     }
     private lateinit var binding: FragmentClientMapBinding
-    private lateinit var mTimer : Timer
-    private lateinit var orderUpdate : OrderUpdate
     private lateinit var permissions: Permissions
     private lateinit var services: Services
     private var googleMap : GoogleMap? = null
     private var isMoved = false
     private var marker : Marker?  = null
     private var cameraMoved = false
+    private val EXPAND_MORE_FAB = "expand more"
+    private val EXPAND_LESS_FAB = "expand less"
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentClientMapBinding.inflate(layoutInflater)
-        binding.taximeter.price.text = ""
-        logInfo("client map starter")
-        setTimer()
-        setListeners()
-        checkUserType()
-        setServices()
-        blockGoBack(requireActivity(), this)
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        view?.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
-        checkPermissions()
-        try {
-            setMap()
-        } catch (e : Exception){
-            e.printStackTrace()
-            Snackbar.make(requireView(), resources.getString(R.string.check_permissions), Snackbar.LENGTH_SHORT).show()
-        }
-
-    }
-
-    private fun setListeners(){
-        binding.callTaxi.setOnClickListener(this)
-        binding.fabSettings.setOnClickListener(this)
-        binding.clientOrderInfoLayout.callToDriver.setOnClickListener(this)
-        binding.clientOrderInfoLayout.driverPhone.setOnClickListener(this)
-    }
-
-    private fun checkUserType(){
-        if (getSavedUserType() == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
-    }
-
-    private fun getSavedUserType() : String{
-        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
-        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
-    }
-
-    private fun setServices(){
-        services = Services(activity, Static.MAIN_SERVICES)
-        services.start()
-    }
-
-    private fun checkPermissions(){
-        permissions = Permissions(requireContext(), requireActivity())
-        permissions.requestPermissions()
-    }
-
-    private fun setTimer() {
-        orderUpdate = OrderUpdate(binding.root, requireActivity())
-        mTimer = Timer()
-        mTimer.schedule(orderUpdate, 0, 1000)
-    }
-
-    private fun setMap(){
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
-
-    }
-
-
-
-    override fun onClick(v: View?) {
-        when(v!!.id){
-            R.id.call_taxi -> {
-                SocketHelper.makeOrder()
-                OrdersModel.isOrdered = true
-                binding.callTaxi.hide()
-                binding.clientMapprogressBar.visibility = View.VISIBLE
-            }
-            R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsFragment)
-            R.id.call_to_driver -> callToDriver()
-        }
-    }
-
-    private fun callToDriver() {
-        if (OrdersModel.mDriver.phone.isNotEmpty()) {
-            val dial = "tel:${OrdersModel.mDriver.phone}"
-            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
-        }
-    }
-
-    inner class OrderUpdate(
-        private val view: View, private val activity: Activity,
-    ) : TimerTask() {
-
-        override fun run() {
-            activity.runOnUiThread {
-                if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0){
-                    val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
-                    googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
-                    googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
-                    cameraMoved = true
+    private var orderStatusReciever : BroadcastReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null) {
+                when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
+                    StaticOrders.ORDER_STATUS_ACCEPTED -> {
+                        setOrderDetails()
+                        binding.callTaxi.hide()
+                        binding.fabSettings.hide()
+                        binding.clientMapprogressBar.visibility = View.INVISIBLE
+                    }
+                    StaticOrders.ORDER_STATUS_FINISHED -> {
+                        binding.fabSettings.show()
+                        binding.clientMapprogressBar.visibility = View.INVISIBLE
+                        binding.fabShowOrderDetails.setOnClickListener {
+                            if (it.tag == EXPAND_MORE_FAB){
+                                synchronized(this){
+                                    binding.orderDetails.down(requireActivity())
+                                    hideFabOrderDetails(true)
+                                }
+                                binding.callTaxi.show()
+                            } else {
+                                binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
+                                binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+                                binding.orderDetails.up(requireActivity())
+                            }
+                        }
+                        googleMap?.clear()
+                        googleMap?.clear()
+                    }
                 }
-                if (OrdersModel.isAccepted && OrdersModel.mDriverID > 0) {
-                    binding.callTaxi.hide()
-                    binding.fabSettings.hide()
-                    binding.clientMapprogressBar.visibility = View.INVISIBLE
-                    binding.clientOrderInfoLayout.driverName.text = OrdersModel.mDriver.userName
-                    binding.clientOrderInfoLayout.driverPhone.text = OrdersModel.mDriver.phone
-                    //binding.taximeter.price.text = TaximeterService.getTaximeterString(activity.resources)
+            }
+        }
+    }
 
-                    if (OrdersModel.mUuid.trim().isNotEmpty()){
+    private var coordinatesStatusReciever : BroadcastReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null) {
+                when(intent.getStringExtra(StaticCoordinates.COORDINATES_STATUS_UPDATE)){
+                    StaticCoordinates.COORDINATES_STATUS_UPDATE_ -> {
                         if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0){
                             if (googleMap != null) {
                                 val latLng =
@@ -198,46 +123,145 @@ class ClientMapFragment : Fragment(), View.OnClickListener, View.OnLongClickList
                             }
                         }
                     }
-
-                    if (OrdersModel.mDriver.avatarURL.isNotEmpty()){
-                        Picasso.with(context)
-                            .load(OrdersModel.mDriver.avatarURL)
-                            .transform(RoundedCornersTransformation(40, 5))
-                            .resize(160, 160)
-                            .centerCrop()
-                            .into(binding.clientOrderInfoLayout.driverAvatar)
-                    } else {
-                        binding.clientOrderInfoLayout.driverAvatar.setImageResource(R.drawable.outline_account_circle_24)
-                    }
-                    view.findViewById<ConstraintLayout>(R.id.client_order_info_layout).visibility = View.VISIBLE
-                } else {
-                    if (googleMap != null)
-                        googleMap!!.clear()
-                    view.findViewById<ConstraintLayout>(R.id.client_order_info_layout)?.visibility = View.GONE
-                    if (!binding.callTaxi.isVisible && !OrdersModel.isOrdered){
-                        binding.callTaxi.show()
-                        binding.fabSettings.show()
-                        binding.clientMapprogressBar.visibility = View.INVISIBLE
-                    }
-                    //binding.taximeter.price.text = ""
                 }
             }
         }
     }
 
-    override fun onLongClick(v: View?): Boolean {
-        when(v!!.id){
-            R.id.driver_phone -> {
-                val clipboard: ClipboardManager =
-                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("", binding.clientOrderInfoLayout.driverPhone.text.toString())
-                clipboard.setPrimaryClip(clip)
-                Snackbar.make(binding.root, resources.getString(R.string.copied), Snackbar.LENGTH_SHORT).show()
-            }
-        }
-        return true
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        binding = FragmentClientMapBinding.inflate(layoutInflater)
+        binding.fabShowOrderDetails.setOnClickListener(this)
+        setListeners()
+        checkUserType()
+        setServices()
+        blockGoBack(requireActivity(), this)
+        return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
+        checkPermissions()
+        moveGoogleCameraToMe()
+        setOrderDetails()
+        try {
+            setMap()
+        } catch (e : Exception){
+            e.printStackTrace()
+            Snackbar.make(requireView(), resources.getString(R.string.check_permissions), Snackbar.LENGTH_SHORT).show()
+        }
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        requireActivity().unregisterReceiver(orderStatusReciever)
+        requireActivity().unregisterReceiver(coordinatesStatusReciever)
+    }
+
+    private fun setOrderDetails(){
+        if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
+            binding.callTaxi.hide()
+            showFabOrderDetails()
+            binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
+            binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+            binding.orderDetails.up(requireActivity())
+        } else {
+            binding.fabSettings.show()
+        }
+    }
+
+    private fun showFabOrderDetails(){
+        synchronized(this){
+            binding.fabShowOrderDetails.show()
+            binding.fabShowOrderDetails.up(requireActivity(), binding.orderDetails)
+        }
+    }
+
+    private fun hideFabOrderDetails(fullHide : Boolean = false){
+        synchronized(this){
+            binding.fabShowOrderDetails.down(requireActivity(), false, binding.orderDetails)
+            if (fullHide)
+                binding.fabShowOrderDetails.hide()
+        }
+    }
+
+    private fun moveGoogleCameraToMe() {
+        //переводит камеру
+        thread {
+            while (!cameraMoved){
+                if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0){
+                    val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
+                    activity?.runOnUiThread {
+                        googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
+                        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
+                        if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
+                            binding.callTaxi.hide()
+                            binding.fabSettings.hide()
+                        }
+                    }
+                    cameraMoved = true
+                }
+            }
+        }
+    }
+
+    private fun setListeners(){
+        binding.callTaxi.setOnClickListener(this)
+        binding.fabSettings.setOnClickListener(this)
+    }
+
+    private fun checkUserType(){
+        if (getSavedUserType() == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
+    }
+
+    private fun getSavedUserType() : String =
+        if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
+        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
+
+    private fun setServices(){
+        services = Services(activity, Static.MAIN_SERVICES)
+        services.start()
+    }
+
+    private fun checkPermissions(){
+        permissions = Permissions(requireContext(), requireActivity())
+        permissions.requestPermissions()
+    }
+
+    private fun setMap(){
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
+    }
+
+    override fun onClick(v: View?) {
+        when(v!!.id){
+            R.id.call_taxi -> {
+                SocketHelper.makeOrder()
+                OrdersModel.isOrdered = true
+                binding.callTaxi.hide()
+                binding.clientMapprogressBar.visibility = View.VISIBLE
+            }
+            R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsFragment)
+            R.id.fab_show_order_details -> {
+                if (v.tag == EXPAND_MORE_FAB){
+                    hideFabOrderDetails()
+                    binding.orderDetails.down(requireActivity())
+                    binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_less_24)
+                    binding.fabShowOrderDetails.tag = EXPAND_LESS_FAB
+                } else {
+                    binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
+                    binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+                    binding.orderDetails.up(requireActivity())
+                    showFabOrderDetails()
+                }
+            }
+        }
+    }
 
 }

@@ -2,7 +2,6 @@ package octii.app.taxiapp.services.location
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -30,7 +29,6 @@ class MyLocationListener : LocationListener {
         prevLocation = loc
         try {
             SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
-            logError("coords: ${CoordinatesModel(latitude = latitude, longitude = longitude)}")
         } catch (e : Exception){
             logError(e)
             e.printStackTrace()
@@ -48,9 +46,6 @@ class MyLocationListener : LocationListener {
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
 
     companion object {
-        // здесь будет всегда доступна самая последняя информация о местоположении пользователя.
-        var preferences : SharedPreferences? = null
-
         var prevLocation : Location? = null
         var imHere : Location? = null
         var latitude : Double = 0.0
@@ -64,10 +59,10 @@ class MyLocationListener : LocationListener {
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val locationListener: LocationListener = MyLocationListener()
-
+            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                5000, 10f,
+                10000, 10f,
                 locationListener
             ) // здесь можно указать другие более подходящие вам параметры
 

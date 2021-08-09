@@ -32,7 +32,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
-import kotlin.concurrent.thread
 
 
 class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
@@ -55,12 +54,12 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
     private fun setInformation(){
         if (UserModel.mFiles.isNotEmpty()){
             UserModel.mFiles.forEach {
-                logError(it)
                 editPhotoItemViews.forEach { b ->
                     if (b.root.tag == it.type) {
                         Picasso.with(context)
                             .load(it.url)
                             .into(b.photoPlaceholder)
+                        b.newPhoto.visibility = View.GONE
                     }
                 }
             }
@@ -107,10 +106,12 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
     }
 
     private fun uploadFile(){
-        val intent = Intent()
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        intent.action = Intent.ACTION_PICK
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Static.PICK_IMAGE_AVATAR)
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"),
+                Static.PICK_IMAGE_AVATAR)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -171,11 +172,8 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                                 call: Call<FileModel>,
                                 response: Response<FileModel>
                             ) {
-                                thread {
-                                    Requests().userRequests.update()
-                                    requireActivity().runOnUiThread {
-                                        setInformation()
-                                    }
+                                Requests().userRequests.update {
+                                    setInformation()
                                 }
                             }
 

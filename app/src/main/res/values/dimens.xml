@@ -15,6 +15,7 @@
     <dimen name="post_element_margin">30dp</dimen>
     <dimen name="post_corners_radius">16dp</dimen>
     <item name="messengers_size" type="dimen">100dp</item>
+    <item name="bottom_messengers_size" type="dimen">50dp</item>
     <item name="avatar_size" type="dimen">80dp</item>
     <item name="text_layouts_dimen" type="dimen">5dp</item>
 </resources>

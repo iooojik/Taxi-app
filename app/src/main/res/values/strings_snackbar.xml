@@ -8,4 +8,5 @@
     <string name="to_become_driver">Чтобы стать водителем, вам надо иметь установленный Viber и WhatsApp</string>
     <string name="copied">Скопировано</string>
     <string name="check_permissions">Проверьте разрешения</string>
+    <string name="check_photos">Чтобы работать водителем, у вас должны быть загружены все фотографии.</string>
 </resources>

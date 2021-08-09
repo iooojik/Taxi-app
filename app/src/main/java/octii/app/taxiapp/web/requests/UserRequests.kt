@@ -4,16 +4,15 @@ import android.app.Activity
 import android.view.View
 import android.widget.ProgressBar
 import androidx.navigation.findNavController
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.AuthorizationModel
+import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.logDebug
-import octii.app.taxiapp.scripts.logExeption
-import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -51,6 +50,11 @@ class UserRequests(private val view : View? = null, private val activity: Activi
             MyPreferences.userPreferences?.let {
                 MyPreferences.saveToPreferences(
                     it, Static.SHARED_PREFERENCES_USER_TOKEN, model.token)
+            }
+
+            MyPreferences.userPreferences?.let {
+                MyPreferences.saveToPreferences(
+                    it, Static.SHARED_PREFERENCES_USER_UUID, model.uuid)
             }
         }
         return UserModel()
@@ -102,10 +106,11 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         })
     }
 
-    fun login(phoneNum : String, name : String, progressBar: ProgressBar? = null, runnable: Runnable){
+    fun login(phoneNum : String, name : String, latLng: LatLng, progressBar: ProgressBar? = null, runnable: Runnable){
+        logError(latLng)
         showProgressBar(progressBar)
-
-        HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name)).enqueue(object :
+        HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name,
+            coordinates = CoordinatesModel(latitude = latLng.latitude, longitude = latLng.longitude))).enqueue(object :
             Callback<AuthorizationModel> {
             override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
                 if (response.isSuccessful){
@@ -151,20 +156,26 @@ class UserRequests(private val view : View? = null, private val activity: Activi
         }
     }
 
-    fun update() : UserModel{
-        try {
-            val response = HttpHelper.USER_API.update(UserModel()).execute()
-            if (response.isSuccessful){
-                val model = response.body()
-                if (model != null && model.token.isNotEmpty()){
-                    setUserInfo(model)
+    fun update(runnable: Runnable) : UserModel{
+        HttpHelper.USER_API.update(UserModel()).enqueue(object : Callback<UserModel>{
+            override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                if (response.isSuccessful){
+                    val model = response.body()
+                    if (model != null && model.token.isNotEmpty()){
+                        setUserInfo(model)
+                    }
+                    runnable.run()
+                } else {
+                    logError(response.raw())
+                    showSnackBarError()
                 }
             }
-        }catch (e : Exception){
-            showSnackBarError()
-            logExeption(e)
-            e.printStackTrace()
-        }
+
+            override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                showSnackBarError()
+                logExeption(t)
+            }
+        })
         return UserModel()
     }
 

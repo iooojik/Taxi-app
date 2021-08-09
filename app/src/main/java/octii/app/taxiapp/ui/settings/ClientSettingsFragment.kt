@@ -19,10 +19,9 @@ import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
-import kotlin.concurrent.thread
 
 
-class ClientSettingsHelper : Fragment(), View.OnClickListener,
+class ClientSettingsFragment : Fragment(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener, SettingsHelper, FragmentHelper {
 
     private lateinit var binding : FragmentClientSettingsBinding
@@ -45,13 +44,9 @@ class ClientSettingsHelper : Fragment(), View.OnClickListener,
     }
 
     private fun updateClient(){
-        thread {
-            val user = requests.userRequests.update()
-            requireActivity().runOnUiThread {
-                if (user.type == Static.DRIVER_TYPE)
-                    findNavController().navigate(R.id.driverSettingsFragment)
-            }
-
+        val user = requests.userRequests.update{
+            if (UserModel.uType == Static.DRIVER_TYPE)
+                findNavController().navigate(R.id.driverSettingsFragment)
         }
     }
 

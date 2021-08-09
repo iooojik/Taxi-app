@@ -7,5 +7,7 @@
     <string name="max_searching_distance">Максимальная дистанция поиска клиентов</string>
     <string name="price_per_minute">Цена за минуту</string>
     <string name="price_per_km">Цена за км</string>
+    <string name="deal_price">Договорная цена</string>
+    <string name="deal_price_helper_text">Цену можно изменить только один раз</string>
 
 </resources>
