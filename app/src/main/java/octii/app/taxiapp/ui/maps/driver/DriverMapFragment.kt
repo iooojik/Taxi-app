@@ -32,6 +32,7 @@ import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.up
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
+import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import kotlin.concurrent.thread
@@ -39,6 +40,11 @@ import kotlin.concurrent.thread
 
 class DriverMapFragment : Fragment(), View.OnClickListener,
     FragmentHelper {
+
+    companion object{
+        @JvmStatic
+        var ordered = true
+    }
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -57,12 +63,10 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     private lateinit var binding: FragmentDriverMapBinding
     private lateinit var permissions: Permissions
-    private lateinit var services: Services
     private var googleMap : GoogleMap? = null
     private var isMoved = false
     private var marker : Marker?  = null
     private var cameraMoved = false
-    private var isShownOrder = false
     private val EXPAND_MORE_FAB = "expand more"
     private val EXPAND_LESS_FAB = "expand less"
 
@@ -70,15 +74,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
                 when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
-                    StaticOrders.ORDER_STATUS_ORDERED -> {
-                        if (!isShownOrder) {
-                            synchronized(this) {
-                                DriverAcceptOrderBottomSheet(requireContext(),
-                                    requireActivity(),
-                                    OrdersModel()).show()
-                                isShownOrder = true
-                            }
-                            setOrderDetails()
+
+                    StaticOrders.ORDER_STATUS_REQUEST -> {
+                        logError(ordered)
+                        if (ordered) {
+                            ordered = false
+                            DriverAcceptOrderBottomSheet(requireContext(), requireActivity(), OrdersModel()).show()
                         }
                     }
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
@@ -86,7 +87,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                         setOrderDetails()
                     }
                     StaticOrders.ORDER_STATUS_FINISHED -> {
-                        isShownOrder = false
+                        ordered = true
                         binding.fabSettings.show()
                         binding.fabShowOrderDetails.setOnClickListener {
                             if (it.tag == EXPAND_MORE_FAB){
@@ -142,7 +143,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
         setListeners()
         checkUserType()
-        setServices()
         setUi()
         blockGoBack(requireActivity(), this)
         return binding.root
@@ -225,6 +225,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     private fun showFabOrderDetails(){
         synchronized(this){
+            binding.fabSettings.hide()
             binding.fabShowOrderDetails.show()
             binding.fabShowOrderDetails.up(requireActivity(), binding.orderDetails)
         }
@@ -240,11 +241,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     private fun setListeners(){
         binding.fabSettings.setOnClickListener(this)
-    }
-
-    private fun setServices(){
-        services = Services(activity, Static.MAIN_SERVICES)
-        services.start()
     }
 
     private fun setMap(){

@@ -15,18 +15,9 @@ class Services(private val activity: Activity?,
     fun start(){
         if (servicesList.isNotEmpty()) {
             servicesList.forEach {
-                //activity.startService(Intent(activity, it.java))
                 startService(it)
             }
         }
-    }
-
-    fun startNewService(serviceName: KClass<out Service>){
-        startService(serviceName)
-    }
-
-    fun stopService(serviceName: KClass<out Service>){
-        activity?.stopService(Intent(activity, serviceName.java))
     }
 
     private fun startService(serviceName : KClass<out Service>){

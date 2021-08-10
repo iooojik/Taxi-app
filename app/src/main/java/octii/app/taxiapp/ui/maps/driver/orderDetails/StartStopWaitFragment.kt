@@ -34,7 +34,7 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
             if (intent != null) {
                 when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
-                        //checkUI()
+                        checkUI()
                     }
                 }
             }
@@ -61,14 +61,19 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         logError("${isRunning()} ${isWaiting()}")
         if (isRunning()) {
             binding.finishOrder.visibility = View.VISIBLE
-            binding.waitingOrder.isEnabled = true
-            binding.finishOrder.isEnabled = true
             binding.startOrderLayout.visibility = View.GONE
         } else{
             binding.finishOrder.visibility = View.GONE
             binding.startOrderLayout.visibility = View.VISIBLE
-            binding.finishOrder.isEnabled = true
-            binding.waitingOrder.isEnabled = true
+        }
+        binding.finishOrder.isEnabled = true
+        binding.startOrder.isEnabled = true
+        binding.waitingOrder.isEnabled = true
+
+        if (!OrdersModel.isAccepted || OrdersModel.mId <= 0) {
+            binding.finishOrder.isEnabled = false
+            binding.waitingOrder.isEnabled = false
+            binding.startOrder.isEnabled = false
         }
     }
 
@@ -95,7 +100,7 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         binding.finishOrder.isEnabled = false
         binding.waitingOrder.isEnabled = false
         OrdersModel.isAccepted = false
-
+        checkUI()
         activity?.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
             .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED))
 

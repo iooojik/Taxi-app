@@ -39,7 +39,12 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
                     .into(binding.customerAvatar)
             } else binding.customerAvatar.setImageResource(R.drawable.outline_account_circle_24)
         }
-        show()
+        try {
+            show()
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
+
         val timerToReject = TimerToReject(binding.timer, activity)
         timer = Timer()
         timer.schedule(timerToReject, 0, 1000)

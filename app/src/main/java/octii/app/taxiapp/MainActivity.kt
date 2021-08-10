@@ -14,6 +14,7 @@ import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.MyPreferences
+import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.requests.Requests
 
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                 getStartLocation()
                 requests.userRequests.loginWithToken(token) {
                     getStartLocation()
+                    Services(this, Static.MAIN_SERVICES).start()
                 }
             }
         } else navigateToStartPage()

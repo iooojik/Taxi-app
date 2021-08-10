@@ -67,6 +67,10 @@ class MyLocationListener : LocationListener {
             ) // здесь можно указать другие более подходящие вам параметры
 
             imHere = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if (imHere != null){
+                longitude = imHere?.longitude!!
+                latitude = imHere?.latitude!!
+            }
         }
     }
 

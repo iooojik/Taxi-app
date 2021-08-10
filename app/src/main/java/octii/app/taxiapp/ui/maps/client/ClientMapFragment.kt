@@ -32,6 +32,7 @@ import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.up
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
+import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
@@ -60,7 +61,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     }
     private lateinit var binding: FragmentClientMapBinding
     private lateinit var permissions: Permissions
-    private lateinit var services: Services
     private var googleMap : GoogleMap? = null
     private var isMoved = false
     private var marker : Marker?  = null
@@ -140,7 +140,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         binding = FragmentClientMapBinding.inflate(layoutInflater)
         setListeners()
         checkUserType()
-        setServices()
         blockGoBack(requireActivity(), this)
         return binding.root
     }
@@ -182,6 +181,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     private fun showFabOrderDetails(){
         synchronized(this){
             binding.fabShowOrderDetails.show()
+            binding.callTaxi.hide()
+            binding.fabSettings.hide()
             binding.fabShowOrderDetails.up(requireActivity(), binding.orderDetails)
         }
     }
@@ -229,11 +230,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     private fun getSavedUserType() : String =
         if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
         else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
-
-    private fun setServices(){
-        services = Services(activity, Static.MAIN_SERVICES)
-        services.start()
-    }
 
     private fun checkPermissions(){
         permissions = Permissions(requireContext(), requireActivity())

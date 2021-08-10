@@ -13,6 +13,8 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
@@ -36,6 +38,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
     override fun onResume() {
         super.onResume()
         requests = Requests(requireView(), requireActivity())
+        MyLocationListener.setUpLocationListener(requireContext())
     }
 
     private fun setListeners(){
@@ -65,8 +68,11 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         resources.getString(R.string.no_name),
                         Snackbar.LENGTH_SHORT).show()
                 } else {
+                    logError(LatLng(MyLocationListener.latitude, MyLocationListener.longitude))
+
                     requests.userRequests.login("+$phoneNumber", userName,
                         LatLng(MyLocationListener.latitude, MyLocationListener.longitude), binding.progressBar){
+                        Services(requireActivity(), Static.MAIN_SERVICES).start()
                         if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
                         else  findNavController().navigate(R.id.clientMapFragment)
                     }

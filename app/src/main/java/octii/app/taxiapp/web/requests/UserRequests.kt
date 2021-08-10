@@ -100,15 +100,16 @@ class UserRequests(private val view : View? = null, private val activity: Activi
     }
 
     fun login(phoneNum : String, name : String, latLng: LatLng, progressBar: ProgressBar? = null, runnable: Runnable){
-        logError(latLng)
         showProgressBar(progressBar)
-        HttpHelper.USER_API.login(UserModel(phone = phoneNum, userName = name,
-            coordinates = CoordinatesModel(latitude = latLng.latitude, longitude = latLng.longitude))).enqueue(object :
+        val reqModel = UserModel(id= -1, uuid = "", phone = phoneNum, userName = name,
+            coordinates = CoordinatesModel(latitude = latLng.latitude, longitude = latLng.longitude))
+        HttpHelper.USER_API.login(reqModel).enqueue(object :
             Callback<AuthorizationModel> {
             override fun onResponse(call: Call<AuthorizationModel>, response: Response<AuthorizationModel>) {
                 if (response.isSuccessful){
                     val model = response.body()
                     if (model?.user != null && model.user.token.isNotEmpty()) {
+                        logError("${model.user.coordinates!!.latitude}")
                         setUserInfo(model.user)
                         orderRequests.orderCheck(model.user)
                         runnable.run()

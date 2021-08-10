@@ -14,6 +14,10 @@ import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
+import java.text.DateFormat
+import java.text.DateFormat.getDateInstance
+import java.text.SimpleDateFormat
+import java.time.Period
 import java.util.*
 
 class TaximeterService : Service() {
@@ -31,6 +35,28 @@ class TaximeterService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        logError("date ${getDestoyDate()}")
+        if (getDestoyDate().isNotEmpty()){
+            val destroyDate : Date? = SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).parse(getDestoyDate())
+            if (destroyDate != null) {
+                if (!isWaiting()) {
+                    val newTime = getOrderTime() +(Date().time - destroyDate.time)/1000
+                    MyPreferences.taximeterPreferences?.let {
+                        MyPreferences.saveToPreferences(it,
+                            StaticOrders.SHARED_PREFERENCES_ORDER_TIME,
+                            newTime)
+                    }
+                    logError(newTime)
+                } else {
+                    val newTime = getWaitingTime() + (Date().time - destroyDate.time)/1000
+                    MyPreferences.taximeterPreferences?.let {
+                        MyPreferences.saveToPreferences(it,
+                            StaticOrders.SHARED_PREFERENCES_ORDER_WAITING_TIME,
+                            newTime)
+                    }
+                }
+            }
+        }
         startTaximeter()
         startTimer()
     }
@@ -61,6 +87,10 @@ class TaximeterService : Service() {
     private fun isRunning() : Boolean =
         if (MyPreferences.taximeterPreferences?.getBoolean(StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false) == null) false
         else MyPreferences.taximeterPreferences?.getBoolean(StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)!!
+
+    private fun getDestoyDate() : String =
+        if (MyPreferences.taximeterPreferences?.getString(StaticTaximeter.TAXIMETER_DESTROY_DATE, "") == null) ""
+        else MyPreferences.taximeterPreferences?.getString(StaticTaximeter.TAXIMETER_DESTROY_DATE, "")!!
 
     private fun isUpdatingCoordinates() : Boolean =
         if (MyPreferences.taximeterPreferences?.
@@ -104,6 +134,11 @@ class TaximeterService : Service() {
                     }
                 }
             }
+            MyPreferences.taximeterPreferences?.let {
+                MyPreferences.saveToPreferences(it,
+                    StaticTaximeter.TAXIMETER_DESTROY_DATE,
+                    Date().toString())
+            }
             intent.putExtra(StaticTaximeter.TAXIMETER_BUNDLE_TIME, time)
             intent.putExtra(StaticTaximeter.TAXIMETER_BUNDLE_WAINTING_TIME, waitingTime)
             sendBroadcast(intent)
@@ -111,7 +146,11 @@ class TaximeterService : Service() {
     }
 
     override fun onDestroy() {
+        timer.cancel()
+        timer.purge()
+        taximeterTimer.cancel()
+        taximeterTimer.purge()
+        logError("destroy x ${Date().toString()}")
         super.onDestroy()
-        logError("destroy")
     }
 }

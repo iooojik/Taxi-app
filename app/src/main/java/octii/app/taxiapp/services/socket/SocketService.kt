@@ -21,7 +21,9 @@ import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.responses.OrdersResponseModel
 import octii.app.taxiapp.models.responses.TaximeterResponseModel
 import octii.app.taxiapp.scripts.*
+import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
+import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests
 import ua.naiksoftware.stomp.dto.StompMessage
@@ -142,7 +144,7 @@ class SocketService : Service() {
                     MessageType.ORDER_REQUEST -> {
                         logError("order request")
                         logError("resp: $responseModel")
-                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_ORDERED)
+                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_REQUEST)
                         sendBroadcast(orderIntent)
                         logInfo(responseModel.order != null)
                         if (responseModel.order != null){

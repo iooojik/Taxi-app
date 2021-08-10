@@ -53,6 +53,7 @@ class OrderDetails : Fragment(), FragmentHelper, View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+
         requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
     }
 

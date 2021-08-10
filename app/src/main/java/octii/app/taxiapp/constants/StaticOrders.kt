@@ -9,6 +9,7 @@ class StaticOrders {
         const val ORDER_STATUS_COORDINATES_STATUS = "octii.app.taxiapp.СOORDINATES_STATUS"
         const val ORDER_STATUS = "ORDER_STATUS"
         const val ORDER_STATUS_ORDERED = "ORDERED"
+        const val ORDER_STATUS_REQUEST = "REQUEST"
         const val ORDER_STATUS_ACCEPTED = "STARTED"
         const val ORDER_STATUS_FINISHED = "FINISHED"
         const val ORDER_STATUS_NO_ORDERS = "NO ORDERS"
