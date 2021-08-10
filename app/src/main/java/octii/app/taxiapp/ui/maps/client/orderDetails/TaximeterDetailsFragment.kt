@@ -14,6 +14,7 @@ import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.databinding.FragmentClientTaximeterDetailsBinding
 import octii.app.taxiapp.models.driver.DriverModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.services.location.MyLocationListener
 
@@ -36,11 +37,11 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 
     private fun setTaximeter(time : Long, waitingTime : Long){
         val distance = MyLocationListener.distance
-        val totalPricePerKm = DriverModel.mPrices.pricePerKm * MyLocationListener.distance
-        val totalPricePerMin = if(time/60 < 1) DriverModel.mPrices.pricePerMinute
-        else DriverModel.mPrices.pricePerMinute * (time / 60)
+        val totalPricePerKm = OrdersModel.mDriver.driver.prices.pricePerKm * MyLocationListener.distance
+        val totalPricePerMin = if(time/60 < 1) OrdersModel.mDriver.driver.prices.pricePerMinute
+        else OrdersModel.mDriver.driver.prices.pricePerMinute * (time / 60)
 
-        val totalPriceWaiting = DriverModel.mPrices.priceWaitingMin * waitingTime/60
+        val totalPriceWaiting = OrdersModel.mDriver.driver.prices.priceWaitingMin * waitingTime/60
 
         binding.taximeter.distance.text = distance.toString()
         binding.taximeter.pricePerKm.text = number2digits(totalPricePerKm)
