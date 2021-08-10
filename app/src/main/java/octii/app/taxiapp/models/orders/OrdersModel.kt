@@ -25,11 +25,11 @@ class OrdersModel(
 ) {
     companion object{
         @JvmStatic
-        var mId: Long = UserModel.uID
+        var mId: Long = -1
         @JvmStatic
-        var mDriverID : Long = UserModel.uID
+        var mDriverID : Long = -1
         @JvmStatic
-        var mCustomerID : Long = UserModel.uID
+        var mCustomerID : Long = -1
         @JvmStatic
         var mUuid : String = ""
         @JvmStatic

@@ -7,16 +7,16 @@ import retrofit2.http.POST
 
 interface UserApi {
 
-    @POST("/users/login")
-    //@POST("/taxi/users/login")
+    //@POST("/users/login")
+    @POST("/taxi/users/login")
     fun login(@Body userModel: UserModel) : Call<AuthorizationModel>
 
-    //@POST("/taxi/users/login.token")
-    @POST("/users/login.token")
+    @POST("/taxi/users/login.token")
+    //@POST("/users/login.token")
     fun loginWithToken(@Body userModel: UserModel) : Call<AuthorizationModel>
 
-    //@POST("/taxi/users/update")
-    @POST("/users/update")
+    @POST("/taxi/users/update")
+    //@POST("/users/update")
     fun update(@Body userModel: UserModel) : Call<UserModel>
 
 }

@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
@@ -44,10 +45,13 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
     }
 
     fun orderCheck(model : UserModel){
+        logError("order check")
         HttpHelper.ORDERS_API.ordersCheck(model).enqueue(object : Callback<OrdersModel>{
             override fun onResponse(call: Call<OrdersModel>, response: Response<OrdersModel>) {
                 if (response.isSuccessful){
-                    getOrderModel(response.body()!!, false,
+
+                    getOrderModel(response.body()!!,
+                        false,
                         response.body()!!.driverID > 0 && !response.body()!!.isFinished)
                 }
             }

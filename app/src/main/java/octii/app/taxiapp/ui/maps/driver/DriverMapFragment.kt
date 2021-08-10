@@ -62,6 +62,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     private var isMoved = false
     private var marker : Marker?  = null
     private var cameraMoved = false
+    private var isShownOrder = false
     private val EXPAND_MORE_FAB = "expand more"
     private val EXPAND_LESS_FAB = "expand less"
 
@@ -71,8 +72,13 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                 when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
                     StaticOrders.ORDER_STATUS_ORDERED -> {
                         logError("ordered")
-                        synchronized(this){
-                            DriverAcceptOrderBottomSheet(requireContext(), requireActivity(), OrdersModel()).show()
+                        if (!isShownOrder) {
+                            synchronized(this) {
+                                DriverAcceptOrderBottomSheet(requireContext(),
+                                    requireActivity(),
+                                    OrdersModel()).show()
+                                isShownOrder = true
+                            }
                         }
                     }
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
@@ -80,6 +86,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                         binding.fabSettings.hide()
                     }
                     StaticOrders.ORDER_STATUS_FINISHED -> {
+                        isShownOrder = false
                         binding.fabSettings.show()
                         binding.fabShowOrderDetails.setOnClickListener {
                             if (it.tag == EXPAND_MORE_FAB){

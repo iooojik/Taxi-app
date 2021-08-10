@@ -11,6 +11,7 @@ class StaticOrders {
         const val ORDER_STATUS_ORDERED = "ORDERED"
         const val ORDER_STATUS_ACCEPTED = "STARTED"
         const val ORDER_STATUS_FINISHED = "FINISHED"
+        const val ORDER_STATUS_NO_ORDERS = "NO ORDERS"
         const val SHARED_PREFERENCES_DEAL_PRICE = "DEAL_PRICE"
 
     }

@@ -126,7 +126,7 @@ class SocketService : Service() {
                         logInfo("no orders")
                         OrdersModel.isOrdered = false
                         showSnackbar(this, resources.getString(R.string.all_drivers_are_busy))
-                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED)
+                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_NO_ORDERS)
                         sendBroadcast(orderIntent)
                     }
 

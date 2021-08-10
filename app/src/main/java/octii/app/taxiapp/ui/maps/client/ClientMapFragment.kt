@@ -28,6 +28,7 @@ import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.down
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.up
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
@@ -94,6 +95,12 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                             }
                         }
                         googleMap?.clear()
+                    }
+                    StaticOrders.ORDER_STATUS_NO_ORDERS -> {
+                        binding.fabSettings.show()
+                        binding.callTaxi.show()
+                        binding.orderDetails.down(requireActivity())
+                        binding.clientMapprogressBar.visibility = View.INVISIBLE
                         googleMap?.clear()
                     }
                 }
@@ -147,7 +154,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
         checkPermissions()
         moveGoogleCameraToMe()
-        setOrderDetails()
         try {
             setMap()
         } catch (e : Exception){
@@ -163,6 +169,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     }
 
     private fun setOrderDetails(){
+        logError("${OrdersModel.isAccepted} ${OrdersModel.mId}")
         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
             binding.callTaxi.hide()
             showFabOrderDetails()
@@ -170,6 +177,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
             binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
             binding.orderDetails.up(requireActivity())
         } else {
+            binding.callTaxi.show()
             binding.fabSettings.show()
         }
     }
@@ -198,10 +206,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                     activity?.runOnUiThread {
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
                         googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
-                        if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
-                            binding.callTaxi.hide()
-                            binding.fabSettings.hide()
-                        }
+                        setOrderDetails()
                     }
                     cameraMoved = true
                 }
