@@ -118,6 +118,15 @@ class SocketService : Service() {
                             MyPreferences.saveToPreferences(it,
                                 StaticTaximeter.SHARED_PREFERENCES_UPDATING_COORDINATES, false)
                         }
+                        MyPreferences.taximeterPreferences?.let {
+                            MyPreferences.saveToPreferences(it,
+                                StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)
+                        }
+                        MyPreferences.taximeterPreferences?.let {
+                            MyPreferences.saveToPreferences(it,
+                                StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+                                false)
+                        }
                         orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED)
                         sendBroadcast(orderIntent)
                     }

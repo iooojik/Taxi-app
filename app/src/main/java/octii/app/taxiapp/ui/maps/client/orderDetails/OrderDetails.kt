@@ -33,7 +33,6 @@ class OrderDetails : Fragment(), FragmentHelper {
                 when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
                         binding.pages.currentItem = 1
-                        MyPreferences.clearTaximeter()
                     }
                     StaticOrders.ORDER_STATUS_FINISHED -> {
                         binding.pages.currentItem = 1
@@ -53,8 +52,7 @@ class OrderDetails : Fragment(), FragmentHelper {
                         MyLocationListener.distance = 0f
                         //запускаем таймер
                         MyPreferences.taximeterPreferences?.let {
-                            MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)
-                        }
+                            MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)}
                         MyPreferences.taximeterPreferences?.let {
                             MyPreferences.saveToPreferences(it, StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, true)}
                     }
