@@ -1,6 +1,9 @@
 package octii.app.taxiapp.ui.maps.driver.orderDetails
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,12 +19,27 @@ import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
+import octii.app.taxiapp.scripts.down
+import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.up
+import octii.app.taxiapp.ui.maps.driver.DriverAcceptOrderBottomSheet
 import octii.app.taxiapp.web.SocketHelper
 
 
 class StartStopWaitFragment : Fragment(), View.OnClickListener {
 
     lateinit var binding : FragmentStartStopBinding
+    private var orderStatusReciever : BroadcastReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null) {
+                when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
+                    StaticOrders.ORDER_STATUS_ACCEPTED -> {
+                        //checkUI()
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,19 +56,34 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         binding.startOrder.setOnClickListener(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (isWainting()) binding.waitingOrder.setBackgroundColor(Color.parseColor("#99d98c"))
+    private fun checkUI(){
+        if (isWaiting()) binding.waitingOrder.setBackgroundColor(Color.parseColor("#99d98c"))
+        logError("${isRunning()} ${isWaiting()}")
         if (isRunning()) {
             binding.finishOrder.visibility = View.VISIBLE
+            binding.waitingOrder.isEnabled = true
+            binding.finishOrder.isEnabled = true
             binding.startOrderLayout.visibility = View.GONE
         } else{
             binding.finishOrder.visibility = View.GONE
             binding.startOrderLayout.visibility = View.VISIBLE
+            binding.finishOrder.isEnabled = true
+            binding.waitingOrder.isEnabled = true
         }
     }
 
-    private fun isWainting() : Boolean =
+    override fun onResume() {
+        super.onResume()
+        checkUI()
+        requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().unregisterReceiver(orderStatusReciever)
+    }
+
+    private fun isWaiting() : Boolean =
         if (MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false) == null) false
         else MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)!!
 
@@ -59,15 +92,20 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         else MyPreferences.taximeterPreferences?.getBoolean(StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)!!
 
     private fun finishOrder(){
-        activity?.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
-            .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED))
         binding.finishOrder.isEnabled = false
         binding.waitingOrder.isEnabled = false
-        MyPreferences.taximeterPreferences?.let { MyPreferences.saveToPreferences(it, StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)}
         OrdersModel.isAccepted = false
+
+        activity?.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
+            .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED))
+
+        MyPreferences.taximeterPreferences?.let { MyPreferences.saveToPreferences(it, StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)}
+        MyPreferences.taximeterPreferences?.let { MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)}
+        MyPreferences.taximeterPreferences?.let {
+            MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1)
+        }
         SocketHelper.finishOrder(OrdersModel())
-        SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null,
-            recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
+        SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null, recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
     }
 
     override fun onClick(v: View?) {
@@ -102,7 +140,7 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
                 binding.startOrderLayout.visibility = View.GONE
             }
             R.id.waiting_order -> {
-                if (isWainting()) {
+                if (isWaiting() && OrdersModel.isAccepted) {
                     MyPreferences.taximeterPreferences?.let {
                         MyPreferences.saveToPreferences(it,
                             StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,

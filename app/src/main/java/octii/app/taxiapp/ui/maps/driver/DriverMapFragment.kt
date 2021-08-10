@@ -71,7 +71,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
             if (intent != null) {
                 when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
                     StaticOrders.ORDER_STATUS_ORDERED -> {
-                        logError("ordered")
                         if (!isShownOrder) {
                             synchronized(this) {
                                 DriverAcceptOrderBottomSheet(requireContext(),
@@ -79,11 +78,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                                     OrdersModel()).show()
                                 isShownOrder = true
                             }
+                            setOrderDetails()
                         }
                     }
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
+                        logError("accepted")
                         setOrderDetails()
-                        binding.fabSettings.hide()
                     }
                     StaticOrders.ORDER_STATUS_FINISHED -> {
                         isShownOrder = false
@@ -140,7 +140,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
-        setOrderDetails()
         setListeners()
         checkUserType()
         setServices()
@@ -212,7 +211,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     }
 
     private fun setOrderDetails(){
+        logError("${OrdersModel.isAccepted && OrdersModel.mId > 0} ${OrdersModel.isAccepted} ${OrdersModel.mId > 0}")
         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
+            binding.fabShowOrderDetails.setOnClickListener(this)
             showFabOrderDetails()
             binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
             binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
@@ -239,7 +240,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     private fun setListeners(){
         binding.fabSettings.setOnClickListener(this)
-        binding.fabShowOrderDetails.setOnClickListener(this)
     }
 
     private fun setServices(){

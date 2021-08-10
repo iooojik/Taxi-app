@@ -54,7 +54,7 @@ class TaximeterService : Service() {
         if (MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_WAITING_TIME, 0L) == null) 0L
         else MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_WAITING_TIME, 0L)!!
 
-    private fun isWainting() : Boolean =
+    private fun isWaiting() : Boolean =
         if (MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false) == null) false
         else MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)!!
 
@@ -87,8 +87,8 @@ class TaximeterService : Service() {
         override fun run() {
             var time = getOrderTime()
             var waitingTime = getWaitingTime()
-            if (isRunning()) {
-                if (!isWainting()) {
+            if (isRunning() || isWaiting()) {
+                if (!isWaiting()) {
                     time = time.plus(1)
                     MyPreferences.taximeterPreferences?.let {
                         MyPreferences.saveToPreferences(it,

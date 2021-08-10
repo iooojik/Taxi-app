@@ -1,8 +1,10 @@
 package octii.app.taxiapp.web.requests
 
 import android.app.Activity
+import android.content.Intent
 import android.view.View
 import com.google.gson.Gson
+import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
@@ -49,10 +51,12 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
         HttpHelper.ORDERS_API.ordersCheck(model).enqueue(object : Callback<OrdersModel>{
             override fun onResponse(call: Call<OrdersModel>, response: Response<OrdersModel>) {
                 if (response.isSuccessful){
-
                     getOrderModel(response.body()!!,
                         false,
                         response.body()!!.driverID > 0 && !response.body()!!.isFinished)
+                    activity?.
+                    sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
+                        .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_ACCEPTED))
                 }
             }
 

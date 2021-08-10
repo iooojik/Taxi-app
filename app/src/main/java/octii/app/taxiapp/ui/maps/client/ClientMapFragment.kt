@@ -74,8 +74,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                 when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
                         setOrderDetails()
-                        binding.callTaxi.hide()
-                        binding.fabSettings.hide()
                         binding.clientMapprogressBar.visibility = View.INVISIBLE
                     }
                     StaticOrders.ORDER_STATUS_FINISHED -> {
@@ -140,7 +138,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentClientMapBinding.inflate(layoutInflater)
-        binding.fabShowOrderDetails.setOnClickListener(this)
         setListeners()
         checkUserType()
         setServices()
@@ -169,8 +166,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     }
 
     private fun setOrderDetails(){
-        logError("${OrdersModel.isAccepted} ${OrdersModel.mId}")
         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
+            binding.fabShowOrderDetails.setOnClickListener(this)
             binding.callTaxi.hide()
             showFabOrderDetails()
             binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
@@ -206,7 +203,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                     activity?.runOnUiThread {
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
                         googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
-                        setOrderDetails()
                     }
                     cameraMoved = true
                 }
