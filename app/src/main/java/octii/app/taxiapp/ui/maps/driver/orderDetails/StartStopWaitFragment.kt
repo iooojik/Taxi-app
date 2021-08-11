@@ -19,10 +19,7 @@ import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.down
 import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.scripts.up
-import octii.app.taxiapp.ui.maps.driver.DriverAcceptOrderBottomSheet
 import octii.app.taxiapp.web.SocketHelper
 
 

@@ -16,6 +16,7 @@ import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
 
@@ -126,10 +127,12 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.working -> {
-                //if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) { TODO
+                if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) {
                     UserModel.mDriver.isWorking = isChecked
-                    updateDriver()
-                //} else showSnackbar(requireContext(), resources.getString(R.string.check_photos))
+                } else {
+                    showSnackbar(requireContext(), resources.getString(R.string.check_photos))
+                    buttonView.isChecked = false
+                }
             }
             R.id.russian_language -> {
                 if (isChecked)
@@ -145,15 +148,12 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             }
             R.id.button_russian_language ->{
                 changeSpeakingLanguage(LocaleUtils.RUSSIAN, isChecked)
-                updateDriver()
             }
             R.id.button_serbian_language ->{
                 changeSpeakingLanguage(LocaleUtils.SERBIAN, isChecked)
-                updateDriver()
             }
             R.id.button_english_language ->{
                 changeSpeakingLanguage(LocaleUtils.ENGLISH, isChecked)
-                updateDriver()
             }
         }
     }
@@ -183,8 +183,8 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroyView() {
         updateDriver()
+        super.onDestroyView()
     }
 }

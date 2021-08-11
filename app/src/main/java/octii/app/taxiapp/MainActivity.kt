@@ -7,6 +7,9 @@ import android.content.IntentFilter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.constants.StaticTaximeter
@@ -42,6 +45,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         registerReceiver(snackbarsReceiver, IntentFilter(Static.SNACKBAR_INTENT_FILTER))
+        MobileAds.initialize(this) {}
+        //val adRequest = AdRequest.Builder().build()
+        //findViewById<AdView>(R.id.adView).loadAd(adRequest)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -8,10 +8,13 @@
 
     <ImageView
         android:id="@+id/photo_placeholder"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/avatar_description"
+        android:cropToPadding="true"
+        android:scaleType="fitStart"
         app:layout_constraintEnd_toStartOf="@+id/buttons_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

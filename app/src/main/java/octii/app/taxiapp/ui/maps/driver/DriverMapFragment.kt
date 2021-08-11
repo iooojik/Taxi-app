@@ -30,9 +30,7 @@ import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.down
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.up
-import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
-import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import kotlin.concurrent.thread

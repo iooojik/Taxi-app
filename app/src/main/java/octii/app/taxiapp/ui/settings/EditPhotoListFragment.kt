@@ -3,6 +3,7 @@ package octii.app.taxiapp.ui.settings
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -106,11 +107,11 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
     }
 
     private fun uploadFile(){
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        val intent = Intent()
         intent.type = "image/*"
+        intent.action = Intent.ACTION_PICK
         if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-                Static.PICK_IMAGE_AVATAR)
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), Static.PICK_IMAGE_AVATAR)
         }
     }
 
@@ -118,9 +119,57 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
              Static.PICK_IMAGE_AVATAR -> {
-                if (data != null && data.data != null) {
-                    val selectedImage = data.data!!
+                 logError("picked")
+                if (data != null && data.extras != null) {
+                    logError("data != null")
 
+                    val extras: Bundle = data.extras!!
+                    logError(extras)
+                    val selectedBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, data.data);
+                    logError(selectedBitmap.toString())
+
+                    if (selectedBitmap != null) {
+                        logError("selectedBitmap != null")
+
+                        val imageName = "_${Date().toString().trim()}.jpg"
+
+                        val bos = ByteArrayOutputStream()
+                        selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, bos)
+
+                        val image = File(requireContext().cacheDir, imageName)
+                        image.createNewFile()
+
+                        val fos = FileOutputStream(image)
+                        fos.write(bos.toByteArray())
+                        fos.flush()
+                        fos.close()
+
+                        val requestFile: RequestBody =
+                            image.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+                        val body: MultipartBody.Part =
+                            MultipartBody.Part.createFormData("file", image.name, requestFile)
+
+                        logError(selectedType)
+                        HttpHelper.FILE_API.uploadImage(body, selectedType, UserModel.mUuid)
+                            .enqueue(object :
+                                Callback<FileModel> {
+                                override fun onResponse(
+                                    call: Call<FileModel>,
+                                    response: Response<FileModel>
+                                ) {
+                                    Requests().userRequests.update {
+                                        setInformation()
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<FileModel>, t: Throwable) {
+                                    HttpHelper.onFailure(t)
+                                }
+                            })
+                    }
+                    /*
+                    val selectedImage = data.data!!
                     //call the standard crop action intent (the user device may not support it)
                     val cropIntent = Intent("com.android.camera.action.CROP")
                     //indicate image type and Uri
@@ -136,53 +185,53 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                     //retrieve data on return
                     cropIntent.putExtra("return-data", true)
                     //start the activity - we handle returning in onActivityResult
-                    startActivityForResult(cropIntent, Static.PICK_CROP)
+                    startActivityForResult(cropIntent, Static.PICK_CROP)*/*/
                 }
             } Static.PICK_CROP -> {
-            Log.e("ttt", "crop")
-            if (data != null && data.extras != null) {
-                val extras: Bundle = data.extras!!
-                val selectedBitmap = extras.getParcelable<Bitmap>("data")
+                Log.e("ttt", "crop")
+                if (data != null && data.extras != null) {
+                    val extras: Bundle = data.extras!!
+                    val selectedBitmap = extras.getParcelable<Bitmap>("data")
 
-                if (selectedBitmap != null) {
-                    val imageName = "_${Date().toString().trim()}.jpg"
+                    if (selectedBitmap != null) {
+                        val imageName = "_${Date().toString().trim()}.jpg"
 
-                    val bos = ByteArrayOutputStream()
-                    selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, bos)
+                        val bos = ByteArrayOutputStream()
+                        selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, bos)
 
-                    val image = File(requireContext().cacheDir, imageName)
-                    image.createNewFile()
+                        val image = File(requireContext().cacheDir, imageName)
+                        image.createNewFile()
 
-                    val fos = FileOutputStream(image)
-                    fos.write(bos.toByteArray())
-                    fos.flush()
-                    fos.close()
+                        val fos = FileOutputStream(image)
+                        fos.write(bos.toByteArray())
+                        fos.flush()
+                        fos.close()
 
-                    val requestFile: RequestBody =
-                        image.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                        val requestFile: RequestBody =
+                            image.asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-                    val body: MultipartBody.Part =
-                        MultipartBody.Part.createFormData("file", image.name, requestFile)
+                        val body: MultipartBody.Part =
+                            MultipartBody.Part.createFormData("file", image.name, requestFile)
 
-                    logError(selectedType)
-                    HttpHelper.FILE_API.uploadImage(body, selectedType, UserModel.mUuid)
-                        .enqueue(object :
-                            Callback<FileModel> {
-                            override fun onResponse(
-                                call: Call<FileModel>,
-                                response: Response<FileModel>
-                            ) {
-                                Requests().userRequests.update {
-                                    setInformation()
+                        logError(selectedType)
+                        HttpHelper.FILE_API.uploadImage(body, selectedType, UserModel.mUuid)
+                            .enqueue(object :
+                                Callback<FileModel> {
+                                override fun onResponse(
+                                    call: Call<FileModel>,
+                                    response: Response<FileModel>
+                                ) {
+                                    Requests().userRequests.update {
+                                        setInformation()
+                                    }
                                 }
-                            }
 
-                            override fun onFailure(call: Call<FileModel>, t: Throwable) {
-                                HttpHelper.onFailure(t)
-                            }
-                        })
+                                override fun onFailure(call: Call<FileModel>, t: Throwable) {
+                                    HttpHelper.onFailure(t)
+                                }
+                            })
+                    }
                 }
-            }
         }
         }
     }

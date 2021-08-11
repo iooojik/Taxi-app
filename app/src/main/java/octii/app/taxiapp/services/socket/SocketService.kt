@@ -21,9 +21,7 @@ import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.responses.OrdersResponseModel
 import octii.app.taxiapp.models.responses.TaximeterResponseModel
 import octii.app.taxiapp.scripts.*
-import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
-import octii.app.taxiapp.services.taximeter.TaximeterService
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests
 import ua.naiksoftware.stomp.dto.StompMessage

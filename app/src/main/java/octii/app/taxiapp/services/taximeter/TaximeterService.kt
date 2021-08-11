@@ -14,10 +14,7 @@ import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
-import java.text.DateFormat
-import java.text.DateFormat.getDateInstance
 import java.text.SimpleDateFormat
-import java.time.Period
 import java.util.*
 
 class TaximeterService : Service() {
@@ -36,7 +33,7 @@ class TaximeterService : Service() {
     override fun onCreate() {
         super.onCreate()
         logError("date ${getDestoyDate()}")
-        if (getDestoyDate().isNotEmpty()){
+        if (getDestoyDate().isNotEmpty() && (isWaiting() || isRunning())){
             val destroyDate : Date? = SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).parse(getDestoyDate())
             if (destroyDate != null) {
                 if (!isWaiting()) {

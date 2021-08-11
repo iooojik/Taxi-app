@@ -137,15 +137,12 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         when(buttonView!!.id){
             R.id.i_am_in_viber -> {
                 UserModel.uIsViber = isChecked
-                updateClient()
             }
             R.id.i_am_in_whatsapp -> {
                 UserModel.uIsWhatsapp = isChecked
-                updateClient()
             }
             R.id.working -> {
                 DriverModel.mIsWorking = isChecked
-                updateClient()
             }
             R.id.russian_language -> {
                 if (isChecked)
@@ -161,17 +158,18 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
             }
             R.id.button_russian_language ->{
                 changeSpeakingLanguage(LocaleUtils.RUSSIAN, isChecked)
-                updateClient()
             }
             R.id.button_serbian_language ->{
                 changeSpeakingLanguage(LocaleUtils.SERBIAN, isChecked)
-                updateClient()
             }
             R.id.button_english_language ->{
                 changeSpeakingLanguage(LocaleUtils.ENGLISH, isChecked)
-                updateClient()
             }
         }
     }
 
+    override fun onDestroyView() {
+        updateClient()
+        super.onDestroyView()
+    }
 }

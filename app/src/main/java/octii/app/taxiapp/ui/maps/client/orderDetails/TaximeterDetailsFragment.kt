@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.databinding.FragmentClientTaximeterDetailsBinding
-import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.services.location.MyLocationListener

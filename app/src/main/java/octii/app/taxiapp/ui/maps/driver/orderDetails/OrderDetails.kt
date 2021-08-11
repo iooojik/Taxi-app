@@ -13,11 +13,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverOrderDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 
 
