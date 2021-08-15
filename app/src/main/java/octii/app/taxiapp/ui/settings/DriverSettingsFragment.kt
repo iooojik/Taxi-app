@@ -175,7 +175,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-        requests.userRequests.update{
+        Requests().userRequests.update{
             if (UserModel.uType == Static.CLIENT_TYPE)
                 findNavController().navigate(R.id.clientSettingsFragment)
         }

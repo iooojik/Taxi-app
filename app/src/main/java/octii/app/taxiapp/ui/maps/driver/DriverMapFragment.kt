@@ -178,6 +178,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     override fun onResume() {
         super.onResume()
+        setOrderDetails()
         checkPermissions()
         requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
         requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
@@ -195,8 +196,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     override fun onDestroy() {
         super.onDestroy()
-        requireActivity().unregisterReceiver(orderStatusReciever)
-        requireActivity().unregisterReceiver(coordinatesStatusReciever)
+        try {
+            requireActivity().unregisterReceiver(orderStatusReciever)
+            requireActivity().unregisterReceiver(coordinatesStatusReciever)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun checkUserType(){

@@ -44,7 +44,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     private fun updateClient(){
-        val user = requests.userRequests.update{
+        Requests().userRequests.update{
             if (UserModel.uType == Static.DRIVER_TYPE)
                 findNavController().navigate(R.id.driverSettingsFragment)
         }

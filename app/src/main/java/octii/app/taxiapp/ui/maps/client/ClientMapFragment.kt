@@ -28,6 +28,7 @@ import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.down
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.up
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
@@ -147,6 +148,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
         checkPermissions()
         moveGoogleCameraToMe()
+        setOrderDetails()
         try {
             setMap()
         } catch (e : Exception){
@@ -170,6 +172,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
             binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
             binding.orderDetails.up(requireActivity())
         } else {
+            logError("call taxi shown")
             binding.callTaxi.show()
             binding.fabSettings.show()
         }

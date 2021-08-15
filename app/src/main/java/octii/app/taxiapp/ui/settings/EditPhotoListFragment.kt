@@ -60,7 +60,7 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                         Picasso.with(context)
                             .load(it.url)
                             .into(b.photoPlaceholder)
-                        b.newPhoto.visibility = View.GONE
+                        //b.newPhoto.visibility = View.GONE
                     }
                 }
             }
@@ -120,12 +120,10 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
         when(requestCode){
              Static.PICK_IMAGE_AVATAR -> {
                  logError("picked")
-                if (data != null && data.extras != null) {
+                if (data != null && data.data != null) {
                     logError("data != null")
 
-                    val extras: Bundle = data.extras!!
-                    logError(extras)
-                    val selectedBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, data.data);
+                    val selectedBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, data.data)
                     logError(selectedBitmap.toString())
 
                     if (selectedBitmap != null) {

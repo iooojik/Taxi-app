@@ -86,8 +86,12 @@ class OrderDetails : Fragment(), FragmentHelper {
 
     override fun onDestroy() {
         super.onDestroy()
-        requireActivity().unregisterReceiver(orderStatusReciever)
-        requireActivity().unregisterReceiver(taximeterBroadcastReceiver)
+        try {
+            requireActivity().unregisterReceiver(orderStatusReciever)
+            requireActivity().unregisterReceiver(taximeterBroadcastReceiver)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun isWainting() : Boolean =
