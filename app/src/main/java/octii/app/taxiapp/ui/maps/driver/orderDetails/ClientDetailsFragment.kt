@@ -1,26 +1,21 @@
 package octii.app.taxiapp.ui.maps.driver.orderDetails
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentClientDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
+import octii.app.taxiapp.ui.CallHelper
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.maps.OpenMessengerBottomSheet
 
 
-class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
+class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, CallHelper {
 
     lateinit var binding : FragmentClientDetailsBinding
     private var isWhatsApp = false
@@ -82,34 +77,20 @@ class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
         }
     }
 
-    private fun copyToClipBoard(text : String){
-        val clipboard: ClipboardManager =
-            requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("", text)
-        clipboard.setPrimaryClip(clip)
-        Snackbar.make(binding.root, resources.getString(R.string.copied), Snackbar.LENGTH_SHORT).show()
-    }
 
-
-
-    private fun callToCustomer(phone : String) {
-        if (OrdersModel.mCustomer.phone.isNotEmpty()) {
-            val dial = "tel:$phone"
-            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
-        }
-    }
 
     override fun onClick(v: View?) {
         when(v!!.id){
             R.id.call_to_customer -> {
-                copyToClipBoard(binding.customerPhone.text.toString())
+                copyToClipBoard(binding.customerPhone.text.toString(), requireContext())
                 if (isWhatsApp && isViber) {
                     OpenMessengerBottomSheet(requireContext(), requireActivity()).show()
                 }
                 else if (isViber) goToApplication("com.viber.voip", requireActivity())
                 else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
+                //else if (isWhatsApp) callToWhatsApp(binding.customerPhone.text.toString(), requireContext(), requireActivity())
                 else {
-                    callToCustomer(binding.customerPhone.text.toString())
+                    callToCustomer(binding.customerPhone.text.toString(), requireActivity())
                 }
             }
         }

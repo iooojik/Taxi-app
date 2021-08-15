@@ -4,11 +4,19 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".BaseActivity">
+
 
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        layout="@layout/content_splash"
+        android:id="@+id/splash_layout"
+        android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="match_parent" />
 
 

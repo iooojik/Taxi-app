@@ -164,6 +164,7 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                                 override fun onFailure(call: Call<FileModel>, t: Throwable) {
                                     HttpHelper.onFailure(t)
                                 }
+
                             })
                     }
                     /*

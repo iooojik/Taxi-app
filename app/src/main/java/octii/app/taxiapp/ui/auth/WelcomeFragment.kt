@@ -12,7 +12,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
 import octii.app.taxiapp.locale.LocaleUtils
-import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 
@@ -27,10 +26,7 @@ class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentWelcomeBinding.inflate(layoutInflater)
-        MyPreferences.clearAll()
         setListeners()
-        blockGoBack(requireActivity(), this)
-
         return binding.root
     }
 

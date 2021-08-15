@@ -1,4 +1,4 @@
-package octii.app.taxiapp.ui.settings
+package octii.app.taxiapp.ui.settings.driver
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +18,7 @@ import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.settings.SettingsHelper
 import octii.app.taxiapp.web.requests.Requests
 
 
@@ -113,7 +114,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
                 updateDriver()
             }
             R.id.fab_back -> {
-                findNavController().navigate(R.id.driverMapFragment)
+                findNavController().navigate(R.id.driverMapActivity)
             }
             R.id.add_photos -> {
                 findNavController().navigate(R.id.editPhotoListFragment)
@@ -127,12 +128,12 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.working -> {
-                //if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) {
+                if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) {
                     UserModel.mDriver.isWorking = isChecked
-                //} else {
-                    //showSnackbar(requireContext(), resources.getString(R.string.check_photos))
-                    //buttonView.isChecked = false
-                //}
+                } else {
+                    showSnackbar(requireContext(), resources.getString(R.string.check_photos))
+                    buttonView.isChecked = false
+                }
             }
             R.id.russian_language -> {
                 if (isChecked)
@@ -177,7 +178,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 
         Requests(view = requireView(), activity = requireActivity()).userRequests.update{
             if (UserModel.uType == Static.CLIENT_TYPE)
-                findNavController().navigate(R.id.clientSettingsFragment)
+                findNavController().navigate(R.id.clientSettingsActivity)
         }
 
 

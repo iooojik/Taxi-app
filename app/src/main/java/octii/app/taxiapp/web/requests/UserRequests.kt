@@ -84,11 +84,11 @@ class UserRequests(private val view : View? = null, private val activity: Activi
                             orderRequests.orderCheck(model)
                         }
                     }
-                    runnable.run()
                 } else {
-                    activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment) }
+                    //activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.authorizationActivity) }
                     showSnackBarError()
                 }
+                runnable.run()
             }
 
             override fun onFailure(call: Call<AuthorizationModel>, t: Throwable) {

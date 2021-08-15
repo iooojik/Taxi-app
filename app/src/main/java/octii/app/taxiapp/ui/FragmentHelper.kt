@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import octii.app.taxiapp.R
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.user.UserModel
@@ -79,7 +80,12 @@ interface FragmentHelper {
 
     fun setLanguage(language : String, activity: Activity?) {
         LocaleUtils.setSelectedLanguageId(language)
-        activity?.recreate()
+        if (activity != null)
+            synchronized(activity){
+                activity.finish()
+                activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+                activity.startActivity(activity.intent)
+            }
     }
 
     fun changeSpeakingLanguage(lang: String, isChecked: Boolean){

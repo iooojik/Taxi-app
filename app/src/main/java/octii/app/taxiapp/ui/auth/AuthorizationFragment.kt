@@ -13,6 +13,7 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
@@ -32,6 +33,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
     ): View {
         binding = FragmentAuthorizationBinding.inflate(layoutInflater)
         setListeners()
+        MyPreferences.clearAll()
         return binding.root
     }
 
@@ -73,8 +75,8 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                     requests.userRequests.login("+$phoneNumber", userName,
                         LatLng(MyLocationListener.latitude, MyLocationListener.longitude), binding.progressBar){
                         Services(requireActivity(), Static.MAIN_SERVICES).start()
-                        if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
-                        else  findNavController().navigate(R.id.clientMapFragment)
+                        if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapActivity)
+                        else  findNavController().navigate(R.id.clientMapActivity)
                     }
                 }
             }

@@ -224,7 +224,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     }
 
     private fun checkUserType(){
-        if (getSavedUserType() == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
+        if (getSavedUserType() == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapActivity)
     }
 
     private fun getSavedUserType() : String =
@@ -250,7 +250,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                 binding.callTaxi.hide()
                 binding.clientMapprogressBar.visibility = View.VISIBLE
             }
-            R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsFragment)
+            R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsActivity)
             R.id.fab_show_order_details -> {
                 if (v.tag == EXPAND_MORE_FAB){
                     hideFabOrderDetails()

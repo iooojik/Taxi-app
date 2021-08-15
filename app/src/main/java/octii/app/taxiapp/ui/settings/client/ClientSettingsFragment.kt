@@ -1,4 +1,4 @@
-package octii.app.taxiapp.ui.settings
+package octii.app.taxiapp.ui.settings.client
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +18,7 @@ import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.settings.SettingsHelper
 import octii.app.taxiapp.web.requests.Requests
 
 
@@ -46,7 +47,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
     private fun updateClient(){
         Requests().userRequests.update{
             if (UserModel.uType == Static.DRIVER_TYPE)
-                findNavController().navigate(R.id.driverSettingsFragment)
+                findNavController().navigate(R.id.driverSettingsActivity)
         }
     }
 
@@ -125,7 +126,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
                 }
             }
             R.id.fab_back -> {
-                findNavController().navigate(R.id.clientMapFragment)
+                findNavController().navigate(R.id.clientMapActivity)
             }
             R.id.send_logs -> {
                 LogSender().sendLogs(requireActivity())

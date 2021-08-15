@@ -138,11 +138,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        logError(requireActivity().localClassName)
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
         setListeners()
         checkUserType()
         setUi()
-        blockGoBack(requireActivity(), this)
+        //blockGoBack(requireActivity(), this)
         return binding.root
     }
 
@@ -205,7 +206,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     }
 
     private fun checkUserType(){
-        if (getSavedUserType() == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientMapFragment)
+        if (getSavedUserType() == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientMapActivity)
     }
 
     private fun getSavedUserType() : String{
@@ -258,7 +259,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     override fun onClick(v: View?) {
         when(v!!.id){
-            R.id.fab_settings -> findNavController().navigate(R.id.driverSettingsFragment)
+            R.id.fab_settings -> findNavController().navigate(R.id.driverSettingsActivity)
             R.id.fab_show_order_details -> {
                 if (v.tag == EXPAND_MORE_FAB){
                     hideFabOrderDetails()

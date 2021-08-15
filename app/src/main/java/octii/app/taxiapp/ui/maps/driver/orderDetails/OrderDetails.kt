@@ -17,7 +17,6 @@ import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverOrderDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.ui.FragmentHelper
-import java.lang.Exception
 
 
 class OrderDetails : Fragment(), FragmentHelper, View.OnClickListener {
