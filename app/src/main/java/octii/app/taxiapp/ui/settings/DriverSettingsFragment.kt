@@ -127,12 +127,12 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.working -> {
-                if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) {
+                //if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) {
                     UserModel.mDriver.isWorking = isChecked
-                } else {
-                    showSnackbar(requireContext(), resources.getString(R.string.check_photos))
-                    buttonView.isChecked = false
-                }
+                //} else {
+                    //showSnackbar(requireContext(), resources.getString(R.string.check_photos))
+                    //buttonView.isChecked = false
+                //}
             }
             R.id.russian_language -> {
                 if (isChecked)
@@ -175,7 +175,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-        Requests().userRequests.update{
+        Requests(view = requireView(), activity = requireActivity()).userRequests.update{
             if (UserModel.uType == Static.CLIENT_TYPE)
                 findNavController().navigate(R.id.clientSettingsFragment)
         }

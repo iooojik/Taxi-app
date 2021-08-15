@@ -17,6 +17,7 @@ import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverOrderDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.ui.FragmentHelper
+import java.lang.Exception
 
 
 class OrderDetails : Fragment(), FragmentHelper, View.OnClickListener {
@@ -57,7 +58,11 @@ class OrderDetails : Fragment(), FragmentHelper, View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        requireActivity().unregisterReceiver(orderStatusReciever)
+        try {
+            requireActivity().unregisterReceiver(orderStatusReciever)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun onClick(v: View?) {
