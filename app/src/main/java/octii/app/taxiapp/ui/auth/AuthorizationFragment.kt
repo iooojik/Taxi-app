@@ -1,6 +1,8 @@
 package octii.app.taxiapp.ui.auth
 
 import android.os.Bundle
+import android.text.InputFilter
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +32,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentAuthorizationBinding.inflate(layoutInflater)
         setListeners()
@@ -52,6 +54,12 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
         binding.iAmDriver.setOnCheckedChangeListener(this)
         binding.mainAuth.setOnClickListener(this)
         binding.fabBack.setOnClickListener(this)
+        val filter =
+            InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned?, dstart: Int, dend: Int ->
+                source.toString().trim { it <= ' ' }
+                    .replace("[\\W\\d]|_".toRegex(), "")
+            }
+        binding.nameLayout.editText?.filters = arrayOf(filter)
     }
 
     override fun onClick(v: View?) {
