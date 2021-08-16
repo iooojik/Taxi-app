@@ -8,8 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.squareup.picasso.Picasso
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
@@ -34,6 +39,10 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import octii.app.taxiapp.models.files.CountingFileRequestBody
+
+
+
 
 
 class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
@@ -41,6 +50,12 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
     private lateinit var binding : FragmentEditPhotoListBinding
     private val editPhotoItemViews = arrayListOf<EditPhotoItemBinding>()
     private var selectedType = ""
+
+    private var progressBar : LinearProgressIndicator? = null
+    private var progressText : TextView? = null
+    private var progressLayout : LinearLayout? = null
+    private var selectedImagePlaceHolder : ImageView? = null
+    private var progressUploadBar : ProgressBar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,14 +73,30 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
             UserModel.mFiles.forEach {
                 editPhotoItemViews.forEach { b ->
                     if (b.root.tag == it.type) {
-                        Picasso.with(context)
-                            .load(it.url)
-                            .into(b.photoPlaceholder)
-                        //b.newPhoto.visibility = View.GONE
+                        setImage(it.url, b.photoPlaceholder, b.uploadingProgress)
                     }
                 }
             }
         }
+    }
+
+    private fun setImage(url : String, photoPlaceholder : ImageView,
+                         progressBar: ProgressBar? = null, progressLayout : LinearLayout? = null){
+        progressBar?.visibility = View.VISIBLE
+
+        Picasso.with(context)
+            .load(url)
+            .into(photoPlaceholder, object : com.squareup.picasso.Callback {
+                override fun onSuccess() {
+                    progressBar?.visibility = View.GONE
+                    photoPlaceholder.visibility = View.VISIBLE
+                    progressLayout?.visibility = View.GONE
+                }
+
+                override fun onError() {
+                    //do smth when there is picture loading error
+                }
+            })
     }
 
     private fun setViews(){
@@ -102,7 +133,12 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
         editPhotoItemViews.add(editPhotosBinding)
         editPhotosBinding.newPhoto.setOnClickListener {
             selectedType = tag
-            Permissions(requireContext(), requireActivity()).requestPermissions()
+            //Permissions(requireContext(), requireActivity()).requestPermissions()
+            progressBar = editPhotosBinding.progressBar
+            progressText = editPhotosBinding.progressText
+            progressLayout = editPhotosBinding.progress
+            progressUploadBar = editPhotosBinding.uploadingProgress
+            selectedImagePlaceHolder = editPhotosBinding.photoPlaceholder
             uploadFile()
         }
     }
@@ -150,11 +186,45 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                             MultipartBody.Part.createFormData("file", image.name, requestFile)
 
                         logError(selectedType)
+                        logError("progress bar is ${progressBar != null}")
+                        if (progressBar != null && progressText != null && progressLayout != null){
+                            progressLayout?.visibility = View.VISIBLE
+                        }
 
-                        uploadImageProcess(body, selectedType, HttpHelper.FILE_API){
+                        if (selectedImagePlaceHolder != null)
+                            selectedImagePlaceHolder?.visibility = View.GONE
+
+                        val requestBody1 = CountingFileRequestBody(body.body, "file") { key, num ->
+                            Log.d("FinishAdapter", "Perecentae is :$num")
+                            requireActivity().runOnUiThread {
+                                if (progressBar != null && progressText != null && progressLayout != null) {
+                                    progressBar?.progress = num
+                                    progressText?.text = "$num%"
+                                }
+                                //if (num == 100 && progressBar != null)
+                                //    progressBar?.hide()
+                            }
+
+
+                            //update progressbar here
+                            //dialog.updateProgress(num)
+                            //if (num == 100) {
+                            //    dialog.dismiss()
+                            //}
+                        }
+
+                        uploadImageProcess(MultipartBody.Part.createFormData("file", image.name, requestBody1),
+                            selectedType, HttpHelper.FILE_API){
                             Requests().userRequests.update {
                                 requireActivity().runOnUiThread {
-                                    setInformation()
+                                    if (selectedImagePlaceHolder != null) {
+                                        UserModel.mFiles.forEach {
+                                            if (it.type == selectedType){
+                                                setImage(it.url, selectedImagePlaceHolder!!, progressUploadBar!!, progressLayout)
+                                            }
+                                        }
+                                        //setInformation()
+                                    }
                                 }
                             }
                         }
