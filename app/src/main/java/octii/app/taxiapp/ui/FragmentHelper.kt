@@ -3,6 +3,8 @@ package octii.app.taxiapp.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
@@ -18,7 +20,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import octii.app.taxiapp.R
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.SpeakingLanguagesModel
+import octii.app.taxiapp.models.files.FileApi
+import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.web.HttpHelper
+import okhttp3.MultipartBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.Exception
 
 
 interface FragmentHelper {
@@ -78,6 +88,15 @@ interface FragmentHelper {
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
+    fun isInstalled(packageName : String, pm : PackageManager)  : Boolean{
+        return try {
+            val pi: PackageInfo? = pm.getPackageInfo(packageName, 0)
+            pi != null
+        } catch (e : Exception){
+            false
+        }
+    }
+
     fun setLanguage(language : String, activity: Activity?) {
         LocaleUtils.setSelectedLanguageId(language)
         if (activity != null)
@@ -113,5 +132,23 @@ interface FragmentHelper {
             intent.data = Uri.parse("market://details?id=$packageName")
             activity.startActivity(intent)
         }
+    }
+
+    fun uploadImageProcess(body: MultipartBody.Part, selectedType : String, api : FileApi, runnable: Runnable){
+        api.uploadImage(body, selectedType, UserModel.mUuid)
+            .enqueue(object :
+                Callback<FileModel> {
+                override fun onResponse(
+                    call: Call<FileModel>,
+                    response: Response<FileModel>
+                ) {
+                    runnable.run()
+                }
+
+                override fun onFailure(call: Call<FileModel>, t: Throwable) {
+                    HttpHelper.onFailure(t)
+                }
+
+            })
     }
 }

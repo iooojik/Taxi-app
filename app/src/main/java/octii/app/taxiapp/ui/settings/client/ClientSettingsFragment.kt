@@ -17,6 +17,7 @@ import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.settings.SettingsHelper
 import octii.app.taxiapp.web.requests.Requests
@@ -121,8 +122,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
                     UserModel.uType = Static.DRIVER_TYPE
                     updateClient()
                 } else {
-                    Snackbar.make(requireView(),
-                        resources.getString(R.string.to_become_driver), Snackbar.LENGTH_SHORT).show()
+                    showSnackbar(requireContext(), resources.getString(R.string.to_become_driver))
                 }
             }
             R.id.fab_back -> {
@@ -137,9 +137,19 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.i_am_in_viber -> {
+                if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)) {
+                    showSnackbar(requireContext(),
+                        resources.getString(R.string.not_installed_viber))
+                    binding.iAmInViber.isChecked = false
+                }
                 UserModel.uIsViber = isChecked
             }
             R.id.i_am_in_whatsapp -> {
+                if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)) {
+                    showSnackbar(requireContext(),
+                        resources.getString(R.string.not_installed_whatsapp))
+                    binding.iAmInWhatsapp.isChecked = false
+                }
                 UserModel.uIsWhatsapp = isChecked
             }
             R.id.working -> {

@@ -61,21 +61,55 @@
             android:layout_marginTop="@dimen/post_element_margin"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/whatsapp"
-                android:layout_width="@dimen/messengers_size"
-                android:layout_height="@dimen/messengers_size"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:contentDescription="@string/download_whatsapp"
-                android:src="@drawable/whatsapp_logo" />
+                android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/viber"
-                android:layout_width="@dimen/messengers_size"
-                android:layout_height="@dimen/messengers_size"
+                <ImageView
+                    android:id="@+id/whatsapp"
+                    android:layout_gravity="center"
+                    android:layout_width="@dimen/messengers_size"
+                    android:layout_height="@dimen/messengers_size"
+                    android:contentDescription="@string/download_whatsapp"
+                    android:src="@drawable/whatsapp_logo" />
+
+                <ImageView
+                    android:id="@+id/check_view_whatsapp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/fab_margin"
+                    app:srcCompat="@drawable/outline_cancel_24"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/button_unchecked" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:contentDescription="@string/download_viber_description"
-                android:src="@drawable/viber" />
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/viber"
+                    android:layout_gravity="center"
+                    android:layout_width="@dimen/messengers_size"
+                    android:layout_height="@dimen/messengers_size"
+                    android:contentDescription="@string/download_viber_description"
+                    android:src="@drawable/viber" />
+
+                <ImageView
+                    android:id="@+id/check_view_viber"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/fab_margin"
+                    app:srcCompat="@drawable/outline_cancel_24"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/button_unchecked" />
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <Button

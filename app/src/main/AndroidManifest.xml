@@ -122,23 +122,25 @@
         <activity
             android:name="octii.app.taxiapp.ui.maps.client.ClientMapActivity"
             android:exported="true"
-
+            android:screenOrientation="portrait"
             />
 
         <activity
             android:name="octii.app.taxiapp.ui.maps.driver.DriverMapActivity"
             android:exported="true"
-
+            android:screenOrientation="portrait"
             />
         <activity
             android:name="octii.app.taxiapp.ui.settings.driver.DriverSettingsActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
 
             />
 
         <activity
             android:name="octii.app.taxiapp.ui.settings.client.ClientSettingsActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
 
             />
 

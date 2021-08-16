@@ -182,7 +182,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         synchronized(this){
             binding.fabShowOrderDetails.show()
             binding.callTaxi.hide()
-            binding.fabSettings.hide()
             binding.fabShowOrderDetails.up(requireActivity(), binding.orderDetails)
         }
     }
@@ -206,7 +205,6 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                         googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
                         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
                             binding.callTaxi.hide()
-                            binding.fabSettings.hide()
                         } else {
                             binding.callTaxi.show()
                             binding.fabSettings.show()

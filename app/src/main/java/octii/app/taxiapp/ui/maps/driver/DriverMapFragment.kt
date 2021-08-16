@@ -184,9 +184,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
         requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
 
-        if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
-            binding.fabSettings.hide()
-        }
+        //if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
+        //    binding.fabSettings.hide()
+        //}
         try {
             setMap()
         } catch (e : java.lang.Exception){
@@ -229,7 +229,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     private fun showFabOrderDetails(){
         synchronized(this){
-            binding.fabSettings.hide()
             binding.fabShowOrderDetails.show()
             binding.fabShowOrderDetails.up(requireActivity(), binding.orderDetails)
         }

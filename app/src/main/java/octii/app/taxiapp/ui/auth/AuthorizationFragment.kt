@@ -15,6 +15,7 @@ import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
@@ -40,6 +41,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
     override fun onResume() {
         super.onResume()
         requests = Requests(requireView(), requireActivity())
+
         MyLocationListener.setUpLocationListener(requireContext())
     }
 
@@ -99,6 +101,11 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         Snackbar.LENGTH_LONG).show()
                     binding.iAmInWhatsapp.isChecked = true
                 }
+                if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)) {
+                    showSnackbar(requireContext(),
+                        resources.getString(R.string.not_installed_whatsapp))
+                    binding.iAmInWhatsapp.isChecked = false
+                }
                 UserModel.uIsWhatsapp = isChecked
 
             }
@@ -108,6 +115,10 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         resources.getString(R.string.to_become_driver),
                         Snackbar.LENGTH_LONG).show()
                     binding.iAmInViber.isChecked = true
+                }
+                if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)){
+                    showSnackbar(requireContext(), resources.getString(R.string.not_installed_viber))
+                    binding.iAmInViber.isChecked = false
                 }
                 UserModel.uIsViber = isChecked
             }

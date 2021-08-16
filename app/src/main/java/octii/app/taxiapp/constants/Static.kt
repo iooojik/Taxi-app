@@ -20,5 +20,7 @@ class Static {
         const val SNACKBAR_INTENT_FILTER = "SNACKBAR_INTENT_FILTER"
         const val SNACKBAR_MESSAGE = "SNACKBAR_MESSAGE"
         const val SNACKBAR_MESSAGE_LENGTH = "SNACKBAR_MESSAGE_LENGTH"
+        const val WHATSAPP_PACKAGE_NAME = "com.whatsapp"
+        const val VIBER_PACKAGE_NAME = "com.viber.voip"
     }
 }

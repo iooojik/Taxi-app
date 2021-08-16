@@ -18,6 +18,7 @@ import octii.app.taxiapp.databinding.FragmentEditPhotoListBinding
 import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.HttpHelper
@@ -149,89 +150,18 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                             MultipartBody.Part.createFormData("file", image.name, requestFile)
 
                         logError(selectedType)
-                        HttpHelper.FILE_API.uploadImage(body, selectedType, UserModel.mUuid)
-                            .enqueue(object :
-                                Callback<FileModel> {
-                                override fun onResponse(
-                                    call: Call<FileModel>,
-                                    response: Response<FileModel>
-                                ) {
-                                    Requests().userRequests.update {
-                                        setInformation()
-                                    }
+
+                        uploadImageProcess(body, selectedType, HttpHelper.FILE_API){
+                            Requests().userRequests.update {
+                                requireActivity().runOnUiThread {
+                                    setInformation()
                                 }
-
-                                override fun onFailure(call: Call<FileModel>, t: Throwable) {
-                                    HttpHelper.onFailure(t)
-                                }
-
-                            })
-                    }
-                    /*
-                    val selectedImage = data.data!!
-                    //call the standard crop action intent (the user device may not support it)
-                    val cropIntent = Intent("com.android.camera.action.CROP")
-                    //indicate image type and Uri
-                    cropIntent.setDataAndType(selectedImage, "image/*")
-                    //set crop properties
-                    cropIntent.putExtra("crop", "true")
-                    //indicate aspect of desired crop
-                    cropIntent.putExtra("aspectX", 1)
-                    cropIntent.putExtra("aspectY", 1)
-                    //indicate output X and Y
-                    cropIntent.putExtra("outputX", 256)
-                    cropIntent.putExtra("outputY", 256)
-                    //retrieve data on return
-                    cropIntent.putExtra("return-data", true)
-                    //start the activity - we handle returning in onActivityResult
-                    startActivityForResult(cropIntent, Static.PICK_CROP)*/*/
-                }
-            } Static.PICK_CROP -> {
-                Log.e("ttt", "crop")
-                if (data != null && data.extras != null) {
-                    val extras: Bundle = data.extras!!
-                    val selectedBitmap = extras.getParcelable<Bitmap>("data")
-
-                    if (selectedBitmap != null) {
-                        val imageName = "_${Date().toString().trim()}.jpg"
-
-                        val bos = ByteArrayOutputStream()
-                        selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, bos)
-
-                        val image = File(requireContext().cacheDir, imageName)
-                        image.createNewFile()
-
-                        val fos = FileOutputStream(image)
-                        fos.write(bos.toByteArray())
-                        fos.flush()
-                        fos.close()
-
-                        val requestFile: RequestBody =
-                            image.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-                        val body: MultipartBody.Part =
-                            MultipartBody.Part.createFormData("file", image.name, requestFile)
-
-                        logError(selectedType)
-                        HttpHelper.FILE_API.uploadImage(body, selectedType, UserModel.mUuid)
-                            .enqueue(object :
-                                Callback<FileModel> {
-                                override fun onResponse(
-                                    call: Call<FileModel>,
-                                    response: Response<FileModel>
-                                ) {
-                                    Requests().userRequests.update {
-                                        setInformation()
-                                    }
-                                }
-
-                                override fun onFailure(call: Call<FileModel>, t: Throwable) {
-                                    HttpHelper.onFailure(t)
-                                }
-                            })
+                            }
+                        }
                     }
                 }
-        }
+            }
+            else -> showSnackbar(requireContext(), resources.getString(R.string.error))
         }
     }
 

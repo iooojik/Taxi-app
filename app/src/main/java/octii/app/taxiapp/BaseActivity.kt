@@ -16,6 +16,7 @@ import octii.app.taxiapp.databinding.ActivityMainBinding
 import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.requests.Requests
@@ -60,13 +61,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun getFragment(id : Int? = R.id.welcomeFragment) : Int?
 
-    fun getSharedPrefernces(){
+    private fun getSharedPrefernces(){
         MyPreferences.userPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_USER, Context.MODE_PRIVATE)
         MyPreferences.applicationPreferences = getSharedPreferences(Static.SHARED_PREFERENCES_APPLICATION, Context.MODE_PRIVATE)
         MyPreferences.taximeterPreferences = getSharedPreferences(StaticTaximeter.SHARED_PREFERENCES_TAXIMETER, Context.MODE_PRIVATE)
     }
 
-    fun setLanguage(context : Context?){
+    private fun setLanguage(context : Context?){
         if (context != null) Application.getInstance().initAppLanguage(context)
     }
 
@@ -74,7 +75,6 @@ abstract class BaseActivity : AppCompatActivity() {
         requests = Requests(activity = this)
         val token = getToken()
         logError("token : ${getToken()}")
-
         if (token != null && Permissions(this, this).checkPermissions() && getUserUUID().trim().isNotEmpty()) {
             logError("passed")
             if (token.isNotEmpty()) {
@@ -113,12 +113,17 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun getStartLocationId() : Int{
-        getSharedPrefernces()
-        val uType = getSavedUserType()
-        return if (!getToken().isNullOrEmpty()) {
-            if (uType == Static.DRIVER_TYPE) R.id.driverMapActivity
-            else R.id.clientMapActivity
-        } else R.id.welcomeFragment
+        return if (!Permissions(this, this).checkPermissions()){
+            logInfo("permissions not granted")
+            R.id.authorizationActivity
+        }else {
+            getSharedPrefernces()
+            val uType = getSavedUserType()
+            if (!getToken().isNullOrEmpty()) {
+                if (uType == Static.DRIVER_TYPE) R.id.driverMapActivity
+                else R.id.clientMapActivity
+            } else R.id.welcomeFragment
+        }
     }
 
     private fun navigateToStartPage(){

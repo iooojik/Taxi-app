@@ -9,4 +9,6 @@
     <string name="copied">Скопировано</string>
     <string name="check_permissions">Проверьте разрешения</string>
     <string name="check_photos">Чтобы работать водителем, у вас должны быть загружены все фотографии.</string>
+    <string name="not_installed_whatsapp">У вас не установлен WhatsApp</string>
+    <string name="not_installed_viber">У вас не установлен Viber</string>
 </resources>

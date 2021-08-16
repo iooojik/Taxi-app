@@ -1,7 +1,12 @@
 package octii.app.taxiapp.models.files
 
+import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.web.HttpHelper
+import octii.app.taxiapp.web.requests.Requests
 import okhttp3.MultipartBody
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -13,4 +18,6 @@ interface FileApi {
     @POST("/taxi/files/uploadImage?")
     fun uploadImage(@Part file: MultipartBody.Part, @Query("type") type : String,
                     @Query("userUUID") uuid : String): Call<FileModel>
+
+
 }
