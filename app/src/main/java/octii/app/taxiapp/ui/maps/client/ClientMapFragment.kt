@@ -25,11 +25,10 @@ import octii.app.taxiapp.constants.StaticCoordinates
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
+import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.down
-import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.scripts.up
+import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
@@ -202,7 +201,9 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                     val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
                     activity?.runOnUiThread {
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
-                        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
+                        logInfo("zoom level: ${getZoomLevel(DriverModel.mRideDistance)}")
+                        logInfo("rideDistance: ${DriverModel.mRideDistance}")
+                        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(getZoomLevel(DriverModel.mRideDistance)))
                         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
                             binding.callTaxi.hide()
                         } else {

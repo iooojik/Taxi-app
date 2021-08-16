@@ -17,6 +17,7 @@ import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.settings.SettingsHelper
@@ -81,7 +82,10 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         binding.clientPhone.text = UserModel.uPhoneNumber
 
         binding.iAmInViber.isChecked = UserModel.uIsViber
+        logInfo("viber: ${UserModel.uIsViber}")
         binding.iAmInWhatsapp.isChecked = UserModel.uIsWhatsapp
+        logInfo("Whatsapp: ${UserModel.uIsWhatsapp}")
+
 
         if (UserModel.mAvatarURL.isNotEmpty()){
             val roundedCornerTransformation = RoundedCornersTransformation(40, 5)
@@ -137,15 +141,16 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when(buttonView!!.id){
             R.id.i_am_in_viber -> {
-                if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)) {
+                if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager) && isChecked) {
                     showSnackbar(requireContext(),
                         resources.getString(R.string.not_installed_viber))
                     binding.iAmInViber.isChecked = false
-                }
-                UserModel.uIsViber = isChecked
+                    UserModel.uIsViber = false
+                } else UserModel.uIsViber = isChecked
+                logInfo("viber checked: $isChecked")
             }
             R.id.i_am_in_whatsapp -> {
-                if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)) {
+                if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager) && isChecked) {
                     showSnackbar(requireContext(),
                         resources.getString(R.string.not_installed_whatsapp))
                     binding.iAmInWhatsapp.isChecked = false

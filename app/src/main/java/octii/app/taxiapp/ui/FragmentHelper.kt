@@ -29,6 +29,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import kotlin.math.log
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 interface FragmentHelper {
@@ -132,6 +135,10 @@ interface FragmentHelper {
             intent.data = Uri.parse("market://details?id=$packageName")
             activity.startActivity(intent)
         }
+    }
+
+    fun getZoomLevel(km : Float) : Float {
+        return log(40000f / km * 2f, 2.0f)
     }
 
     fun uploadImageProcess(body: MultipartBody.Part, selectedType : String, api : FileApi, runnable: Runnable){

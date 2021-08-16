@@ -25,11 +25,10 @@ import octii.app.taxiapp.constants.StaticCoordinates
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
+import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.down
-import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.scripts.up
+import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
@@ -142,7 +141,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
         setListeners()
         checkUserType()
-        setUi()
         //blockGoBack(requireActivity(), this)
         return binding.root
     }
@@ -168,7 +166,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                                 isMoved = true
                             }
                         }
-                        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(12f))
+                        logInfo("zoom level: ${getZoomLevel(DriverModel.mRideDistance)}")
+                        logInfo("rideDistance: ${DriverModel.mRideDistance}")
+                        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(getZoomLevel(DriverModel.mRideDistance)))
                     }
 
                     cameraMoved = true
@@ -183,7 +183,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         checkPermissions()
         requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
         requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
-
+        setUi()
         //if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
         //    binding.fabSettings.hide()
         //}

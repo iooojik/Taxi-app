@@ -80,6 +80,7 @@
 
                 <CheckBox
                     android:id="@+id/i_am_in_whatsapp"
+                    android:checked="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/fab_margin"
@@ -87,6 +88,7 @@
 
                 <CheckBox
                     android:id="@+id/i_am_in_viber"
+                    android:checked="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/i_am_in_viber" />

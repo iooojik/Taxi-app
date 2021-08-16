@@ -7,4 +7,7 @@ class ClientSettingsActivity : BaseActivity() {
     override fun getFragment(id: Int?): Int {
         return R.id.clientSettingsFragment
     }
+
+    override fun onBackPressed() {}
+
 }

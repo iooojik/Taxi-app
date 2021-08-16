@@ -7,4 +7,7 @@ class DriverSettingsActivity : BaseActivity() {
     override fun getFragment(id: Int?): Int {
         return R.id.driverSettingsFragment
     }
+
+    override fun onBackPressed() {}
+
 }
