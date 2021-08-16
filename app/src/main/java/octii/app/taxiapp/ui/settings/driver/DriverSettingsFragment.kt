@@ -164,7 +164,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         val prices = listOf(
             binding.pricePerKm.editText,
             binding.pricePerMin.editText,
-            binding.pricePerMin.editText,
+            binding.priceWaiting.editText,
             binding.maxDistance.editText
         )
 
@@ -176,7 +176,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-        Requests(view = requireView(), activity = requireActivity()).userRequests.update{
+        Requests().userRequests.update{
             if (UserModel.uType == Static.CLIENT_TYPE)
                 findNavController().navigate(R.id.clientSettingsActivity)
         }
@@ -184,8 +184,9 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 
     }
 
-    override fun onDestroyView() {
+    override fun onPause() {
         updateDriver()
-        super.onDestroyView()
+        super.onPause()
     }
+
 }

@@ -184,8 +184,9 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    override fun onDestroyView() {
+    override fun onPause() {
         updateClient()
-        super.onDestroyView()
+        super.onPause()
     }
+
 }
