@@ -6,11 +6,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 
-class Permissions(val context : Context, val activity : Activity) {
+class Permissions(val context: Context, val activity: Activity) {
 
     var permissionsGranted = false
 
-    fun requestPermissions(){
+    fun requestPermissions() {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -38,7 +38,7 @@ class Permissions(val context : Context, val activity : Activity) {
         } else permissionsGranted = true
     }
 
-    fun checkPermissions() : Boolean{
+    fun checkPermissions(): Boolean {
         return !(ActivityCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION

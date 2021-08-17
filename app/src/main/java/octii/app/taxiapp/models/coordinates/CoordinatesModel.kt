@@ -11,7 +11,7 @@ data class CoordinatesModel(
     @ColumnInfo(name = "_id")
     var id: Long = -1,
     @ColumnInfo(name = "latitude")
-    var latitude : Double = MyLocationListener.latitude,
+    var latitude: Double = MyLocationListener.latitude,
     @ColumnInfo(name = "longitude")
-    var longitude : Double = MyLocationListener.longitude,
+    var longitude: Double = MyLocationListener.longitude,
 )

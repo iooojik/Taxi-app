@@ -6,22 +6,22 @@ const val PROJECT_IDENTIFIER = "IOOOJIK"
 const val SERVICE_IDENTIFIER = "IOOOJIK SERVICE"
 const val ERROR_IDENTIFIER = "IOOOJIK EXEPTION"
 
-fun logDebug(message : Any){
+fun logDebug(message: Any) {
     Log.d(PROJECT_IDENTIFIER, message.toString())
 }
 
-fun logError(message: Any){
+fun logError(message: Any) {
     Log.e(PROJECT_IDENTIFIER, message.toString())
 }
 
-fun logInfo(message: Any){
+fun logInfo(message: Any) {
     Log.i(PROJECT_IDENTIFIER, message.toString())
 }
 
-fun logService(message: Any){
+fun logService(message: Any) {
     Log.d(SERVICE_IDENTIFIER, message.toString())
 }
 
-fun logExeption(message: Any){
+fun logExeption(message: Any) {
     Log.e(ERROR_IDENTIFIER, message.toString())
 }

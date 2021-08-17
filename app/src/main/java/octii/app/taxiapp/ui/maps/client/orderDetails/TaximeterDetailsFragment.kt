@@ -20,27 +20,29 @@ import octii.app.taxiapp.services.location.MyLocationListener
 
 class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 
-    lateinit var binding : FragmentClientTaximeterDetailsBinding
+    lateinit var binding: FragmentClientTaximeterDetailsBinding
 
     private val taximeterReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             val time = intent.getLongExtra(StaticTaximeter.TAXIMETER_BUNDLE_TIME, 0L)
-            val waitingTime = intent.getLongExtra(StaticTaximeter.TAXIMETER_BUNDLE_WAINTING_TIME, 0L)
+            val waitingTime =
+                intent.getLongExtra(StaticTaximeter.TAXIMETER_BUNDLE_WAINTING_TIME, 0L)
             setTaximeter(time, waitingTime)
         }
     }
 
-    private fun number2digits(number : Float) : String = String.format("%.2f", number)
+    private fun number2digits(number: Float): String = String.format("%.2f", number)
 
     private fun formatDuration(seconds: Long): String = DateUtils.formatElapsedTime(seconds)
 
-    private fun setTaximeter(time : Long, waitingTime : Long){
+    private fun setTaximeter(time: Long, waitingTime: Long) {
         val distance = MyLocationListener.distance
-        val totalPricePerKm = OrdersModel.mDriver.driver.prices.pricePerKm * MyLocationListener.distance
-        val totalPricePerMin = if(time/60 < 1) OrdersModel.mDriver.driver.prices.pricePerMinute
+        val totalPricePerKm =
+            OrdersModel.mDriver.driver.prices.pricePerKm * MyLocationListener.distance
+        val totalPricePerMin = if (time / 60 < 1) OrdersModel.mDriver.driver.prices.pricePerMinute
         else OrdersModel.mDriver.driver.prices.pricePerMinute * (time / 60)
 
-        val totalPriceWaiting = OrdersModel.mDriver.driver.prices.priceWaitingMin * waitingTime/60
+        val totalPriceWaiting = OrdersModel.mDriver.driver.prices.priceWaitingMin * waitingTime / 60
 
         binding.taximeter.distance.text = distance.toString()
         binding.taximeter.pricePerKm.text = number2digits(totalPricePerKm)
@@ -48,7 +50,8 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
         binding.taximeter.priceWaiting.text = number2digits(totalPriceWaiting)
         val totalPriceKm = totalPricePerKm + totalPriceWaiting
         val totalPriceMin = totalPricePerMin + totalPriceWaiting
-        binding.taximeter.priceTotal.text = "${number2digits(totalPriceKm)}/${number2digits(totalPriceMin)}"
+        binding.taximeter.priceTotal.text =
+            "${number2digits(totalPriceKm)}/${number2digits(totalPriceMin)}"
 
         binding.taximeter.time.text = formatDuration(time)
     }
@@ -63,7 +66,8 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().registerReceiver(taximeterReceiver, IntentFilter(StaticTaximeter.TAXIMETER_INTENT_FILTER))
+        requireActivity().registerReceiver(taximeterReceiver,
+            IntentFilter(StaticTaximeter.TAXIMETER_INTENT_FILTER))
         setUiInfo()
         setTaximeter(getOrderTime(), getWaitingTime())
     }
@@ -73,20 +77,29 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
         requireActivity().unregisterReceiver(taximeterReceiver)
     }
 
-    private fun getOrderTime() : Long =
-        if (MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_TIME, 0L) == null) 0L
-        else MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_TIME, 0L)!!
+    private fun getOrderTime(): Long =
+        if (MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_TIME,
+                0L) == null
+        ) 0L
+        else MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_TIME,
+            0L)!!
 
-    private fun getWaitingTime() : Long =
-        if (MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_WAITING_TIME, 0L) == null) 0L
-        else MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_WAITING_TIME, 0L)!!
+    private fun getWaitingTime(): Long =
+        if (MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_WAITING_TIME,
+                0L) == null
+        ) 0L
+        else MyPreferences.taximeterPreferences?.getLong(StaticOrders.SHARED_PREFERENCES_ORDER_WAITING_TIME,
+            0L)!!
 
-    private fun setUiInfo(){
-        val dealPrice = MyPreferences.taximeterPreferences?.getInt(StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1)
+    private fun setUiInfo() {
+        val dealPrice =
+            MyPreferences.taximeterPreferences?.getInt(StaticOrders.SHARED_PREFERENCES_DEAL_PRICE,
+                -1)
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){}
+        when (v!!.id) {
+        }
     }
 
 }

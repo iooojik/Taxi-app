@@ -33,7 +33,15 @@ public class CheckView extends View {
     private static final float DEFAULT_STROKE_WIDTH = 8F;
     private static final int DEFAULT_STROKE_COLOR = 0xFF1AAB00; // greenish
     private static final float SCALE_MIN = 0.80F;
-
+    private final ValueAnimator.AnimatorUpdateListener mScaleAnimatorListener = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            final float value = (float) animation.getAnimatedValue();
+            CheckView.this.setScaleX(value);
+            CheckView.this.setScaleY(value);
+            invalidate();
+        }
+    };
     private Interpolator mCheckInterpolator;
     /**
      * The path of the circle around the check mark
@@ -84,10 +92,27 @@ public class CheckView extends View {
      * Where the check mark ends
      */
     private PointF mCheckEnd;
+    //region animator listeners
+    private final ValueAnimator.AnimatorUpdateListener mCheckAnimatorListener = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            final float fraction = animation.getAnimatedFraction();
+            setCheckPathPercentage(fraction);
+            invalidate();
+        }
+    };
     /**
      * Where the circle border starts
      */
     private PointF mCircleStart;
+    private final ValueAnimator.AnimatorUpdateListener mCircleAnimatorListener = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            final float fraction = animation.getAnimatedFraction();
+            setCirclePathPercentage(fraction);
+            invalidate();
+        }
+    };
     private ValueAnimator mCheckAnimator;
     private ValueAnimator mCircleAnimator;
     private ValueAnimator mScaleAnimator;
@@ -113,6 +138,14 @@ public class CheckView extends View {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs);
     }
+
+    private static float distance(float x1, float y1, float x2, float y2) {
+        final float xAbs = Math.abs(x1 - x2);
+        final float yAbs = Math.abs(y1 - y2);
+        return (float) Math.sqrt((yAbs * yAbs) + (xAbs * xAbs));
+    }
+
+    //region instance methods
 
     private void init(Context context, AttributeSet attrs) {
         resolveAttributes(context, attrs);
@@ -147,6 +180,7 @@ public class CheckView extends View {
             a.recycle();
         }
     }
+    //endregion instance methods
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -167,12 +201,12 @@ public class CheckView extends View {
             mMinorContourLength = distance(mCheckStart.x, mCheckStart.y, mCheckPivot.x, mCheckPivot.y);
             mMajorContourLength = distance(mCheckPivot.x, mCheckPivot.y, mCheckEnd.x, mCheckEnd.y);
 
-            mCircleRect.left = mDrawingRect.left + mStrokeWidth /2;
-            mCircleRect.top = mDrawingRect.top + mStrokeWidth /2;
-            mCircleRect.right = mDrawingRect.right - mStrokeWidth /2;
-            mCircleRect.bottom = mDrawingRect.bottom - mStrokeWidth /2;
+            mCircleRect.left = mDrawingRect.left + mStrokeWidth / 2;
+            mCircleRect.top = mDrawingRect.top + mStrokeWidth / 2;
+            mCircleRect.right = mDrawingRect.right - mStrokeWidth / 2;
+            mCircleRect.bottom = mDrawingRect.bottom - mStrokeWidth / 2;
             mCircleStart.x = mCircleRect.right;
-            mCircleStart.y = mCircleRect.bottom /2;
+            mCircleStart.y = mCircleRect.bottom / 2;
 
             if (DEBUG && (mDrawingRect.width() != mDrawingRect.height())) {
                 Log.w(TAG, "WARNING: " + CheckView.class.getSimpleName() + " will look weird because you've given it a non-square drawing area.  " +
@@ -189,8 +223,6 @@ public class CheckView extends View {
             canvas.drawPath(mPathCircle, mPaint);
         }
     }
-
-    //region instance methods
 
     /**
      * Tell this {@link CheckView} to animate into the checked state.
@@ -225,7 +257,6 @@ public class CheckView extends View {
         mChecked = false;
         invalidate();
     }
-    //endregion instance methods
 
     //region private methods
     private Paint createPaint(int color, float strokeWidth) {
@@ -242,6 +273,7 @@ public class CheckView extends View {
     private Interpolator createCheckInterpolatorCompat() {
         return new PathInterpolator(0.755F, 0.05F, 0.855F, 0.06F);
     }
+    //endregion private methods
 
     /**
      * What does the check mark path look like at it's full length?
@@ -298,41 +330,5 @@ public class CheckView extends View {
         mPathCircle.moveTo(mCircleStart.x, mCircleStart.y);
         mPathCircle.arcTo(mCircleRect, 0, (359 * percent));
     }
-
-    private static float distance(float x1, float y1, float x2, float y2) {
-        final float xAbs = Math.abs(x1 - x2);
-        final float yAbs = Math.abs(y1 - y2);
-        return (float) Math.sqrt((yAbs * yAbs) + (xAbs * xAbs));
-    }
-    //endregion private methods
-
-    //region animator listeners
-    private final ValueAnimator.AnimatorUpdateListener mCheckAnimatorListener = new ValueAnimator.AnimatorUpdateListener() {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            final float fraction = animation.getAnimatedFraction();
-            setCheckPathPercentage(fraction);
-            invalidate();
-        }
-    };
-
-    private final ValueAnimator.AnimatorUpdateListener mCircleAnimatorListener = new ValueAnimator.AnimatorUpdateListener() {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            final float fraction = animation.getAnimatedFraction();
-            setCirclePathPercentage(fraction);
-            invalidate();
-        }
-    };
-
-    private final ValueAnimator.AnimatorUpdateListener mScaleAnimatorListener = new ValueAnimator.AnimatorUpdateListener() {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            final float value = (float) animation.getAnimatedValue();
-            CheckView.this.setScaleX(value);
-            CheckView.this.setScaleY(value);
-            invalidate();
-        }
-    };
     //endregion
 }

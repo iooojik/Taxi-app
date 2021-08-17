@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/fab_margin"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/progress_text"
@@ -103,8 +103,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@id/uploading_progress"
         app:layout_constraintBottom_toBottomOf="@+id/uploading_progress"
+        app:layout_constraintTop_toBottomOf="@id/uploading_progress"
         tools:layout_editor_absoluteX="16dp" />
 
     <ProgressBar

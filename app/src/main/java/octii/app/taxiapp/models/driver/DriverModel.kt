@@ -10,23 +10,27 @@ data class DriverModel(
     @ColumnInfo(name = "_id")
     var id: Long = mId,
     @ColumnInfo(name = "driver_id")
-    var driverID : Long = mDriverID,
+    var driverID: Long = mDriverID,
     @ColumnInfo(name = "ride_distance")
-    var rideDistance : Float = mRideDistance,
+    var rideDistance: Float = mRideDistance,
     @ColumnInfo(name = "is_working")
-    var isWorking : Boolean = mIsWorking,
-    var prices: Prices = mPrices
+    var isWorking: Boolean = mIsWorking,
+    var prices: Prices = mPrices,
 ) {
     companion object {
         @JvmStatic
         var mId: Long = -1
+
         @JvmStatic
-        var mDriverID : Long = (-1).toLong()
+        var mDriverID: Long = (-1).toLong()
+
         @JvmStatic
-        var mRideDistance : Float = 15f
+        var mRideDistance: Float = 15f
+
         @JvmStatic
-        var mIsWorking : Boolean = false
+        var mIsWorking: Boolean = false
+
         @JvmStatic
-        var mPrices : Prices = Prices()
+        var mPrices: Prices = Prices()
     }
 }

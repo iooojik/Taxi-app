@@ -22,7 +22,7 @@ import octii.app.taxiapp.ui.maps.OpenMessengerBottomSheet
 
 class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
 
-    lateinit var binding : FragmentDriverDetailsBinding
+    lateinit var binding: FragmentDriverDetailsBinding
     private var isWhatsApp = false
     private var isViber = false
 
@@ -40,7 +40,7 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
         setInformation()
     }
 
-    private fun setInformation(){
+    private fun setInformation() {
         binding.driverName.text = OrdersModel.mDriver.userName
         binding.driverPhone.text = OrdersModel.mDriver.phone
         binding.callToDriver.setOnClickListener(this)
@@ -62,34 +62,33 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
         }
     }
 
-    private fun setMessengersInfo(){
+    private fun setMessengersInfo() {
         if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp) {
             binding.messengersInfo.text =
                 requireActivity().resources.getString(R.string.user_available_in_viber_and_whatsapp)
             isViber = true
             isWhatsApp = true
-        }
-        else if (OrdersModel.mCustomer.isWhatsapp) {
+        } else if (OrdersModel.mCustomer.isWhatsapp) {
             binding.messengersInfo.text =
                 requireActivity().resources.getString(R.string.user_available_in_whatsapp)
             isWhatsApp = true
-        }
-        else if (OrdersModel.mCustomer.isViber) {
+        } else if (OrdersModel.mCustomer.isViber) {
             binding.messengersInfo.text =
                 requireActivity().resources.getString(R.string.user_available_in_viber)
             isViber = true
         }
     }
 
-    private fun copyToClipBoard(text : String){
+    private fun copyToClipBoard(text: String) {
         val clipboard: ClipboardManager =
             requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("", text)
         clipboard.setPrimaryClip(clip)
-        Snackbar.make(binding.root, resources.getString(R.string.copied), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, resources.getString(R.string.copied), Snackbar.LENGTH_SHORT)
+            .show()
     }
 
-    private fun callToCustomer(phone : String) {
+    private fun callToCustomer(phone: String) {
         if (OrdersModel.mCustomer.phone.isNotEmpty()) {
             val dial = "tel:$phone"
             startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
@@ -97,20 +96,21 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.call_to_customer -> {
                 copyToClipBoard(binding.driverPhone.text.toString())
                 if (isWhatsApp && isViber) {
                     OpenMessengerBottomSheet(requireContext(), requireActivity()).show()
-                }
-                else if (isViber) goToApplication("com.viber.voip", requireActivity())
+                } else if (isViber) goToApplication("com.viber.voip", requireActivity())
                 else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
                 else {
                     callToCustomer(binding.driverPhone.text.toString())
                 }
             }
             R.id.show_photos -> {
-                BottomSheetShowPhotos(requireContext(), requireActivity(), OrdersModel.mDriver.files).show()
+                BottomSheetShowPhotos(requireContext(),
+                    requireActivity(),
+                    OrdersModel.mDriver.files).show()
             }
         }
     }

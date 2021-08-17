@@ -61,4 +61,6 @@
     <string name="button_no">No</string>
     <string name="button_yes">Yes</string>
     <string name="button_waiting">Expectation</string>
+    <string name="not_installed_whatsapp">You don\'t have WhatsApp installed</string>
+    <string name="not_installed_viber">You don\'t have Viber installed</string>
 </resources>

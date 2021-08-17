@@ -28,14 +28,11 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 import kotlin.math.log
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 
 interface FragmentHelper {
-    fun blockGoBack(activity: ComponentActivity, fragment: Fragment){
+    fun blockGoBack(activity: ComponentActivity, fragment: Fragment) {
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {}
         }
@@ -58,7 +55,7 @@ interface FragmentHelper {
         return result
     }
 
-    fun hideKeyBoard(activity: Activity, v : View){
+    fun hideKeyBoard(activity: Activity, v: View) {
         val imm: InputMethodManager =
             activity.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(v.windowToken, 0)
@@ -91,28 +88,28 @@ interface FragmentHelper {
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
-    fun isInstalled(packageName : String, pm : PackageManager)  : Boolean{
+    fun isInstalled(packageName: String, pm: PackageManager): Boolean {
         return try {
             val pi: PackageInfo? = pm.getPackageInfo(packageName, 0)
             pi != null
-        } catch (e : Exception){
+        } catch (e: Exception) {
             false
         }
     }
 
-    fun setLanguage(language : String, activity: Activity?) {
+    fun setLanguage(language: String, activity: Activity?) {
         LocaleUtils.setSelectedLanguageId(language)
         if (activity != null)
-            synchronized(activity){
+            synchronized(activity) {
                 activity.finish()
                 activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                 activity.startActivity(activity.intent)
             }
     }
 
-    fun changeSpeakingLanguage(lang: String, isChecked: Boolean){
+    fun changeSpeakingLanguage(lang: String, isChecked: Boolean) {
         val languages = arrayListOf<SpeakingLanguagesModel>()
-        if (isChecked){
+        if (isChecked) {
             for (spLang in UserModel.mLanguages) languages.add(spLang)
             languages.add(SpeakingLanguagesModel(language = lang))
         } else {
@@ -124,7 +121,7 @@ interface FragmentHelper {
 
     }
 
-    fun goToApplication(packageName : String, activity: Activity){
+    fun goToApplication(packageName: String, activity: Activity) {
         var intent = activity.packageManager.getLaunchIntentForPackage(packageName)
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -137,17 +134,22 @@ interface FragmentHelper {
         }
     }
 
-    fun getZoomLevel(km : Float) : Float {
+    fun getZoomLevel(km: Float): Float {
         return log(40000f / km * 2f, 2.0f)
     }
 
-    fun uploadImageProcess(body: MultipartBody.Part, selectedType : String, api : FileApi, runnable: Runnable){
+    fun uploadImageProcess(
+        body: MultipartBody.Part,
+        selectedType: String,
+        api: FileApi,
+        runnable: Runnable,
+    ) {
         api.uploadImage(body, selectedType, UserModel.mUuid)
             .enqueue(object :
                 Callback<FileModel> {
                 override fun onResponse(
                     call: Call<FileModel>,
-                    response: Response<FileModel>
+                    response: Response<FileModel>,
                 ) {
                     runnable.run()
                 }

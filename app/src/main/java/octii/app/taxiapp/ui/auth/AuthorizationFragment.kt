@@ -17,7 +17,6 @@ import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
@@ -27,7 +26,7 @@ import octii.app.taxiapp.web.requests.Requests
 class AuthorizationFragment : Fragment(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener, FragmentHelper {
 
-    lateinit var binding : FragmentAuthorizationBinding
+    lateinit var binding: FragmentAuthorizationBinding
     private lateinit var requests: Requests
 
     override fun onCreateView(
@@ -47,7 +46,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
         MyLocationListener.setUpLocationListener(requireContext())
     }
 
-    private fun setListeners(){
+    private fun setListeners() {
         binding.loginButton.setOnClickListener(this)
         binding.iAmInWhatsapp.setOnCheckedChangeListener(this)
         binding.iAmInViber.setOnCheckedChangeListener(this)
@@ -55,7 +54,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
         binding.mainAuth.setOnClickListener(this)
         binding.fabBack.setOnClickListener(this)
         val filter =
-            InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned?, dstart: Int, dend: Int ->
+            InputFilter { source: CharSequence, _: Int, _: Int, _: Spanned?, _: Int, _: Int ->
                 source.toString().trim { it <= ' ' }
                     .replace("[\\W\\d]|_".toRegex(), "")
             }
@@ -63,7 +62,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.login_button -> {
                 val phoneNumber = binding.phoneNumberLayout.editText?.text.toString()
                 val userName = binding.nameLayout.editText?.text.toString()
@@ -82,11 +81,13 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                 } else {
                     logError(LatLng(MyLocationListener.latitude, MyLocationListener.longitude))
 
-                    requests.userRequests.login("+$phoneNumber", userName,
-                        LatLng(MyLocationListener.latitude, MyLocationListener.longitude), binding.progressBar){
+                    requests.userRequests.login("+$phoneNumber",
+                        userName,
+                        LatLng(MyLocationListener.latitude, MyLocationListener.longitude),
+                        binding.progressBar) {
                         Services(requireActivity(), Static.MAIN_SERVICES).start()
                         if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapActivity)
-                        else  findNavController().navigate(R.id.clientMapActivity)
+                        else findNavController().navigate(R.id.clientMapActivity)
                     }
                 }
             }
@@ -101,7 +102,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        when(buttonView!!.id){
+        when (buttonView!!.id) {
             R.id.i_am_in_whatsapp -> {
                 if (UserModel.uType == Static.DRIVER_TYPE && binding.iAmInViber.isChecked && !isChecked) {
                     Snackbar.make(requireView(),
@@ -109,11 +110,11 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         Snackbar.LENGTH_LONG).show()
                     binding.iAmInWhatsapp.isChecked = true
                 }
-                if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)) {
-                    showSnackbar(requireContext(),
-                        resources.getString(R.string.not_installed_whatsapp))
-                    binding.iAmInWhatsapp.isChecked = false
-                }
+                //if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)) {
+                //    showSnackbar(requireContext(),
+                //        resources.getString(R.string.not_installed_whatsapp))
+                //     binding.iAmInWhatsapp.isChecked = false
+                // }
                 UserModel.uIsWhatsapp = isChecked
 
             }
@@ -124,10 +125,10 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         Snackbar.LENGTH_LONG).show()
                     binding.iAmInViber.isChecked = true
                 }
-                if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)){
-                    showSnackbar(requireContext(), resources.getString(R.string.not_installed_viber))
-                    binding.iAmInViber.isChecked = false
-                }
+                //if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)){
+                //    showSnackbar(requireContext(), resources.getString(R.string.not_installed_viber))
+                //    binding.iAmInViber.isChecked = false
+                //}
                 UserModel.uIsViber = isChecked
             }
             R.id.i_am_driver -> {
@@ -138,8 +139,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                             Snackbar.LENGTH_LONG).show()
                         binding.iAmDriver.isChecked = false
                     } else UserModel.uType = Static.DRIVER_TYPE
-                }
-                else UserModel.uType = Static.CLIENT_TYPE
+                } else UserModel.uType = Static.CLIENT_TYPE
             }
         }
     }

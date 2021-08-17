@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
@@ -27,8 +26,8 @@ import octii.app.taxiapp.web.requests.Requests
 class ClientSettingsFragment : Fragment(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener, SettingsHelper, FragmentHelper {
 
-    private lateinit var binding : FragmentClientSettingsBinding
-    private lateinit var requests : Requests
+    private lateinit var binding: FragmentClientSettingsBinding
+    private lateinit var requests: Requests
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,26 +45,29 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         getSettingsInformation()
     }
 
-    private fun updateClient(){
-        Requests().userRequests.update{
+    private fun updateClient() {
+        Requests().userRequests.update {
             if (UserModel.uType == Static.DRIVER_TYPE)
                 findNavController().navigate(R.id.driverSettingsActivity)
         }
     }
 
     override fun setLanguageSelector() {
-        when(LocaleUtils.getSelectedLanguageId()){
+        when (LocaleUtils.getSelectedLanguageId()) {
             LocaleUtils.RUSSIAN -> binding.languageSelectors.russianLanguage.isChecked = true
             LocaleUtils.ENGLISH -> binding.languageSelectors.englishLanguage.isChecked = true
             LocaleUtils.SERBIAN -> binding.languageSelectors.serbianLanguage.isChecked = true
         }
 
-        if (UserModel.mLanguages.isNotEmpty()){
-            for (speakingLang in UserModel.mLanguages){
-                when(speakingLang.language){
-                    LocaleUtils.RUSSIAN -> binding.languageSelectors.buttonRussianLanguage.isChecked = true
-                    LocaleUtils.SERBIAN -> binding.languageSelectors.buttonSerbianLanguage.isChecked = true
-                    LocaleUtils.ENGLISH -> binding.languageSelectors.buttonEnglishLanguage.isChecked = true
+        if (UserModel.mLanguages.isNotEmpty()) {
+            for (speakingLang in UserModel.mLanguages) {
+                when (speakingLang.language) {
+                    LocaleUtils.RUSSIAN -> binding.languageSelectors.buttonRussianLanguage.isChecked =
+                        true
+                    LocaleUtils.SERBIAN -> binding.languageSelectors.buttonSerbianLanguage.isChecked =
+                        true
+                    LocaleUtils.ENGLISH -> binding.languageSelectors.buttonEnglishLanguage.isChecked =
+                        true
                 }
             }
         }
@@ -87,7 +89,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         logInfo("Whatsapp: ${UserModel.uIsWhatsapp}")
 
 
-        if (UserModel.mAvatarURL.isNotEmpty()){
+        if (UserModel.mAvatarURL.isNotEmpty()) {
             val roundedCornerTransformation = RoundedCornersTransformation(40, 5)
             Picasso.with(requireContext())
                 .load(UserModel.mAvatarURL)
@@ -120,7 +122,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.become_driver -> {
                 if (UserModel.uIsViber && UserModel.uIsWhatsapp) {
                     UserModel.uType = Static.DRIVER_TYPE
@@ -139,22 +141,23 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        when(buttonView!!.id){
+        when (buttonView!!.id) {
             R.id.i_am_in_viber -> {
-                if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager) && isChecked) {
-                    showSnackbar(requireContext(),
-                        resources.getString(R.string.not_installed_viber))
-                    binding.iAmInViber.isChecked = false
-                    UserModel.uIsViber = false
-                } else UserModel.uIsViber = isChecked
+                //if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager) && isChecked) {
+                //     showSnackbar(requireContext(),
+                //         resources.getString(R.string.not_installed_viber))
+                //     binding.iAmInViber.isChecked = false
+                //     UserModel.uIsViber = false
+                //} else
+                UserModel.uIsViber = isChecked
                 logInfo("viber checked: $isChecked")
             }
             R.id.i_am_in_whatsapp -> {
-                if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager) && isChecked) {
-                    showSnackbar(requireContext(),
-                        resources.getString(R.string.not_installed_whatsapp))
-                    binding.iAmInWhatsapp.isChecked = false
-                }
+                //if (!isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager) && isChecked) {
+                //    showSnackbar(requireContext(),
+                //        resources.getString(R.string.not_installed_whatsapp))
+                //    binding.iAmInWhatsapp.isChecked = false
+                //}
                 UserModel.uIsWhatsapp = isChecked
             }
             R.id.working -> {
@@ -172,13 +175,13 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
                 if (isChecked)
                     setLanguage(LocaleUtils.SERBIAN, activity)
             }
-            R.id.button_russian_language ->{
+            R.id.button_russian_language -> {
                 changeSpeakingLanguage(LocaleUtils.RUSSIAN, isChecked)
             }
-            R.id.button_serbian_language ->{
+            R.id.button_serbian_language -> {
                 changeSpeakingLanguage(LocaleUtils.SERBIAN, isChecked)
             }
-            R.id.button_english_language ->{
+            R.id.button_english_language -> {
                 changeSpeakingLanguage(LocaleUtils.ENGLISH, isChecked)
             }
         }

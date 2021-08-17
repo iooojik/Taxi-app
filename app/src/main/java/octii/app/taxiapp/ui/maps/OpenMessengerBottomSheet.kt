@@ -9,10 +9,11 @@ import octii.app.taxiapp.databinding.BottomSheetOpenMessengerBinding
 import octii.app.taxiapp.ui.FragmentHelper
 
 
-class OpenMessengerBottomSheet (context: Context, val activity: Activity) :
+class OpenMessengerBottomSheet(context: Context, val activity: Activity) :
     BottomSheetDialog(context), View.OnClickListener, FragmentHelper {
 
-    val binding : BottomSheetOpenMessengerBinding = BottomSheetOpenMessengerBinding.inflate(activity.layoutInflater)
+    val binding: BottomSheetOpenMessengerBinding =
+        BottomSheetOpenMessengerBinding.inflate(activity.layoutInflater)
 
     init {
         setContentView(binding.root)
@@ -21,7 +22,7 @@ class OpenMessengerBottomSheet (context: Context, val activity: Activity) :
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.whatsapp -> {
                 goToApplication("com.whatsapp", activity)
                 hide()

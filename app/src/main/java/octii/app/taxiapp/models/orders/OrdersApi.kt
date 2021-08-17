@@ -6,8 +6,8 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 
-interface OrdersApi  {
+interface OrdersApi {
     //@POST("/orders/check")
     @POST("/taxi/orders/check")
-    fun ordersCheck(@Body userModel: UserModel) : Call<OrdersModel>
+    fun ordersCheck(@Body userModel: UserModel): Call<OrdersModel>
 }

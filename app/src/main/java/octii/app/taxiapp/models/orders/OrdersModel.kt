@@ -11,35 +11,43 @@ class OrdersModel(
     @ColumnInfo(name = "_id")
     var id: Long = mId,
     @ColumnInfo(name = "driver_id")
-    var driverID : Long = mDriverID,
+    var driverID: Long = mDriverID,
     @ColumnInfo(name = "customer_id")
-    var customerID : Long = mCustomerID,
+    var customerID: Long = mCustomerID,
     @ColumnInfo(name = "uuid")
-    var uuid : String = mUuid,
+    var uuid: String = mUuid,
     @ColumnInfo(name = "is_finished")
-    var isFinished : Boolean = mIsFinished,
+    var isFinished: Boolean = mIsFinished,
     @ColumnInfo(name = "is_new")
-    var isNew : Boolean = false,
-    var driver : UserModel? = mDriver,
-    var customer : UserModel? = mCustomer
+    var isNew: Boolean = false,
+    var driver: UserModel? = mDriver,
+    var customer: UserModel? = mCustomer,
 ) {
-    companion object{
+    companion object {
         @JvmStatic
         var mId: Long = -1
+
         @JvmStatic
-        var mDriverID : Long = -1
+        var mDriverID: Long = -1
+
         @JvmStatic
-        var mCustomerID : Long = -1
+        var mCustomerID: Long = -1
+
         @JvmStatic
-        var mUuid : String = ""
+        var mUuid: String = ""
+
         @JvmStatic
-        var mIsFinished : Boolean = true
+        var mIsFinished: Boolean = true
+
         @JvmStatic
-        var mDriver : UserModel = UserModel()
+        var mDriver: UserModel = UserModel()
+
         @JvmStatic
-        var mCustomer : UserModel = UserModel()
+        var mCustomer: UserModel = UserModel()
+
         @JvmStatic
         var isOrdered = false
+
         @JvmStatic
         var isAccepted = false
     }

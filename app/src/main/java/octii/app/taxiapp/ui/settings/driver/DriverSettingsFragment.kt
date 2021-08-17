@@ -25,7 +25,7 @@ import octii.app.taxiapp.web.requests.Requests
 class DriverSettingsFragment : Fragment(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener, SettingsHelper, FragmentHelper {
 
-    private lateinit var binding : FragmentDriverSettingsBinding
+    private lateinit var binding: FragmentDriverSettingsBinding
     private lateinit var requests: Requests
 
     override fun onCreateView(
@@ -44,7 +44,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         getSettingsInformation()
     }
 
-    override fun setListeners(){
+    override fun setListeners() {
         if (binding.root == requireView()) {
             //buttons
             binding.becomeClient.setOnClickListener(this)
@@ -64,24 +64,27 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     override fun setLanguageSelector() {
-        when(LocaleUtils.getSelectedLanguageId()){
+        when (LocaleUtils.getSelectedLanguageId()) {
             LocaleUtils.RUSSIAN -> binding.languageSelectors.russianLanguage.isChecked = true
             LocaleUtils.ENGLISH -> binding.languageSelectors.englishLanguage.isChecked = true
             LocaleUtils.SERBIAN -> binding.languageSelectors.serbianLanguage.isChecked = true
         }
 
-        if (UserModel.mLanguages.isNotEmpty()){
-            for (speakingLang in UserModel.mLanguages){
-                when(speakingLang.language){
-                    LocaleUtils.RUSSIAN -> binding.languageSelectors.buttonRussianLanguage.isChecked = true
-                    LocaleUtils.SERBIAN -> binding.languageSelectors.buttonSerbianLanguage.isChecked = true
-                    LocaleUtils.ENGLISH -> binding.languageSelectors.buttonEnglishLanguage.isChecked = true
+        if (UserModel.mLanguages.isNotEmpty()) {
+            for (speakingLang in UserModel.mLanguages) {
+                when (speakingLang.language) {
+                    LocaleUtils.RUSSIAN -> binding.languageSelectors.buttonRussianLanguage.isChecked =
+                        true
+                    LocaleUtils.SERBIAN -> binding.languageSelectors.buttonSerbianLanguage.isChecked =
+                        true
+                    LocaleUtils.ENGLISH -> binding.languageSelectors.buttonEnglishLanguage.isChecked =
+                        true
                 }
             }
         }
     }
 
-    override fun getSettingsInformation(){
+    override fun getSettingsInformation() {
         updateUiInfo()
     }
 
@@ -95,7 +98,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         binding.driverPhone.text = UserModel.uPhoneNumber
 
         //loading avatar image
-        if (UserModel.mAvatarURL.isNotEmpty()){
+        if (UserModel.mAvatarURL.isNotEmpty()) {
             Picasso.with(requireContext())
                 .load(UserModel.mAvatarURL)
                 .transform(RoundedCornersTransformation(40, 5))
@@ -108,7 +111,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.become_client -> {
                 UserModel.uType = Static.CLIENT_TYPE
                 updateDriver()
@@ -126,7 +129,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        when(buttonView!!.id){
+        when (buttonView!!.id) {
             R.id.working -> {
                 if (UserModel.mFiles.size == Static.PHOTO_TYPES.size) {
                     UserModel.mDriver.isWorking = isChecked
@@ -147,19 +150,19 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
                 if (isChecked)
                     setLanguage(LocaleUtils.SERBIAN, activity)
             }
-            R.id.button_russian_language ->{
+            R.id.button_russian_language -> {
                 changeSpeakingLanguage(LocaleUtils.RUSSIAN, isChecked)
             }
-            R.id.button_serbian_language ->{
+            R.id.button_serbian_language -> {
                 changeSpeakingLanguage(LocaleUtils.SERBIAN, isChecked)
             }
-            R.id.button_english_language ->{
+            R.id.button_english_language -> {
                 changeSpeakingLanguage(LocaleUtils.ENGLISH, isChecked)
             }
         }
     }
 
-    private fun updateDriver(){
+    private fun updateDriver() {
 
         val prices = listOf(
             binding.pricePerKm.editText,
@@ -176,7 +179,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-        Requests().userRequests.update{
+        Requests().userRequests.update {
             if (UserModel.uType == Static.CLIENT_TYPE)
                 findNavController().navigate(R.id.clientSettingsActivity)
         }

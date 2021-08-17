@@ -8,16 +8,17 @@
 
 
     <include
+        android:id="@+id/app_bar_main"
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <include
-        layout="@layout/content_splash"
         android:id="@+id/splash_layout"
+        layout="@layout/content_splash"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

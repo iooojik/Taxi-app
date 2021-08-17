@@ -15,11 +15,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class OrderRequests(private val view : View? = null, private val activity: Activity? = null) {
+class OrderRequests(private val view: View? = null, private val activity: Activity? = null) {
 
     private val gson = Gson()
 
-    fun getOrderModel(order : OrdersModel, isOrdered : Boolean = false, isAccepted : Boolean = false) : OrdersModel {
+    fun getOrderModel(
+        order: OrdersModel,
+        isOrdered: Boolean = false,
+        isAccepted: Boolean = false,
+    ): OrdersModel {
         logInfo("order $order")
         OrdersModel.mId = order.id
         OrdersModel.mDriverID = order.driverID
@@ -27,7 +31,7 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
         OrdersModel.mUuid = order.uuid
         OrdersModel.mIsFinished = order.isFinished
 
-        if (order.driver != null){
+        if (order.driver != null) {
 
             OrdersModel.mDriver = order.driver!!
             if (order.driver?.driver?.prices != null) {
@@ -46,16 +50,15 @@ class OrderRequests(private val view : View? = null, private val activity: Activ
         return OrdersModel()
     }
 
-    fun orderCheck(model : UserModel){
+    fun orderCheck(model: UserModel) {
         logError("order check")
-        HttpHelper.ORDERS_API.ordersCheck(model).enqueue(object : Callback<OrdersModel>{
+        HttpHelper.ORDERS_API.ordersCheck(model).enqueue(object : Callback<OrdersModel> {
             override fun onResponse(call: Call<OrdersModel>, response: Response<OrdersModel>) {
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     getOrderModel(response.body()!!,
                         false,
                         response.body()!!.driverID > 0 && !response.body()!!.isFinished)
-                    activity?.
-                    sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
+                    activity?.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
                         .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_ACCEPTED))
                 }
             }

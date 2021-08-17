@@ -1,7 +1,7 @@
 package octii.app.taxiapp.constants
 
 class StaticTaximeter {
-    companion object{
+    companion object {
         const val SHARED_PREFERENCES_TAXIMETER = "TAXIMETER PREFERENCES"
         const val TAXIMETER_INTENT_FILTER = "octii.app.taxiapp.TAXIMTER_FILTER"
         const val TAXIMETER_BUNDLE_TIME = "time"

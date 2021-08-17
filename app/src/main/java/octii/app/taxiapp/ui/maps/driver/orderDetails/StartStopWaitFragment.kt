@@ -25,11 +25,11 @@ import octii.app.taxiapp.web.SocketHelper
 
 class StartStopWaitFragment : Fragment(), View.OnClickListener {
 
-    lateinit var binding : FragmentStartStopBinding
-    private var orderStatusReciever : BroadcastReceiver = object : BroadcastReceiver(){
+    lateinit var binding: FragmentStartStopBinding
+    private var orderStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
-                when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
+                when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
                         checkUI()
                     }
@@ -47,19 +47,19 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         return binding.root
     }
 
-    private fun setListeners(){
+    private fun setListeners() {
         binding.finishOrder.setOnClickListener(this)
         binding.waitingOrder.setOnClickListener(this)
         binding.startOrder.setOnClickListener(this)
     }
 
-    private fun checkUI(){
+    private fun checkUI() {
         if (isWaiting()) binding.waitingOrder.setBackgroundColor(Color.parseColor("#99d98c"))
         logError("${isRunning()} ${isWaiting()}")
         if (isRunning()) {
             binding.finishOrder.visibility = View.VISIBLE
             binding.startOrderLayout.visibility = View.GONE
-        } else{
+        } else {
             binding.finishOrder.visibility = View.GONE
             binding.startOrderLayout.visibility = View.VISIBLE
         }
@@ -77,7 +77,8 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         checkUI()
-        requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(orderStatusReciever,
+            IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
     }
 
     override fun onDestroy() {
@@ -85,15 +86,21 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         requireActivity().unregisterReceiver(orderStatusReciever)
     }
 
-    private fun isWaiting() : Boolean =
-        if (MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false) == null) false
-        else MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)!!
+    private fun isWaiting(): Boolean =
+        if (MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+                false) == null
+        ) false
+        else MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+            false)!!
 
-    private fun isRunning() : Boolean =
-        if (MyPreferences.taximeterPreferences?.getBoolean(StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false) == null) false
-        else MyPreferences.taximeterPreferences?.getBoolean(StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)!!
+    private fun isRunning(): Boolean =
+        if (MyPreferences.taximeterPreferences?.getBoolean(StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS,
+                false) == null
+        ) false
+        else MyPreferences.taximeterPreferences?.getBoolean(StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS,
+            false)!!
 
-    private fun finishOrder(){
+    private fun finishOrder() {
         binding.finishOrder.isEnabled = false
         binding.waitingOrder.isEnabled = false
         OrdersModel.isAccepted = false
@@ -101,17 +108,27 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         activity?.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
             .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED))
 
-        MyPreferences.taximeterPreferences?.let { MyPreferences.saveToPreferences(it, StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)}
-        MyPreferences.taximeterPreferences?.let { MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)}
+        MyPreferences.taximeterPreferences?.let {
+            MyPreferences.saveToPreferences(it,
+                StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS,
+                false)
+        }
+        MyPreferences.taximeterPreferences?.let {
+            MyPreferences.saveToPreferences(it,
+                StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+                false)
+        }
         MyPreferences.taximeterPreferences?.let {
             MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1)
         }
         SocketHelper.finishOrder(OrdersModel())
-        SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null, recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
+        SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null,
+            recipientUUID = OrdersModel.mCustomer.uuid,
+            orderUUID = OrdersModel.mUuid))
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.finish_order -> {
                 val items = arrayOf(
                     resources.getString(R.string.button_yes),
@@ -121,11 +138,12 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.finish_order_dialog)
                     .setItems(items) { _, which ->
-                        when(which){
+                        when (which) {
                             0 -> {
                                 finishOrder()
                             }
-                            1 -> {}
+                            1 -> {
+                            }
                         }
                     }
                     .show()
@@ -149,7 +167,8 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
                             false)
                     }
                     SocketHelper.taximeterWaiting(TaximeterUpdate(coordinates = CoordinatesModel(),
-                        recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid), false)
+                        recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid),
+                        false)
                     binding.waitingOrder.setBackgroundColor(Color.parseColor("#ffffff"))
                 } else {
                     MyPreferences.taximeterPreferences?.let {
@@ -158,7 +177,8 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
                             true)
                     }
                     SocketHelper.taximeterWaiting(TaximeterUpdate(coordinates = CoordinatesModel(),
-                        recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid), true)
+                        recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid),
+                        true)
                     binding.waitingOrder.setBackgroundColor(Color.parseColor("#99d98c"))
                 }
             }

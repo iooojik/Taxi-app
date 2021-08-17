@@ -23,16 +23,21 @@ class HttpHelper {
     companion object {
         @JvmStatic
         lateinit var USER_API: UserApi
+
         @JvmStatic
-        lateinit var driverApi : DriverApi
+        lateinit var driverApi: DriverApi
+
         @JvmStatic
-        lateinit var FILE_API : FileApi
+        lateinit var FILE_API: FileApi
+
         @JvmStatic
-        lateinit var ORDERS_API : OrdersApi
+        lateinit var ORDERS_API: OrdersApi
+
         @JvmStatic
-        lateinit var retrofit : Retrofit
+        lateinit var retrofit: Retrofit
+
         @JvmStatic
-        fun prepare(){
+        fun prepare() {
             doRetrofit()
         }
 
@@ -53,7 +58,7 @@ class HttpHelper {
         }
 
 
-        fun errorProcessing(view: View?, response: ResponseBody?, activity: Activity? = null){
+        fun errorProcessing(view: View?, response: ResponseBody?, activity: Activity? = null) {
             //обработчик ошибок запроса
             try {
                 if (view != null) {
@@ -71,18 +76,17 @@ class HttpHelper {
                 } else if (response != null) {
                     Log.e(TAG, JSONObject(response.string()).getString("errorMessage").toString())
                 }
-            } catch (e : Exception) {
+            } catch (e: Exception) {
 
                 Log.e(TAG, e.toString())
             }
         }
 
-        fun onFailure(t : Throwable){
+        fun onFailure(t: Throwable) {
             Log.e(TAG, "FAILURE $t")
         }
 
     }
-
 
 
 }

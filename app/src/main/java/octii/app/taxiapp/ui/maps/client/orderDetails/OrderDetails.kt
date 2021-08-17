@@ -25,12 +25,12 @@ import octii.app.taxiapp.ui.FragmentHelper
 
 class OrderDetails : Fragment(), FragmentHelper {
 
-    private lateinit var binding : FragmentClientOrderDetailsBinding
+    private lateinit var binding: FragmentClientOrderDetailsBinding
 
-    private var orderStatusReciever = object : BroadcastReceiver(){
+    private var orderStatusReciever = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null){
-                when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
+            if (intent != null) {
+                when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
                         binding.pages.currentItem = 1
                     }
@@ -43,22 +43,31 @@ class OrderDetails : Fragment(), FragmentHelper {
         }
     }
 
-    private var taximeterBroadcastReceiver = object : BroadcastReceiver(){
+    private var taximeterBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null){
-                when(intent.getSerializableExtra(StaticTaximeter.TAXIMETER_STATUS)){
+            if (intent != null) {
+                when (intent.getSerializableExtra(StaticTaximeter.TAXIMETER_STATUS)) {
                     TaximeterType.TAXIMETER_START -> {
                         //очищаем данные в sharedPrefs и запускаем таймер
                         MyLocationListener.distance = 0f
                         //запускаем таймер
                         MyPreferences.taximeterPreferences?.let {
-                            MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)}
+                            MyPreferences.saveToPreferences(it,
+                                StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+                                false)
+                        }
                         MyPreferences.taximeterPreferences?.let {
-                            MyPreferences.saveToPreferences(it, StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, true)}
+                            MyPreferences.saveToPreferences(it,
+                                StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS,
+                                true)
+                        }
                     }
                     TaximeterType.TAXIMETER_STOP -> {
                         MyPreferences.taximeterPreferences?.let {
-                            MyPreferences.saveToPreferences(it, StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS, false)}
+                            MyPreferences.saveToPreferences(it,
+                                StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS,
+                                false)
+                        }
                     }
                     TaximeterType.TAXIMETER_WAITING -> {
                         logError(isWainting())
@@ -73,15 +82,18 @@ class OrderDetails : Fragment(), FragmentHelper {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentClientOrderDetailsBinding.inflate(layoutInflater)
-        binding.pages.adapter = FragmentsAdapter(requireActivity().supportFragmentManager, lifecycle)
-        TabLayoutMediator(binding.indicator, binding.pages){tab, pos ->}.attach()
+        binding.pages.adapter =
+            FragmentsAdapter(requireActivity().supportFragmentManager, lifecycle)
+        TabLayoutMediator(binding.indicator, binding.pages) { tab, pos -> }.attach()
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
-        requireActivity().registerReceiver(taximeterBroadcastReceiver, IntentFilter(StaticTaximeter.TAXIMETER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(orderStatusReciever,
+            IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(taximeterBroadcastReceiver,
+            IntentFilter(StaticTaximeter.TAXIMETER_STATUS_INTENT_FILTER))
     }
 
     override fun onDestroy() {
@@ -89,26 +101,30 @@ class OrderDetails : Fragment(), FragmentHelper {
         try {
             requireActivity().unregisterReceiver(orderStatusReciever)
             requireActivity().unregisterReceiver(taximeterBroadcastReceiver)
-        } catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun isWainting() : Boolean =
-        if (MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false) == null) false
-        else MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING, false)!!
+    private fun isWainting(): Boolean =
+        if (MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+                false) == null
+        ) false
+        else MyPreferences.taximeterPreferences?.getBoolean(StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+            false)!!
 
-    inner class FragmentsAdapter internal constructor(fm: FragmentManager, lifecycle: Lifecycle)
-        : FragmentStateAdapter(fm, lifecycle) {
+    inner class FragmentsAdapter internal constructor(fm: FragmentManager, lifecycle: Lifecycle) :
+        FragmentStateAdapter(fm, lifecycle) {
 
-        private val fragments = listOf<Fragment>(DriverDetailsFragment(), TaximeterDetailsFragment())
+        private val fragments =
+            listOf<Fragment>(DriverDetailsFragment(), TaximeterDetailsFragment())
 
         override fun getItemCount(): Int {
             return fragments.size
         }
 
         override fun createFragment(position: Int): Fragment {
-            return when(position){
+            return when (position) {
                 0 -> fragments[position]
                 1 -> fragments[position]
                 else -> fragments[position]

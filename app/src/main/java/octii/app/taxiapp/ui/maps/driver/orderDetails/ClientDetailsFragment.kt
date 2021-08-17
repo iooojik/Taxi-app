@@ -17,7 +17,7 @@ import octii.app.taxiapp.ui.maps.OpenMessengerBottomSheet
 
 class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, CallHelper {
 
-    lateinit var binding : FragmentClientDetailsBinding
+    lateinit var binding: FragmentClientDetailsBinding
     private var isWhatsApp = false
     private var isViber = false
 
@@ -35,7 +35,7 @@ class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, 
         setInformation()
     }
 
-    private fun setInformation(){
+    private fun setInformation() {
         binding.customerName.text =
             OrdersModel.mCustomer.userName
         binding.customerPhone.text =
@@ -58,19 +58,17 @@ class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, 
         }
     }
 
-    private fun setMessengersInfo(){
+    private fun setMessengersInfo() {
         if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp) {
             binding.messengersInfo.text =
                 requireActivity().resources.getString(R.string.user_available_in_viber_and_whatsapp)
             isViber = true
             isWhatsApp = true
-        }
-        else if (OrdersModel.mCustomer.isWhatsapp) {
+        } else if (OrdersModel.mCustomer.isWhatsapp) {
             binding.messengersInfo.text =
                 requireActivity().resources.getString(R.string.user_available_in_whatsapp)
             isWhatsApp = true
-        }
-        else if (OrdersModel.mCustomer.isViber) {
+        } else if (OrdersModel.mCustomer.isViber) {
             binding.messengersInfo.text =
                 requireActivity().resources.getString(R.string.user_available_in_viber)
             isViber = true
@@ -78,15 +76,13 @@ class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, 
     }
 
 
-
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.call_to_customer -> {
                 copyToClipBoard(binding.customerPhone.text.toString(), requireContext())
                 if (isWhatsApp && isViber) {
                     OpenMessengerBottomSheet(requireContext(), requireActivity()).show()
-                }
-                else if (isViber) goToApplication("com.viber.voip", requireActivity())
+                } else if (isViber) goToApplication("com.viber.voip", requireActivity())
                 else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
                 //else if (isWhatsApp) callToWhatsApp(binding.customerPhone.text.toString(), requireContext(), requireActivity())
                 else {

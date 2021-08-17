@@ -61,4 +61,6 @@
     <string name="button_no">Не</string>
     <string name="button_yes">Да</string>
     <string name="button_waiting">Очекивање</string>
+    <string name="not_installed_viber">Немате инсталиран Вибер</string>
+    <string name="not_installed_whatsapp">Немате инсталиран ВхатсАпп</string>
 </resources>

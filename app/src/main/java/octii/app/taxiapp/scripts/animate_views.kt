@@ -9,7 +9,7 @@ import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 
 
-const val animationDuration : Long = 1300
+const val animationDuration: Long = 1300
 
 fun View.fadeTo(visible: Boolean, duration: Long = 500, startDelay: Long = 0, toAlpha: Float = 1f) {
     // Make this idempotent.
@@ -22,21 +22,21 @@ fun View.fadeTo(visible: Boolean, duration: Long = 500, startDelay: Long = 0, to
 
     if (visible && alpha == 1f) alpha = 0f
     animate()
-            .alpha(if (visible) toAlpha else 0f)
-            .withStartAction {
-                if (visible) isVisible = true
-            }
-            .withEndAction {
-                setTag(tagKey, null)
-                if (isAttachedToWindow && !visible) isVisible = false
-            }
-            .setInterpolator(FastOutSlowInInterpolator())
-            .setDuration(duration)
-            .setStartDelay(startDelay)
-            .start()
+        .alpha(if (visible) toAlpha else 0f)
+        .withStartAction {
+            if (visible) isVisible = true
+        }
+        .withEndAction {
+            setTag(tagKey, null)
+            if (isAttachedToWindow && !visible) isVisible = false
+        }
+        .setInterpolator(FastOutSlowInInterpolator())
+        .setDuration(duration)
+        .setStartDelay(startDelay)
+        .start()
 }
 
-fun View.down(activity: Activity, fullDown : Boolean = true, parent : View? = null){
+fun View.down(activity: Activity, fullDown: Boolean = true, parent: View? = null) {
     val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         context.display
     } else {
@@ -61,7 +61,7 @@ fun View.down(activity: Activity, fullDown : Boolean = true, parent : View? = nu
     }
 }
 
-fun View.up(activity: Activity, parent: View? = null){
+fun View.up(activity: Activity, parent: View? = null) {
     isVisible = true
     val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         context.display

@@ -20,4 +20,5 @@ public class Application extends android.app.Application {
         LocaleUtils.initialize(context, LocaleUtils.getSelectedLanguageId());
     }
 
+
 }

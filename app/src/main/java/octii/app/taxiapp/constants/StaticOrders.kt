@@ -1,7 +1,7 @@
 package octii.app.taxiapp.constants
 
 class StaticOrders {
-    companion object{
+    companion object {
         const val SHARED_PREFERENCES_ORDER_TIME = "ORDER_TIME"
         const val SHARED_PREFERENCES_ORDER_WAITING_TIME = "ORDER_WAITING_TIME"
         const val SHARED_PREFERENCES_ORDER_IS_WAITING = "IS WAITING"

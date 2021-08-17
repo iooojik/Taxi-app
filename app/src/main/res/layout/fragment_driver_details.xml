@@ -28,16 +28,16 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/avatar_description"
-            tools:src="@tools:sample/avatars"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            tools:src="@tools:sample/avatars" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/fab_margin"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:padding="5dp">
 
@@ -68,8 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/outline_phone_in_talk_24"
-            android:contentDescription="@string/call_description" />
+            android:contentDescription="@string/call_description"
+            app:srcCompat="@drawable/outline_phone_in_talk_24" />
     </LinearLayout>
 
     <TextView

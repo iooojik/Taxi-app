@@ -18,7 +18,7 @@ import octii.app.taxiapp.scripts.showSnackbar
 
 interface CallHelper {
 
-    fun callToWhatsApp(phoneNumber: String, context: Context, activity: Activity){
+    fun callToWhatsApp(phoneNumber: String, context: Context, activity: Activity) {
         val intent = Intent()
         intent.action = Intent.ACTION_VIEW
         val uri: Uri? = getUriFromPhoneNumber(phoneNumber, context)
@@ -81,7 +81,7 @@ interface CallHelper {
         return contactId
     }
 
-    fun copyToClipBoard(text : String, context: Context){
+    fun copyToClipBoard(text: String, context: Context) {
         val clipboard: ClipboardManager =
             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("", text)
@@ -90,8 +90,7 @@ interface CallHelper {
     }
 
 
-
-    fun callToCustomer(phone : String, activity: Activity) {
+    fun callToCustomer(phone: String, activity: Activity) {
         if (OrdersModel.mCustomer.phone.isNotEmpty()) {
             val dial = "tel:$phone"
             activity.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))

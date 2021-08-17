@@ -15,7 +15,11 @@ import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.web.SocketHelper
 import java.util.*
 
-class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, private val order : OrdersModel) :
+class DriverAcceptOrderBottomSheet(
+    context: Context,
+    val activity: Activity,
+    private val order: OrdersModel,
+) :
     BottomSheetDialog(context), View.OnClickListener {
 
     private var binding: BottomSheetAcceptOrderBinding =
@@ -29,8 +33,8 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
         binding.acceptOrder.setOnClickListener(this)
         binding.customerName.text = order.customer?.userName
         binding.customerPhone.text = order.customer?.phone
-        if (order.customer != null){
-            if (order.customer?.avatarURL?.trim()?.isNotEmpty() == true){
+        if (order.customer != null) {
+            if (order.customer?.avatarURL?.trim()?.isNotEmpty() == true) {
                 Picasso.with(context)
                     .load(OrdersModel.mCustomer.avatarURL)
                     .transform(RoundedCornersTransformation(40, 5))
@@ -41,7 +45,7 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
         }
         try {
             show()
-        } catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -52,13 +56,13 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.reject_order -> rejectOrder()
             R.id.accept_order -> acceptOrder()
         }
     }
 
-    private fun acceptOrder(){
+    private fun acceptOrder() {
         finishTimer(timer)
         activity.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
             .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_ACCEPTED))
@@ -66,18 +70,19 @@ class DriverAcceptOrderBottomSheet (context: Context, val activity: Activity, pr
         this@DriverAcceptOrderBottomSheet.hide()
     }
 
-    private fun rejectOrder(){
+    private fun rejectOrder() {
         finishTimer(timer)
         SocketHelper.rejectOrder(order)
         this@DriverAcceptOrderBottomSheet.hide()
     }
 
-    private fun finishTimer(timer : Timer){
+    private fun finishTimer(timer: Timer) {
         timer.cancel()
         timer.purge()
     }
 
-    inner class TimerToReject(private val view: TextView, private val activity: Activity) : TimerTask() {
+    inner class TimerToReject(private val view: TextView, private val activity: Activity) :
+        TimerTask() {
 
         private var seconds = 15
 

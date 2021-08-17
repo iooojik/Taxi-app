@@ -27,7 +27,6 @@ import octii.app.taxiapp.databinding.FragmentClientMapBinding
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
@@ -58,17 +57,17 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     }
     private lateinit var binding: FragmentClientMapBinding
     private lateinit var permissions: Permissions
-    private var googleMap : GoogleMap? = null
+    private var googleMap: GoogleMap? = null
     private var isMoved = false
-    private var marker : Marker?  = null
+    private var marker: Marker? = null
     private var cameraMoved = false
     private val EXPAND_MORE_FAB = "expand more"
     private val EXPAND_LESS_FAB = "expand less"
 
-    private var orderStatusReciever : BroadcastReceiver = object : BroadcastReceiver(){
+    private var orderStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
-                when(intent.getStringExtra(StaticOrders.ORDER_STATUS)){
+                when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
                         setOrderDetails()
                         binding.clientMapprogressBar.visibility = View.INVISIBLE
@@ -77,8 +76,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                         binding.fabSettings.show()
                         binding.clientMapprogressBar.visibility = View.INVISIBLE
                         binding.fabShowOrderDetails.setOnClickListener {
-                            if (it.tag == EXPAND_MORE_FAB){
-                                synchronized(this){
+                            if (it.tag == EXPAND_MORE_FAB) {
+                                synchronized(this) {
                                     binding.orderDetails.down(requireActivity())
                                     hideFabOrderDetails(true)
                                 }
@@ -103,12 +102,12 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private var coordinatesStatusReciever : BroadcastReceiver = object : BroadcastReceiver(){
+    private var coordinatesStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
-                when(intent.getStringExtra(StaticCoordinates.COORDINATES_STATUS_UPDATE)){
+                when (intent.getStringExtra(StaticCoordinates.COORDINATES_STATUS_UPDATE)) {
                     StaticCoordinates.COORDINATES_STATUS_UPDATE_ -> {
-                        if(RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0){
+                        if (RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
                             if (googleMap != null) {
                                 val latLng =
                                     LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
@@ -143,16 +142,20 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
 
     override fun onResume() {
         super.onResume()
-        requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
-        requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
+        requireActivity().registerReceiver(orderStatusReciever,
+            IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(coordinatesStatusReciever,
+            IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
         checkPermissions()
         moveGoogleCameraToMe()
         setOrderDetails()
         try {
             setMap()
-        } catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-            Snackbar.make(requireView(), resources.getString(R.string.check_permissions), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(requireView(),
+                resources.getString(R.string.check_permissions),
+                Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -162,7 +165,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         requireActivity().unregisterReceiver(coordinatesStatusReciever)
     }
 
-    private fun setOrderDetails(){
+    private fun setOrderDetails() {
         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
             binding.fabShowOrderDetails.setOnClickListener(this)
             binding.callTaxi.hide()
@@ -177,16 +180,16 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private fun showFabOrderDetails(){
-        synchronized(this){
+    private fun showFabOrderDetails() {
+        synchronized(this) {
             binding.fabShowOrderDetails.show()
             binding.callTaxi.hide()
             binding.fabShowOrderDetails.up(requireActivity(), binding.orderDetails)
         }
     }
 
-    private fun hideFabOrderDetails(fullHide : Boolean = false){
-        synchronized(this){
+    private fun hideFabOrderDetails(fullHide: Boolean = false) {
+        synchronized(this) {
             binding.fabShowOrderDetails.down(requireActivity(), false, binding.orderDetails)
             if (fullHide)
                 binding.fabShowOrderDetails.hide()
@@ -196,8 +199,8 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
     private fun moveGoogleCameraToMe() {
         //переводит камеру
         thread {
-            while (!cameraMoved){
-                if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0){
+            while (!cameraMoved) {
+                if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0) {
                     val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
                     activity?.runOnUiThread {
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
@@ -217,32 +220,34 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private fun setListeners(){
+    private fun setListeners() {
         binding.callTaxi.setOnClickListener(this)
         binding.fabSettings.setOnClickListener(this)
     }
 
-    private fun checkUserType(){
+    private fun checkUserType() {
         if (getSavedUserType() == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapActivity)
     }
 
-    private fun getSavedUserType() : String =
-        if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
+    private fun getSavedUserType(): String =
+        if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")
+                .isNullOrEmpty()
+        ) ""
         else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
 
-    private fun checkPermissions(){
+    private fun checkPermissions() {
         permissions = Permissions(requireContext(), requireActivity())
         permissions.requestPermissions()
     }
 
-    private fun setMap(){
+    private fun setMap() {
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.call_taxi -> {
                 SocketHelper.makeOrder()
                 OrdersModel.isOrdered = true
@@ -251,7 +256,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
             }
             R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsActivity)
             R.id.fab_show_order_details -> {
-                if (v.tag == EXPAND_MORE_FAB){
+                if (v.tag == EXPAND_MORE_FAB) {
                     hideFabOrderDetails()
                     binding.orderDetails.down(requireActivity())
                     binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_less_24)

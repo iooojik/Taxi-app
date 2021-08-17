@@ -9,14 +9,19 @@ interface UserApi {
 
     //@POST("/users/login")
     @POST("/taxi/users/login")
-    fun login(@Body userModel: UserModel) : Call<AuthorizationModel>
+    fun login(@Body userModel: UserModel): Call<AuthorizationModel>
 
     @POST("/taxi/users/login.token")
     //@POST("/users/login.token")
-    fun loginWithToken(@Body userModel: UserModel) : Call<AuthorizationModel>
+    fun loginWithToken(@Body userModel: UserModel): Call<AuthorizationModel>
 
     @POST("/taxi/users/update")
     //@POST("/users/update")
-    fun update(@Body userModel: UserModel) : Call<UserModel>
+    fun update(@Body userModel: UserModel): Call<UserModel>
+
+    @POST("/taxi/users/update.driver.state")
+    //@POST("/users/update.driver.state")
+    fun updateDriverState(@Body userModel: UserModel): Call<UserModel>
+
 
 }

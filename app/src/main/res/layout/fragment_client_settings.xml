@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
@@ -35,8 +35,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:contentDescription="@string/avatar_description"
-                    tools:src="@tools:sample/avatars"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
+                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                    tools:src="@tools:sample/avatars" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
@@ -80,17 +80,17 @@
 
                 <CheckBox
                     android:id="@+id/i_am_in_whatsapp"
-                    android:checked="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/fab_margin"
+                    android:checked="false"
                     android:text="@string/i_am_in_whatsapp" />
 
                 <CheckBox
                     android:id="@+id/i_am_in_viber"
-                    android:checked="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:checked="false"
                     android:text="@string/i_am_in_viber" />
             </LinearLayout>
 
@@ -129,9 +129,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:contentDescription="@string/back_description"
         android:src="@drawable/outline_arrow_back_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/back_description" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

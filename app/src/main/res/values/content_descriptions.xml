@@ -8,5 +8,5 @@
     <string name="download_viber_description" translatable="false">download viber</string>
     <string name="delete_description" translatable="false">Delete</string>
     <string name="new_photo_description" translatable="false">Make new photo</string>
-    <string name="button_unchecked">button unchecked</string>
+    <string name="button_unchecked" translatable="false">button unchecked</string>
 </resources>

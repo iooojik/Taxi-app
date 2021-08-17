@@ -43,28 +43,27 @@ public class LocaleUtils {
         }
     }
 
-    public static void setSystemLocaleLegacy(Configuration config, Locale locale){
+    public static void setSystemLocaleLegacy(Configuration config, Locale locale) {
         config.locale = locale;
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    public static void setSystemLocale(Configuration config, Locale locale){
+    public static void setSystemLocale(Configuration config, Locale locale) {
         config.setLocale(locale);
     }
 
-    public static void setSelectedLanguageId(String id){
+    public static String getSelectedLanguageId() {
+        return Objects.requireNonNull(getDefaultSharedPreference(Application.getInstance()
+                .getApplicationContext())).getString("app_language_id", SERBIAN);
+    }
+
+    public static void setSelectedLanguageId(String id) {
         final SharedPreferences prefs = getDefaultSharedPreference(Application.getInstance().getApplicationContext());
         assert prefs != null;
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("app_language_id", id);
         editor.apply();
     }
-
-    public static String getSelectedLanguageId(){
-        return Objects.requireNonNull(getDefaultSharedPreference(Application.getInstance()
-                .getApplicationContext())).getString("app_language_id", SERBIAN);
-    }
-
 
     private static SharedPreferences getDefaultSharedPreference(Context context) {
         if (PreferenceManager.getDefaultSharedPreferences(Application.getInstance().getApplicationContext()) != null)

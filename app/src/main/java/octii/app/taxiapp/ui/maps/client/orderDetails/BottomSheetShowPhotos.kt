@@ -10,10 +10,11 @@ import octii.app.taxiapp.databinding.EditPhotoItemBinding
 import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.ui.FragmentHelper
 
-class BottomSheetShowPhotos (context: Context, val activity: Activity, images : List<FileModel>) :
+class BottomSheetShowPhotos(context: Context, val activity: Activity, images: List<FileModel>) :
     BottomSheetDialog(context), View.OnClickListener, FragmentHelper {
 
-    val binding : BottomSheetShowPhotosBinding = BottomSheetShowPhotosBinding.inflate(activity.layoutInflater)
+    val binding: BottomSheetShowPhotosBinding =
+        BottomSheetShowPhotosBinding.inflate(activity.layoutInflater)
 
     init {
         setContentView(binding.root)
@@ -28,7 +29,7 @@ class BottomSheetShowPhotos (context: Context, val activity: Activity, images : 
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
 
         }
     }

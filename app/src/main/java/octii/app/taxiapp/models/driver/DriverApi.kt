@@ -8,10 +8,10 @@ interface DriverApi {
 
     //@POST("/drivers.available/driver.get")
     @POST("/taxi/drivers.available/driver.get")
-    fun getDriver(@Body driver : DriverModel) : Call<DriverModel>
+    fun getDriver(@Body driver: DriverModel): Call<DriverModel>
 
     //@POST("/drivers.available/driver.update")
     @POST("/taxi/drivers.available/driver.update")
-    fun update(@Body driver : DriverModel) : Call<DriverModel>
+    fun update(@Body driver: DriverModel): Call<DriverModel>
 
 }

@@ -10,22 +10,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import octii.app.taxiapp.R
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
 import octii.app.taxiapp.locale.LocaleUtils
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
-import android.content.pm.PackageInfo
-
-import android.content.pm.PackageManager
-import android.content.res.Resources
-import octii.app.taxiapp.constants.Static
-import octii.app.taxiapp.scripts.showSnackbar
-import java.lang.Exception
-import kotlin.Throws
 
 class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
 
-    private lateinit var binding : FragmentWelcomeBinding
+    private lateinit var binding: FragmentWelcomeBinding
     private lateinit var permissions: Permissions
     private var hasMessengers = false
 
@@ -45,31 +39,29 @@ class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
         checkMessengers()
     }
 
-    private fun checkMessengers(){
-        if (isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)){
+    private fun checkMessengers() {
+        if (isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)) {
             hasMessengers = true
             binding.checkViewWhatsapp.setImageResource(R.drawable.outline_check_circle_outline_24)
-        }
-        else{
+        } else {
             binding.checkViewWhatsapp.setImageResource(R.drawable.outline_cancel_24)
         }
         if (isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)) {
             hasMessengers = true
             binding.checkViewViber.setImageResource(R.drawable.outline_check_circle_outline_24)
-        }
-        else{
+        } else {
             binding.checkViewViber.setImageResource(R.drawable.outline_cancel_24)
         }
     }
 
-    private fun setListeners(){
+    private fun setListeners() {
         binding.nextButton.setOnClickListener(this)
         binding.whatsapp.setOnClickListener(this)
         binding.viber.setOnClickListener(this)
         binding.changeLangage.setOnClickListener(this)
     }
 
-    private fun selectLang(){
+    private fun selectLang() {
         val items = arrayOf(
             "${resources.getString(R.string.serbian_language_icon)} ${resources.getString(R.string.serbian_language)}",
             "${resources.getString(R.string.english_language_icon)} ${resources.getString(R.string.english_language)}",
@@ -79,7 +71,7 @@ class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.select_language)
             .setItems(items) { _, which ->
-                when(which){
+                when (which) {
                     0 -> {
                         setLanguage(LocaleUtils.SERBIAN, activity)
                     }
@@ -95,14 +87,15 @@ class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
     }
 
     override fun onClick(v: View?) {
-        when(v!!.id){
+        when (v!!.id) {
             R.id.next_button -> {
-                if (permissions.permissionsGranted && hasMessengers)
+                if (permissions.permissionsGranted)// && hasMessengers)
                     requireView().findNavController().navigate(R.id.authorizationFragment)
                 if (!permissions.permissionsGranted)
                     permissions.requestPermissions()
-                if (!hasMessengers)
-                    showSnackbar(requireContext(), resources.getString(R.string.whatsapp_or_viber_not_chosen))
+                //if (!hasMessengers)
+                //    showSnackbar(requireContext(),
+                //        resources.getString(R.string.whatsapp_or_viber_not_chosen))
             }
             R.id.whatsapp -> {
                 val browserIntent = Intent(Intent.ACTION_VIEW,
