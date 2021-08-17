@@ -29,6 +29,8 @@
     <string name="total_price">Итоговая стоимость:</string>
     <string name="km" translatable="false">km</string>
     <string name="taximeter_starts_working">Начнёт работать таксиметр</string>
+    <string name="connection_lost">Потеряно соединение с сервером</string>
+    <string name="try_to_connect">Повторить попытку подключения</string>
     <string name="only_one_photo_upload">Фотографии можно загрузить только один раз! Пожалуйста, проверяйте их перед загрузкой!</string>
 
 </resources>

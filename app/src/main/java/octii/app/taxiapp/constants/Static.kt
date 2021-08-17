@@ -19,7 +19,11 @@ class Static {
         const val PICK_IMAGE_AVATAR = 9
         const val PICK_CROP = 2
         const val SNACKBAR_INTENT_FILTER = "SNACKBAR_INTENT_FILTER"
+        const val CONNECTION_INTENT_FILTER = "CONNECTION_INTENT_FILTER"
         const val SNACKBAR_MESSAGE = "SNACKBAR_MESSAGE"
+        const val CONNECTION_STATUS = "CONNECTION_STATUS"
+        const val CONNECTION_LOST = "CONNECTION_LOST"
+        const val CONNECTION_EST = "CONNECTION_EST"
         const val SNACKBAR_MESSAGE_LENGTH = "SNACKBAR_MESSAGE_LENGTH"
         const val WHATSAPP_PACKAGE_NAME = "com.whatsapp"
         const val VIBER_PACKAGE_NAME = "com.viber.voip"

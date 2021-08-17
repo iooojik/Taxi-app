@@ -1,6 +1,8 @@
 package octii.app.taxiapp.web
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer
@@ -8,6 +10,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.constants.StaticWeb
 import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
@@ -27,6 +30,7 @@ class SocketHelper {
         val mStompClient: StompClient =
             Stomp.over(Stomp.ConnectionProvider.OKHTTP, StaticWeb.WEB_SOCKET_URL)
         private val gson = Gson()
+        var activity : Activity? = null
 
         @JvmStatic
         var compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -43,12 +47,18 @@ class SocketHelper {
                     .subscribe({ lifecycleEvent ->
                         if (lifecycleEvent.type != null) {
                             when (lifecycleEvent.type!!) {
-                                LifecycleEvent.Type.OPENED -> logInfo("Stomp connection opened")
+                                LifecycleEvent.Type.OPENED -> {
+                                    activity?.sendBroadcast(Intent(Static.CONNECTION_INTENT_FILTER)
+                                        .putExtra(Static.CONNECTION_STATUS, Static.CONNECTION_EST))
+                                    logInfo("Stomp connection opened")
+                                }
 
                                 LifecycleEvent.Type.ERROR -> logError("Stomp connection error ${lifecycleEvent.exception}")
 
                                 LifecycleEvent.Type.CLOSED -> {
                                     logInfo("Stomp connection closed")
+                                    activity?.sendBroadcast(Intent(Static.CONNECTION_INTENT_FILTER)
+                                        .putExtra(Static.CONNECTION_STATUS, Static.CONNECTION_LOST))
                                     connect()
                                 }
 
@@ -61,7 +71,7 @@ class SocketHelper {
                         throwable.printStackTrace()
                         connect()
                     })
-            logError("w isConnected: ${mStompClient.isConnected}")
+            logError("isConnected: ${mStompClient.isConnected}")
             compositeDisposable.add(disposableLifecycle!!)
         }
 

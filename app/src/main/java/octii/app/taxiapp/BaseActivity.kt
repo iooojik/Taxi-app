@@ -6,18 +6,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.databinding.ActivityMainBinding
+import octii.app.taxiapp.databinding.DialogConnectionLostBinding
 import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.ui.AdHelper
 import octii.app.taxiapp.ui.Permissions
+import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests
 import octii.app.taxiapp.web.requests.RequestsResult
 
@@ -27,6 +31,10 @@ abstract class BaseActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private lateinit var requests: Requests
     lateinit var adHelper: AdHelper
+    lateinit var dialog: MaterialAlertDialogBuilder
+    private var dialogShown = false
+    var alertDialog: AlertDialog? = null
+
 
     private var snackbarsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -39,6 +47,41 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    private var connectionLostReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null) {
+                when (intent.getStringExtra(Static.CONNECTION_STATUS)) {
+                    Static.CONNECTION_LOST -> {
+                        if (!dialogShown) alertDialog = dialog.show()
+                        dialogShown = true
+                    }
+                    Static.CONNECTION_EST -> {
+                        dialogShown = false
+                        alertDialog?.dismiss()
+                        alertDialog = null
+                    }
+                }
+            }
+        }
+    }
+
+    private fun connectionLostDialog(): MaterialAlertDialogBuilder {
+        val dialog = MaterialAlertDialogBuilder(this)
+        //dialog.setMessage(resources.getString(R.string.connection_lost))
+        dialog.setCancelable(false)
+        val dialogBinding = DialogConnectionLostBinding.inflate(layoutInflater)
+        dialog.setView(dialogBinding.root)
+        dialogBinding.button.setOnClickListener {
+            SocketHelper.connect()
+            SocketHelper.mStompClient.connect()
+        }
+        /*
+        dialog.setPositiveButton(resources.getString(R.string.try_to_connect)) { _, _ ->
+            SocketHelper.connect()
+        }*/
+        return dialog
+    }
+
     override fun attachBaseContext(newBase: Context?) {
         setLanguage(context = newBase)
         super.attachBaseContext(newBase)
@@ -49,15 +92,17 @@ abstract class BaseActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         adHelper = AdHelper(this, this, binding.appBarMain.include.adView)
         registerReceiver(snackbarsReceiver, IntentFilter(Static.SNACKBAR_INTENT_FILTER))
+        registerReceiver(connectionLostReceiver, IntentFilter(Static.CONNECTION_INTENT_FILTER))
         getSharedPrefernces()
-
+        dialog = connectionLostDialog()
+        SocketHelper.activity = this
         setLanguage(this)
         setContentView(binding.root)
 
         if (getFragment() != null) {
             findNavController(R.id.nav_host_fragment).navigate(getFragment()!!)
         }
-        logError("on create BaseActivity")
+        logInfo("on create BaseActivity")
     }
 
     abstract fun getFragment(id: Int? = R.id.welcomeFragment): Int?
@@ -114,7 +159,7 @@ abstract class BaseActivity : AppCompatActivity() {
         else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
     }
 
-    private fun getStartLocation(callingActivity: Activity) {
+    /*private fun getStartLocation(callingActivity: Activity) {
         val uType = getSavedUserType()
         logError("token : ${getToken()}")
         if (getToken() != null) {
@@ -136,15 +181,12 @@ abstract class BaseActivity : AppCompatActivity() {
                 else R.id.clientMapActivity
             } else R.id.welcomeFragment
         }
-    }
-
-    private fun navigateToStartPage() {
-        runOnUiThread { findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment) }
-    }
+    }*/
 
     override fun onDestroy() {
         try {
             unregisterReceiver(snackbarsReceiver)
+            unregisterReceiver(connectionLostReceiver)
         } catch (e: Exception) {
             e.printStackTrace()
         }
