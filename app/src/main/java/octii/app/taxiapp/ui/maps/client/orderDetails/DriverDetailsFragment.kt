@@ -89,7 +89,7 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
     }
 
     private fun callToCustomer(phone: String) {
-        if (OrdersModel.mCustomer.phone.isNotEmpty()) {
+        if (OrdersModel.mDriver.phone.isNotEmpty()) {
             val dial = "tel:$phone"
             startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
         }
@@ -100,7 +100,7 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
             R.id.call_to_customer -> {
                 copyToClipBoard(binding.driverPhone.text.toString())
                 if (isWhatsApp && isViber) {
-                    OpenMessengerBottomSheet(requireContext(), requireActivity()).show()
+                    OpenMessengerBottomSheet(requireContext(), requireActivity(), OrdersModel.mDriver.phone).show()
                 } else if (isViber) goToApplication("com.viber.voip", requireActivity())
                 else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
                 else {

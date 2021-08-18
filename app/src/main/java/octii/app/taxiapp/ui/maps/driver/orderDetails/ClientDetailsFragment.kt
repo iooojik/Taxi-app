@@ -81,7 +81,7 @@ class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, 
             R.id.call_to_customer -> {
                 copyToClipBoard(binding.customerPhone.text.toString(), requireContext())
                 if (isWhatsApp && isViber) {
-                    OpenMessengerBottomSheet(requireContext(), requireActivity()).show()
+                    OpenMessengerBottomSheet(requireContext(), requireActivity(), OrdersModel.mCustomer.phone).show()
                 } else if (isViber) goToApplication("com.viber.voip", requireActivity())
                 else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
                 //else if (isWhatsApp) callToWhatsApp(binding.customerPhone.text.toString(), requireContext(), requireActivity())

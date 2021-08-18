@@ -2,6 +2,8 @@ package octii.app.taxiapp.ui.maps
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import octii.app.taxiapp.R
@@ -9,7 +11,7 @@ import octii.app.taxiapp.databinding.BottomSheetOpenMessengerBinding
 import octii.app.taxiapp.ui.FragmentHelper
 
 
-class OpenMessengerBottomSheet(context: Context, val activity: Activity) :
+class OpenMessengerBottomSheet(context: Context, val activity: Activity, val phone :String) :
     BottomSheetDialog(context), View.OnClickListener, FragmentHelper {
 
     val binding: BottomSheetOpenMessengerBinding =
@@ -19,6 +21,8 @@ class OpenMessengerBottomSheet(context: Context, val activity: Activity) :
         setContentView(binding.root)
         binding.whatsapp.setOnClickListener(this)
         binding.viber.setOnClickListener(this)
+
+
     }
 
     override fun onClick(v: View?) {
@@ -28,7 +32,8 @@ class OpenMessengerBottomSheet(context: Context, val activity: Activity) :
                 hide()
             }
             R.id.viber -> {
-                goToApplication("com.viber.voip", activity)
+                callViber(phone, context)
+                //goToApplication("com.viber.voip", activity)
                 hide()
             }
         }

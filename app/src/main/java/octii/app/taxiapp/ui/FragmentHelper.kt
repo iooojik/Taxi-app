@@ -134,6 +134,14 @@ interface FragmentHelper {
         }
     }
 
+    fun callViber(phone : String, context: Context){
+        val uri: Uri = Uri.parse("tel:" + Uri.encode(phone))
+        val intent = Intent("android.intent.action.VIEW")
+        intent.setClassName("com.viber.voip", "com.viber.voip.WelcomeActivity")
+        intent.data = uri
+        context.startActivity(intent)
+    }
+
     fun getZoomLevel(km: Float): Float {
         return log(40000f / km * 2f, 2.0f)
     }
