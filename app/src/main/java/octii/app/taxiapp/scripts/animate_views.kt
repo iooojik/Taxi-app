@@ -52,7 +52,7 @@ fun View.down(activity: Activity, fullDown: Boolean = true, parent: View? = null
 
         animator.addUpdateListener { animation ->
             val value = animation.animatedValue as Float
-            this.translationY = value
+            translationY = value
         }
 
         animator.interpolator = AccelerateInterpolator(1.5f)
@@ -62,6 +62,7 @@ fun View.down(activity: Activity, fullDown: Boolean = true, parent: View? = null
 }
 
 fun View.up(activity: Activity, parent: View? = null) {
+    visibility = View.VISIBLE
     isVisible = true
     val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         context.display
@@ -70,11 +71,11 @@ fun View.up(activity: Activity, parent: View? = null) {
     }
     if (display != null) {
         val animator =
-            if (parent == null) ValueAnimator.ofFloat(display.height - (this.height.toFloat()), 0f)
+            if (parent == null) ValueAnimator.ofFloat(display.height - (height.toFloat()), 0f)
             else ValueAnimator.ofFloat(parent.height.toFloat(), 0f)
         animator.addUpdateListener { animation ->
             val value = animation.animatedValue as Float
-            this.translationY = value
+            translationY = value
         }
 
         animator.interpolator = AccelerateInterpolator(1.5f)

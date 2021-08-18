@@ -10,12 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.databinding.FragmentClientTaximeterDetailsBinding
+import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.services.location.MyLocationListener
+import octii.app.taxiapp.web.SocketHelper
 
 
 class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
@@ -61,7 +65,32 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentClientTaximeterDetailsBinding.inflate(layoutInflater)
+        binding.finishOrder.setOnClickListener(this)
         return binding.root
+    }
+
+    private fun finishOrder(){
+        OrdersModel.isAccepted = false
+        activity?.sendBroadcast(Intent(StaticOrders.ORDER_STATUS_INTENT_FILTER)
+            .putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED))
+
+        MyPreferences.taximeterPreferences?.let {
+            MyPreferences.saveToPreferences(it,
+                StaticTaximeter.SHARED_PREFERENCES_TIMER_STATUS,
+                false)
+        }
+        MyPreferences.taximeterPreferences?.let {
+            MyPreferences.saveToPreferences(it,
+                StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
+                false)
+        }
+        MyPreferences.taximeterPreferences?.let {
+            MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1)
+        }
+        SocketHelper.finishOrder(OrdersModel())
+        SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null,
+            recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
+        binding.finishOrder.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -99,6 +128,11 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
+            R.id.finish_order -> MaterialAlertDialogBuilder(requireContext())
+                .setMessage(resources.getString(R.string.finish_order_dialog))
+                .setPositiveButton(resources.getString(R.string.button_yes)) { _, _ -> finishOrder() }
+                .setNegativeButton(resources.getString(R.string.button_no)) { d, _ -> d.dismiss() }
+                .show()
         }
     }
 

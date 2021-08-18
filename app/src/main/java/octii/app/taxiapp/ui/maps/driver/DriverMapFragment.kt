@@ -266,7 +266,10 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.fab_settings -> findNavController().navigate(R.id.driverSettingsActivity)
+            R.id.fab_settings -> {
+                findNavController().navigate(R.id.driverSettingsActivity)
+                this.activity?.finish()
+            }
             R.id.fab_show_order_details -> {
                 if (v.tag == EXPAND_MORE_FAB) {
                     hideFabOrderDetails()

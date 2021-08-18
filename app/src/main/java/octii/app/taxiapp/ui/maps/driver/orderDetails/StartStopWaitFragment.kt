@@ -123,8 +123,7 @@ class StartStopWaitFragment : Fragment(), View.OnClickListener {
         }
         SocketHelper.finishOrder(OrdersModel())
         SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null,
-            recipientUUID = OrdersModel.mCustomer.uuid,
-            orderUUID = OrdersModel.mUuid))
+            recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
     }
 
     override fun onClick(v: View?) {

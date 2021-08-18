@@ -97,7 +97,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
                 showSnackbar(requireContext(), resources.getString(R.string.you_cannot_change_type))
             }
         } else {
-            binding.becomeDriver.isEnabled = false
+            binding.becomeDriver.isEnabled = true
             binding.becomeDriver.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.yellow))
             binding.becomeDriver.setOnClickListener(this)
         }

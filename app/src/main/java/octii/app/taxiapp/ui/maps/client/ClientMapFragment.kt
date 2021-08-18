@@ -93,7 +93,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                     StaticOrders.ORDER_STATUS_NO_ORDERS -> {
                         binding.fabSettings.show()
                         binding.callTaxi.show()
-                        binding.orderDetails.down(requireActivity())
+                        //binding.orderDetails.down(requireActivity())
                         binding.clientMapprogressBar.visibility = View.INVISIBLE
                         googleMap?.clear()
                     }
@@ -254,7 +254,10 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
                 binding.callTaxi.hide()
                 binding.clientMapprogressBar.visibility = View.VISIBLE
             }
-            R.id.fab_settings -> findNavController().navigate(R.id.clientSettingsActivity)
+            R.id.fab_settings -> {
+                findNavController().navigate(R.id.clientSettingsActivity)
+                this.activity?.finish()
+            }
             R.id.fab_show_order_details -> {
                 if (v.tag == EXPAND_MORE_FAB) {
                     hideFabOrderDetails()
