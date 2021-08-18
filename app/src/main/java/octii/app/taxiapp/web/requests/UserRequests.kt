@@ -24,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class UserRequests(private val view: View? = null, private val activity: Activity? = null) {
 
-    private val orderRequests = OrderRequests(view, activity)
+    private val orderRequests = OrderRequests(activity)
 
     private fun setUserInfo(model: UserModel?): UserModel {
         if (model != null && model.token.isNotEmpty()) {

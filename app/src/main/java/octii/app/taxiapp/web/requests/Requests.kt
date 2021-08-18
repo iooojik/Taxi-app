@@ -8,7 +8,7 @@ class Requests(private val view: View? = null, private val activity: Activity? =
 
     val driverAvailableRequests = DriverAvailableRequests(view, activity)
     val userRequests = UserRequests(view, activity)
-    val orderRequests = OrderRequests(view, activity)
+    val orderRequests = OrderRequests(activity)
 
     init {
         HttpHelper.doRetrofit()

@@ -1,10 +1,12 @@
 package octii.app.taxiapp.ui.settings.driver
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
@@ -17,6 +19,7 @@ import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
+import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.settings.SettingsHelper
@@ -98,8 +101,17 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         binding.driverName.text = UserModel.nUserName
         binding.driverPhone.text = UserModel.uPhoneNumber
 
-        binding.becomeClient.isEnabled = !OrdersModel.isOrdered
-
+        if (OrdersModel.isAccepted){
+            binding.becomeClient.isEnabled = false
+            binding.becomeClient.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorGrey))
+            binding.becomeClient.setOnClickListener {
+                showSnackbar(requireContext(), resources.getString(R.string.you_cannot_change_type))
+            }
+        } else {
+            binding.becomeClient.isEnabled = false
+            binding.becomeClient.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.yellow))
+            binding.becomeClient.setOnClickListener(this)
+        }
         //loading avatar image
         if (UserModel.mAvatarURL.isNotEmpty()) {
             Picasso.with(requireContext())

@@ -2,7 +2,6 @@ package octii.app.taxiapp.web.requests
 
 import android.app.Activity
 import android.content.Intent
-import android.view.View
 import com.google.gson.Gson
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.models.driver.DriverModel
@@ -15,7 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class OrderRequests(private val view: View? = null, private val activity: Activity? = null) {
+class OrderRequests(private val activity: Activity? = null) {
 
     private val gson = Gson()
 

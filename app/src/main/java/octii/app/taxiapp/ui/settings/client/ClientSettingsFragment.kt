@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
@@ -14,6 +15,7 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentClientSettingsBinding
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.driver.DriverModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.scripts.logInfo
@@ -87,6 +89,18 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         logInfo("viber: ${UserModel.uIsViber}")
         binding.iAmInWhatsapp.isChecked = UserModel.uIsWhatsapp
         logInfo("Whatsapp: ${UserModel.uIsWhatsapp}")
+
+        if (OrdersModel.isAccepted){
+            binding.becomeDriver.isEnabled = false
+            binding.becomeDriver.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorGrey))
+            binding.becomeDriver.setOnClickListener {
+                showSnackbar(requireContext(), resources.getString(R.string.you_cannot_change_type))
+            }
+        } else {
+            binding.becomeDriver.isEnabled = false
+            binding.becomeDriver.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.yellow))
+            binding.becomeDriver.setOnClickListener(this)
+        }
 
 
         if (UserModel.mAvatarURL.isNotEmpty()) {
