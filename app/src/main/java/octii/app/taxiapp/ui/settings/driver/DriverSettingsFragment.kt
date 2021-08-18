@@ -14,6 +14,7 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentDriverSettingsBinding
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.driver.DriverModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.scripts.showSnackbar
@@ -96,6 +97,8 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         binding.working.isChecked = DriverModel.mIsWorking
         binding.driverName.text = UserModel.nUserName
         binding.driverPhone.text = UserModel.uPhoneNumber
+
+        binding.becomeClient.isEnabled = !OrdersModel.isOrdered
 
         //loading avatar image
         if (UserModel.mAvatarURL.isNotEmpty()) {
