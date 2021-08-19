@@ -63,13 +63,16 @@
 
         </LinearLayout>
 
-        <ImageView
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/call_to_driver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            app:backgroundTint="@color/dark_blue"
+            app:tint="@color/white"
+            app:fabSize="mini"
             android:contentDescription="@string/call_description"
-            app:srcCompat="@drawable/outline_phone_in_talk_24" />
+            app:srcCompat="@drawable/outline_phone_in_talk_24"  />
     </LinearLayout>
 
     <TextView
@@ -85,6 +88,8 @@
 
     <Button
         android:id="@+id/show_photos"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textColor="@color/yellow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/look_photos"

@@ -19,7 +19,6 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/fab_margin"
             android:text="@string/zero"
             android:textSize="24sp" />
     </LinearLayout>
@@ -60,7 +59,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/euro_min" />
 
     </LinearLayout>
@@ -81,13 +79,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zero"
+            android:textAlignment="textEnd"
             android:textSize="24sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/euro" />
+            android:text="@string/euro"
+            android:textAlignment="textEnd" />
     </LinearLayout>
 
     <LinearLayout
@@ -111,7 +110,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/km" />
     </LinearLayout>
 
@@ -121,7 +119,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/total_price" />
@@ -136,7 +134,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/euro" />
     </LinearLayout>
 </LinearLayout>

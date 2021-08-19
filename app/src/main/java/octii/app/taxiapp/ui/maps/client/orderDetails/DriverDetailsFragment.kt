@@ -97,11 +97,11 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.call_to_customer -> {
+            R.id.call_to_driver -> {
                 copyToClipBoard(binding.driverPhone.text.toString())
                 if (isWhatsApp && isViber) {
                     OpenMessengerBottomSheet(requireContext(), requireActivity(), OrdersModel.mDriver.phone).show()
-                } else if (isViber) goToApplication("com.viber.voip", requireActivity())
+                } else if (isViber) callViber(OrdersModel.mDriver.phone, requireContext())
                 else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
                 else {
                     callToCustomer(binding.driverPhone.text.toString())

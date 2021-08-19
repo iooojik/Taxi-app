@@ -63,4 +63,6 @@
     <string name="button_waiting">Очекивање</string>
     <string name="not_installed_viber">Немате инсталиран Вибер</string>
     <string name="not_installed_whatsapp">Немате инсталиран ВхатсАпп</string>
+    <string name="connection_lost">Изгубљена веза са сервером</string>
+    <string name="try_to_connect">Покушајте поново повезати</string>
 </resources>

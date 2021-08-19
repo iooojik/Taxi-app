@@ -23,6 +23,7 @@ import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.files.FileApi
 import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.web.HttpHelper
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -135,11 +136,16 @@ interface FragmentHelper {
     }
 
     fun callViber(phone : String, context: Context){
-        val uri: Uri = Uri.parse("tel:" + Uri.encode(phone))
-        val intent = Intent("android.intent.action.VIEW")
-        intent.setClassName("com.viber.voip", "com.viber.voip.WelcomeActivity")
-        intent.data = uri
-        context.startActivity(intent)
+        try {
+            val uri: Uri = Uri.parse("tel:" + Uri.encode(phone))
+            val intent = Intent("android.intent.action.VIEW")
+            intent.setClassName("com.viber.voip", "com.viber.voip.WelcomeActivity")
+            intent.data = uri
+            context.startActivity(intent)
+        } catch (e : Exception){
+            showSnackbar(context, context.resources.getString(R.string.error))
+        }
+
     }
 
     fun getZoomLevel(km: Float): Float {

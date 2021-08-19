@@ -63,4 +63,6 @@
     <string name="button_waiting">Expectation</string>
     <string name="not_installed_whatsapp">You don\'t have WhatsApp installed</string>
     <string name="not_installed_viber">You don\'t have Viber installed</string>
+    <string name="connection_lost">Connection to the server is lost</string>
+    <string name="try_to_connect">Try connecting again</string>
 </resources>
