@@ -18,8 +18,8 @@ class Prices(
 ) {
     companion object {
         @JvmStatic
-        var mPricePerMinute: Float = 15f
-        var mPricePerKm: Float = 15f
-        var mPriceWaitingMin: Float = 15f
+        var mPricePerMinute: Float = 0.1f
+        var mPricePerKm: Float = 0.1f
+        var mPriceWaitingMin: Float = 0.1f
     }
 }

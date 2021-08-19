@@ -13,6 +13,7 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
 import octii.app.taxiapp.locale.LocaleUtils
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
@@ -27,6 +28,7 @@ class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        logInfo("onCreateView WelcomeFragment")
         binding = FragmentWelcomeBinding.inflate(layoutInflater)
         setListeners()
         return binding.root
@@ -40,18 +42,21 @@ class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
     }
 
     private fun checkMessengers() {
+        /*
         if (isInstalled(Static.WHATSAPP_PACKAGE_NAME, requireActivity().packageManager)) {
             hasMessengers = true
             binding.checkViewWhatsapp.setImageResource(R.drawable.outline_check_circle_outline_24)
         } else {
             binding.checkViewWhatsapp.setImageResource(R.drawable.outline_cancel_24)
-        }
+        }*/
         if (isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)) {
             hasMessengers = true
             binding.checkViewViber.setImageResource(R.drawable.outline_check_circle_outline_24)
         } else {
             binding.checkViewViber.setImageResource(R.drawable.outline_cancel_24)
         }
+        logInfo("viber is installed: ${isInstalled(Static.VIBER_PACKAGE_NAME,
+            requireActivity().packageManager)}")
     }
 
     private fun setListeners() {
@@ -97,12 +102,14 @@ class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {
                 //    showSnackbar(requireContext(),
                 //        resources.getString(R.string.whatsapp_or_viber_not_chosen))
             }
+            /*
             R.id.whatsapp -> {
                 val browserIntent = Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://play.google.com/store/apps/details?id=com.whatsapp"))
                 startActivity(browserIntent)
-            }
+            }*/
             R.id.viber -> {
+                logInfo("go to viber")
                 val browserIntent = Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://play.google.com/store/apps/details?id=com.viber.voip"))
                 startActivity(browserIntent)

@@ -47,10 +47,9 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         getSettingsInformation()
     }
 
-    private fun updateClient() {
-        Requests().userRequests.update {
-            if (UserModel.uType == Static.DRIVER_TYPE)
-                findNavController().navigate(R.id.driverSettingsActivity)
+    private fun updateClient(runnable: Runnable? = null) {
+        Requests(activity = requireActivity(), view = requireView()).userRequests.update {
+            runnable?.run()
         }
     }
 
@@ -140,7 +139,9 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
             R.id.become_driver -> {
                 if (UserModel.uIsViber && UserModel.uIsWhatsapp) {
                     UserModel.uType = Static.DRIVER_TYPE
-                    updateClient()
+                    updateClient{
+                        findNavController().navigate(R.id.driverSettingsActivity)
+                    }
                 } else {
                     showSnackbar(requireContext(), resources.getString(R.string.to_become_driver))
                 }
@@ -173,9 +174,6 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
                 //    binding.iAmInWhatsapp.isChecked = false
                 //}
                 UserModel.uIsWhatsapp = isChecked
-            }
-            R.id.working -> {
-                DriverModel.mIsWorking = isChecked
             }
             R.id.russian_language -> {
                 if (isChecked)

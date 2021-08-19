@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
          */
         googleMap.isMyLocationEnabled = true
         this.googleMap = googleMap
+        logInfo("google map ready callback")
     }
 
     private lateinit var binding: FragmentDriverMapBinding
@@ -63,8 +65,6 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     private var isMoved = false
     private var marker: Marker? = null
     private var cameraMoved = false
-    private val EXPAND_MORE_FAB = "expand more"
-    private val EXPAND_LESS_FAB = "expand less"
 
     private var orderStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -72,7 +72,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                 when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
 
                     StaticOrders.ORDER_STATUS_REQUEST -> {
-                        logError(ordered)
+                        logInfo("order status ${StaticOrders.ORDER_STATUS_REQUEST}")
                         if (ordered) {
                             ordered = false
                             DriverAcceptOrderBottomSheet(requireContext(),
@@ -81,21 +81,22 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                         }
                     }
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
-                        logError("accepted")
+                        logInfo("order status ${StaticOrders.ORDER_STATUS_ACCEPTED}")
                         setOrderDetails()
                     }
                     StaticOrders.ORDER_STATUS_FINISHED -> {
+                        logInfo("order status ${StaticOrders.ORDER_STATUS_FINISHED}")
                         ordered = true
                         binding.fabSettings.show()
                         binding.fabShowOrderDetails.setOnClickListener {
-                            if (it.tag == EXPAND_MORE_FAB) {
+                            if (it.tag == Static.EXPAND_MORE_FAB) {
                                 synchronized(this) {
                                     binding.orderDetails.down(requireActivity())
                                     hideFabOrderDetails(true)
                                 }
                             } else {
                                 binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-                                binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+                                binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
                                 binding.orderDetails.up(requireActivity())
                             }
                         }
@@ -111,7 +112,9 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
             if (intent != null) {
                 when (intent.getStringExtra(StaticCoordinates.COORDINATES_STATUS_UPDATE)) {
                     StaticCoordinates.COORDINATES_STATUS_UPDATE_ -> {
-                        logError("${RemoteCoordinates.remoteLat} ${RemoteCoordinates.remoteLon}")
+                        logInfo("order status ${StaticCoordinates.COORDINATES_STATUS_UPDATE_}")
+                        logInfo("${RemoteCoordinates.remoteLat} ${RemoteCoordinates.remoteLon}")
+
                         if (RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
                             if (googleMap != null) {
                                 val latLng =
@@ -138,7 +141,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        logError(requireActivity().localClassName)
+        logInfo("onCreateView ${this.javaClass.name}")
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
         setListeners()
         checkUserType()
@@ -149,7 +152,8 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     private fun setUi() {
         thread {
             while (!cameraMoved) {
-                if (!cameraMoved && googleMap != null && MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0) {
+                if (!cameraMoved && googleMap != null &&
+                    MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0) {
                     val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
                     activity?.runOnUiThread {
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
@@ -168,8 +172,8 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                                 isMoved = true
                             }
                         }
-                        logInfo("zoom level: ${getZoomLevel(DriverModel.mRideDistance)}")
-                        logInfo("rideDistance: ${DriverModel.mRideDistance}")
+                        Log.i(Static.LOG_TAG,"zoom level: ${getZoomLevel(DriverModel.mRideDistance)}")
+                        Log.i(Static.LOG_TAG,"rideDistance: ${DriverModel.mRideDistance}")
                         googleMap?.animateCamera(CameraUpdateFactory.zoomTo(getZoomLevel(DriverModel.mRideDistance)))
                     }
 
@@ -181,28 +185,24 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
 
     override fun onResume() {
         super.onResume()
+        logInfo("onResume ${this.javaClass.name}")
         setOrderDetails()
         checkPermissions()
-        requireActivity().registerReceiver(orderStatusReciever,
-            IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
-        requireActivity().registerReceiver(coordinatesStatusReciever,
-            IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
+        requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
         setUi()
-        //if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
-        //    binding.fabSettings.hide()
-        //}
+
         try {
             setMap()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            Snackbar.make(requireView(),
-                resources.getString(R.string.check_permissions),
-                Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(requireView(), resources.getString(R.string.check_permissions), Snackbar.LENGTH_SHORT).show()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        logInfo("onDestroy ${this.javaClass.name}")
         try {
             requireActivity().unregisterReceiver(orderStatusReciever)
             requireActivity().unregisterReceiver(coordinatesStatusReciever)
@@ -216,19 +216,17 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     }
 
     private fun getSavedUserType(): String {
-        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")
-                .isNullOrEmpty()
-        ) ""
+        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
         else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
     }
 
     private fun setOrderDetails() {
-        logError("${OrdersModel.isAccepted && OrdersModel.mId > 0} ${OrdersModel.isAccepted} ${OrdersModel.mId > 0}")
+        logInfo("${OrdersModel.isAccepted && OrdersModel.mId > 0} ${OrdersModel.isAccepted} ${OrdersModel.mId > 0}")
         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
             binding.fabShowOrderDetails.setOnClickListener(this)
             showFabOrderDetails()
             binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-            binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+            binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
             binding.orderDetails.up(requireActivity())
         } else {
             binding.fabSettings.show()
@@ -267,18 +265,19 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.fab_settings -> {
+                logInfo("go to settings from ${this.javaClass.name}")
                 findNavController().navigate(R.id.driverSettingsActivity)
-                this.activity?.finish()
+                //this.activity?.finish()
             }
             R.id.fab_show_order_details -> {
-                if (v.tag == EXPAND_MORE_FAB) {
+                if (v.tag == Static.EXPAND_MORE_FAB) {
                     hideFabOrderDetails()
                     binding.orderDetails.down(requireActivity())
                     binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_less_24)
-                    binding.fabShowOrderDetails.tag = EXPAND_LESS_FAB
+                    binding.fabShowOrderDetails.tag = Static.EXPAND_LESS_FAB
                 } else {
                     binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-                    binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+                    binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
                     binding.orderDetails.up(requireActivity())
                     showFabOrderDetails()
                 }

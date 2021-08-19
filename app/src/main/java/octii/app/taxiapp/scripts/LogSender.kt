@@ -17,7 +17,7 @@ class LogSender {
         printInfo()
         val pid = Process.myPid()
         try {
-            val command = String.format("logcat -d -v threadtime *:*")
+            val command = String.format("logcat -d -v -i -e -w threadtime *:*")
             val process = Runtime.getRuntime().exec(command)
             val reader = BufferedReader(InputStreamReader(process.inputStream))
             val result = StringBuilder()
@@ -61,7 +61,7 @@ class LogSender {
     }
 
     private val availableInternalMemorySize: String
-        private get() {
+        get() {
             val path: File = Environment.getDataDirectory()
             val stat = StatFs(path.path)
             val blockSize = stat.blockSizeLong
@@ -69,7 +69,7 @@ class LogSender {
             return formatSize(availableBlocks * blockSize)
         }
     private val totalInternalMemorySize: String
-        private get() {
+        get() {
             val path: File = Environment.getDataDirectory()
             val stat = StatFs(path.path)
             val blockSize = stat.blockSizeLong
@@ -77,7 +77,7 @@ class LogSender {
             return formatSize(totalBlocks * blockSize)
         }
     private val availableExternalMemorySize: String
-        private get() = if (externalMemoryAvailable()) {
+        get() = if (externalMemoryAvailable()) {
             val path: File = Environment.getExternalStorageDirectory()
             val stat = StatFs(path.path)
             val blockSize = stat.blockSizeLong
@@ -87,7 +87,7 @@ class LogSender {
             "ext not available"
         }
     private val totalExternalMemorySize: String
-        private get() {
+        get() {
             return if (externalMemoryAvailable()) {
                 val path: File = Environment.getExternalStorageDirectory()
                 val stat = StatFs(path.path)

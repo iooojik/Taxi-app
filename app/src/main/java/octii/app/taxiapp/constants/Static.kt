@@ -27,5 +27,8 @@ class Static {
         const val SNACKBAR_MESSAGE_LENGTH = "SNACKBAR_MESSAGE_LENGTH"
         const val WHATSAPP_PACKAGE_NAME = "com.whatsapp"
         const val VIBER_PACKAGE_NAME = "com.viber.voip"
+        const val EXPAND_MORE_FAB = "expand more"
+        const val EXPAND_LESS_FAB = "expand less"
+        const val LOG_TAG = "IOOOJIK"
     }
 }

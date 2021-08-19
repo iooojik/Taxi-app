@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import octii.app.taxiapp.BaseActivity
 import octii.app.taxiapp.R
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logInfo
 
 class SplashActivity : BaseActivity() {
 
@@ -16,9 +17,7 @@ class SplashActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        //val adRequest = AdRequest.Builder().build()
-        //findViewById<AdView>(R.id.adView).loadAd(adRequest)
-        logError("on create SplashActivity")
+        logInfo("on start SplashActivity")
         checkAuth(this)
     }
 

@@ -23,6 +23,7 @@ import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.files.FileApi
 import octii.app.taxiapp.models.files.FileModel
 import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.web.HttpHelper
 import okhttp3.MultipartBody
@@ -99,6 +100,7 @@ interface FragmentHelper {
     }
 
     fun setLanguage(language: String, activity: Activity?) {
+        logInfo("selected lang: $language")
         LocaleUtils.setSelectedLanguageId(language)
         if (activity != null)
             synchronized(activity) {

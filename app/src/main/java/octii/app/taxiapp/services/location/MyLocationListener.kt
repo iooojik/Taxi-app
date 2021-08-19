@@ -9,6 +9,7 @@ import android.os.Bundle
 import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.scripts.logDebug
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.web.SocketHelper
 
 
@@ -35,11 +36,9 @@ class MyLocationListener : LocationListener {
             e.printStackTrace()
         }
 
-        logDebug("speed $speed " +
+        logInfo("speed $speed " +
                 "distance $distance " +
-                "coordinates $longitude $latitude"
-        )
-
+                "coordinates $longitude $latitude")
     }
 
     override fun onProviderDisabled(provider: String) {}

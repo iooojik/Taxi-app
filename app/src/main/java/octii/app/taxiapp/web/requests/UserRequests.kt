@@ -78,12 +78,14 @@ class UserRequests(private val view: View? = null, private val activity: Activit
     }
 
     fun loginWithToken(token: String, runnable: RequestsResult) {
+        logInfo("login with token")
         HttpHelper.USER_API.loginWithToken(UserModel(token = token))
             .enqueue(object : Callback<AuthorizationModel> {
                 override fun onResponse(
                     call: Call<AuthorizationModel>,
                     response: Response<AuthorizationModel>,
                 ) {
+                    logInfo("login with token response: ${response.raw()}")
                     if (response.isSuccessful) {
                         val model = response.body()?.user
                         if (response.isSuccessful) {
@@ -98,7 +100,7 @@ class UserRequests(private val view: View? = null, private val activity: Activit
                         //activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.authorizationActivity) }
                         showSnackBarError()
                     }
-
+                    logInfo("success: ${runnable.success}")
                     runnable.run()
                 }
 
@@ -121,12 +123,14 @@ class UserRequests(private val view: View? = null, private val activity: Activit
         val reqModel = UserModel(id = -1, uuid = "", phone = phoneNum, userName = name,
             coordinates = CoordinatesModel(latitude = latLng.latitude,
                 longitude = latLng.longitude))
+        logInfo(reqModel)
         HttpHelper.USER_API.login(reqModel).enqueue(object :
             Callback<AuthorizationModel> {
             override fun onResponse(
                 call: Call<AuthorizationModel>,
                 response: Response<AuthorizationModel>,
             ) {
+                logInfo("login request: ${response.raw()}")
                 if (response.isSuccessful) {
                     val model = response.body()
                     if (model?.user != null && model.user.token.isNotEmpty()) {
@@ -142,6 +146,7 @@ class UserRequests(private val view: View? = null, private val activity: Activit
             }
 
             override fun onFailure(call: Call<AuthorizationModel>, t: Throwable) {
+                logInfo("login error: ${t.stackTrace}")
                 t.printStackTrace()
                 showSnackBarError()
                 hideProgressBar(progressBar)
@@ -172,6 +177,7 @@ class UserRequests(private val view: View? = null, private val activity: Activit
     fun update(runnable: Runnable): UserModel {
         HttpHelper.USER_API.update(UserModel()).enqueue(object : Callback<UserModel> {
             override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                logInfo("user update ${response.raw()}")
                 if (response.isSuccessful) {
                     val model = response.body()
                     if (model != null && model.token.isNotEmpty()) {
@@ -183,7 +189,6 @@ class UserRequests(private val view: View? = null, private val activity: Activit
                     showSnackBarError()
                 }
             }
-
             override fun onFailure(call: Call<UserModel>, t: Throwable) {
                 showSnackBarError()
                 logExeption(t)
@@ -204,16 +209,5 @@ class UserRequests(private val view: View? = null, private val activity: Activit
                 override fun onFailure(call: Call<UserModel>, t: Throwable) {
                 }
             })
-    }
-
-    fun navigateToFragment(fragment: Int) {
-        try {
-            activity?.findNavController(R.id.nav_host_fragment)?.navigate(fragment)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            logExeption(e)
-            showSnackBarError()
-        }
-
     }
 }

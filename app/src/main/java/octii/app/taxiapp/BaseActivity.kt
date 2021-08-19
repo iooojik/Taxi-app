@@ -121,20 +121,16 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun checkAuth(callingActivity: Activity) {
-        requests = Requests(activity = this)
+        logInfo("checking authorization")
         val token = getToken()
         logError("token : ${getToken()}")
-        if (token != null && Permissions(this, this).checkPermissions() && getUserUUID().trim()
-                .isNotEmpty()
-        ) {
-            logError("passed")
+        if (token != null && Permissions(this, this)
+                .checkPermissions() && getUserUUID().trim().isNotEmpty()) {
+            logError("permissions granted")
             if (token.isNotEmpty()) {
-                requests.userRequests.loginWithToken(token,
+                logError("token is not empty")
+                Requests(activity = this).userRequests.loginWithToken(token,
                     RequestsResult(false, this, getSavedUserType(), getToken()))
-                //requests.userRequests.loginWithToken(token) {
-                //     getStartLocation(callingActivity)
-                //    Services(this, Static.MAIN_SERVICES).start()
-                //}
             }
         } else {
             findNavController(R.id.nav_host_fragment).navigate(R.id.authorizationActivity)

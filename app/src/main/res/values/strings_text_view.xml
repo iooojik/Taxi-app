@@ -32,5 +32,5 @@
     <string name="connection_lost">Потеряно соединение с сервером</string>
     <string name="try_to_connect">Повторить попытку подключения</string>
     <string name="only_one_photo_upload">Фотографии можно загрузить только один раз! Пожалуйста, проверяйте их перед загрузкой!</string>
-
+    <string name="not_uploaded_photos">Отсутствует фотография</string>
 </resources>

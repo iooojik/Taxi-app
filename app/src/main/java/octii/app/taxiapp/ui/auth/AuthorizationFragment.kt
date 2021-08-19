@@ -17,6 +17,7 @@ import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.FragmentHelper
@@ -33,6 +34,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        logInfo("onCreateView AuthorizationFragment")
         binding = FragmentAuthorizationBinding.inflate(layoutInflater)
         setListeners()
         MyPreferences.clearAll()
@@ -42,7 +44,6 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
     override fun onResume() {
         super.onResume()
         requests = Requests(requireView(), requireActivity())
-
         MyLocationListener.setUpLocationListener(requireContext())
     }
 
@@ -67,9 +68,9 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                 val phoneNumber = binding.phoneNumberLayout.editText?.text.toString()
                 val userName = binding.nameLayout.editText?.text.toString()
 
-                if (!(binding.iAmInWhatsapp.isChecked || binding.iAmInViber.isChecked)) {
+                if (!binding.iAmInViber.isChecked) {
                     Snackbar.make(binding.root,
-                        resources.getString(R.string.whatsapp_or_viber_not_chosen),
+                        resources.getString(R.string.viber_not_chosen),
                         Snackbar.LENGTH_SHORT).show()
                 } else if (phoneNumber.isEmpty()) {
                     Snackbar.make(binding.root,
@@ -79,7 +80,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         resources.getString(R.string.no_name),
                         Snackbar.LENGTH_SHORT).show()
                 } else {
-                    logError(LatLng(MyLocationListener.latitude, MyLocationListener.longitude))
+                    logInfo(LatLng(MyLocationListener.latitude, MyLocationListener.longitude))
 
                     requests.userRequests.login("+$phoneNumber",
                         userName,
@@ -92,8 +93,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                 }
             }
             R.id.main_auth -> {
-                if (activity != null)
-                    hideKeyBoard(requireActivity(), binding.root)
+                if (activity != null) hideKeyBoard(requireActivity(), binding.root)
                 binding.phoneNumberLayout.clearFocus()
                 binding.nameLayout.clearFocus()
             }
@@ -103,6 +103,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when (buttonView!!.id) {
+            /*
             R.id.i_am_in_whatsapp -> {
                 if (UserModel.uType == Static.DRIVER_TYPE && binding.iAmInViber.isChecked && !isChecked) {
                     Snackbar.make(requireView(),
@@ -117,8 +118,9 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                 // }
                 UserModel.uIsWhatsapp = isChecked
 
-            }
+            }*/
             R.id.i_am_in_viber -> {
+                /*
                 if (UserModel.uType == Static.DRIVER_TYPE && binding.iAmInWhatsapp.isChecked && !isChecked) {
                     Snackbar.make(requireView(),
                         resources.getString(R.string.to_become_driver),
@@ -128,12 +130,12 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                 //if (!isInstalled(Static.VIBER_PACKAGE_NAME, requireActivity().packageManager)){
                 //    showSnackbar(requireContext(), resources.getString(R.string.not_installed_viber))
                 //    binding.iAmInViber.isChecked = false
-                //}
+                //}*/
                 UserModel.uIsViber = isChecked
             }
             R.id.i_am_driver -> {
                 if (isChecked) {
-                    if (!binding.iAmInWhatsapp.isChecked || !binding.iAmInViber.isChecked) {
+                    if (!binding.iAmInViber.isChecked) {
                         Snackbar.make(requireView(),
                             resources.getString(R.string.to_become_driver),
                             Snackbar.LENGTH_LONG).show()

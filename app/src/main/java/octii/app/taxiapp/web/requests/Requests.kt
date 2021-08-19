@@ -4,9 +4,8 @@ import android.app.Activity
 import android.view.View
 import octii.app.taxiapp.web.HttpHelper
 
-class Requests(private val view: View? = null, private val activity: Activity? = null) {
+class Requests(view: View? = null, activity: Activity? = null) {
 
-    val driverAvailableRequests = DriverAvailableRequests(view, activity)
     val userRequests = UserRequests(view, activity)
     val orderRequests = OrderRequests(activity)
 

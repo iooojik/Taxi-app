@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -40,14 +39,10 @@ import java.util.*
 class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
 
     private lateinit var binding: FragmentEditPhotoListBinding
-    private val editPhotoItemViews = arrayListOf<EditPhotoItemBinding>()
+    private val editPhotoItemViews = arrayListOf<PhotoItem>()
     private var selectedType = ""
 
-    private var progressBar: LinearProgressIndicator? = null
-    private var progressText: TextView? = null
-    private var progressLayout: LinearLayout? = null
-    private var selectedImagePlaceHolder: ImageView? = null
-    private var progressUploadBar: ProgressBar? = null
+    private var selectedImageItem: PhotoItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,39 +51,61 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
         binding = FragmentEditPhotoListBinding.inflate(layoutInflater)
         binding.fabBack.setOnClickListener(this)
         setViews()
-        setInformation()
+        setInformation{
+            /*
+            editPhotoItemViews.forEach {
+                logError("Status: ${it.status}")
+                if (!it.status){
+                    it.status = false
+                    it.binding.photoPlaceholder.setImageResource(R.drawable.outline_image_not_supported_24)
+                    it.binding.noPhoto.visibility = View.VISIBLE
+                    it.binding.photoType.visibility = View.GONE
+                    it.binding.uploadingProgress.visibility = View.GONE
+                }
+            }*/
+        }
         return binding.root
     }
 
-    private fun setInformation() {
+    private fun setInformation(runnable: Runnable) {
         if (UserModel.mFiles.isNotEmpty()) {
             UserModel.mFiles.forEach {
                 editPhotoItemViews.forEach { b ->
-                    if (b.root.tag == it.type) {
-                        setImage(it.url, b.photoPlaceholder, b.uploadingProgress)
+                    if (b.binding.root.tag == it.type) {
+                        setImage(it.url, b)
                     }
                 }
             }
         }
+        runnable.run()
     }
 
     private fun setImage(
-        url: String, photoPlaceholder: ImageView,
-        progressBar: ProgressBar? = null, progressLayout: LinearLayout? = null,
+        url: String, photoItem: PhotoItem
     ) {
-        progressBar?.visibility = View.VISIBLE
+        val binding = photoItem.binding
+        binding.progress.visibility = View.VISIBLE
+        binding.uploadingProgress.visibility = View.VISIBLE
 
         Picasso.with(context)
             .load(url)
-            .into(photoPlaceholder, object : com.squareup.picasso.Callback {
+            .into(binding.photoPlaceholder, object : com.squareup.picasso.Callback {
                 override fun onSuccess() {
-                    progressBar?.visibility = View.GONE
-                    photoPlaceholder.visibility = View.VISIBLE
-                    progressLayout?.visibility = View.GONE
+                    binding.progress.visibility = View.GONE
+                    binding.uploadingProgress.visibility = View.GONE
+                    binding.photoType.visibility = View.VISIBLE
+                    binding.photoPlaceholder.visibility = View.VISIBLE
+                    binding.noPhoto.visibility = View.GONE
+                    photoItem.status = true
                 }
 
                 override fun onError() {
-                    //do smth when there is picture loading error
+                    photoItem.status = false
+                    binding.noPhoto.visibility = View.VISIBLE
+                    binding.photoPlaceholder.setImageResource(R.drawable.outline_image_not_supported_24)
+                    binding.noPhoto.visibility = View.VISIBLE
+                    binding.photoType.visibility = View.GONE
+                    binding.uploadingProgress.visibility = View.GONE
                 }
             })
     }
@@ -130,15 +147,12 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
         view.tag = tag
         editPhotosBinding.photoType.text = type
         binding.photosLayout.addView(view)
-        editPhotoItemViews.add(editPhotosBinding)
+        val i = PhotoItem(editPhotosBinding, false)
+        editPhotoItemViews.add(i)
         editPhotosBinding.newPhoto.setOnClickListener {
             selectedType = tag
             //Permissions(requireContext(), requireActivity()).requestPermissions()
-            progressBar = editPhotosBinding.progressBar
-            progressText = editPhotosBinding.progressText
-            progressLayout = editPhotosBinding.progress
-            progressUploadBar = editPhotosBinding.uploadingProgress
-            selectedImagePlaceHolder = editPhotosBinding.photoPlaceholder
+            selectedImageItem = i
             uploadFile()
         }
     }
@@ -189,20 +203,23 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                             MultipartBody.Part.createFormData("file", image.name, requestFile)
 
                         logError(selectedType)
-                        logError("progress bar is ${progressBar != null}")
-                        if (progressBar != null && progressText != null && progressLayout != null) {
-                            progressLayout?.visibility = View.VISIBLE
+                        logError("progress bar is ${selectedImageItem?.binding?.progressBar != null}")
+                        if (selectedImageItem?.binding?.progressBar != null
+                            && selectedImageItem?.binding?.progressText != null && selectedImageItem?.binding?.progress != null) {
+                            selectedImageItem?.binding?.progress?.visibility = View.VISIBLE
                         }
 
-                        if (selectedImagePlaceHolder != null)
-                            selectedImagePlaceHolder?.visibility = View.GONE
+                        if (selectedImageItem != null)
+                            selectedImageItem?.binding?.photoPlaceholder?.visibility = View.GONE
 
-                        val requestBody1 = CountingFileRequestBody(body.body, "file") { key, num ->
+                        val requestBody1 = CountingFileRequestBody(body.body, "file") { _, num ->
                             Log.d("FinishAdapter", "Perecentae is :$num")
                             requireActivity().runOnUiThread {
-                                if (progressBar != null && progressText != null && progressLayout != null) {
-                                    progressBar?.progress = num
-                                    progressText?.text = "$num%"
+                                if (selectedImageItem?.binding?.progressBar != null
+                                    && selectedImageItem?.binding?.progressText != null
+                                    && selectedImageItem?.binding?.progress != null) {
+                                    selectedImageItem?.binding?.progressBar?.progress = num
+                                    selectedImageItem?.binding?.progressText?.text = "$num%"
                                 }
                                 //if (num == 100 && progressBar != null)
                                 //    progressBar?.hide()
@@ -220,18 +237,14 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
                             image.name,
                             requestBody1),
                             selectedType, HttpHelper.FILE_API) {
-                            Requests().userRequests.update {
+                            Requests(activity = requireActivity(), view = requireView()).userRequests.update {
                                 requireActivity().runOnUiThread {
-                                    if (selectedImagePlaceHolder != null) {
+                                    if (selectedImageItem != null) {
                                         UserModel.mFiles.forEach {
                                             if (it.type == selectedType) {
-                                                setImage(it.url,
-                                                    selectedImagePlaceHolder!!,
-                                                    progressUploadBar!!,
-                                                    progressLayout)
+                                                setImage(it.url, selectedImageItem!!)
                                             }
                                         }
-                                        //setInformation()
                                     }
                                 }
                             }
@@ -248,5 +261,7 @@ class EditPhotoListFragment : Fragment(), FragmentHelper, View.OnClickListener {
             R.id.fab_back -> findNavController().navigateUp()
         }
     }
+
+    inner class PhotoItem(val binding: EditPhotoItemBinding, var status : Boolean)
 
 }

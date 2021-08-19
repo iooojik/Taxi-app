@@ -1,6 +1,5 @@
 package octii.app.taxiapp.ui.settings.driver
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
-import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.FragmentHelper
 import octii.app.taxiapp.ui.settings.SettingsHelper
@@ -129,7 +127,9 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         when (v!!.id) {
             R.id.become_client -> {
                 UserModel.uType = Static.CLIENT_TYPE
-                updateDriver()
+                updateDriver{
+                    findNavController().navigate(R.id.clientSettingsActivity)
+                }
             }
             R.id.fab_back -> {
                 findNavController().navigate(R.id.driverMapActivity)
@@ -177,7 +177,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private fun updateDriver() {
+    private fun updateDriver(runnable: Runnable? = null) {
 
         val prices = listOf(
             binding.pricePerKm.editText,
@@ -194,9 +194,8 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         UserModel.mDriver.prices.priceWaitingMin = prices[2]?.text.toString().toFloat()
         UserModel.mDriver.rideDistance = prices[3]?.text.toString().toFloat()
 
-        Requests().userRequests.update {
-            if (UserModel.uType == Static.CLIENT_TYPE)
-                findNavController().navigate(R.id.clientSettingsActivity)
+        Requests(activity = requireActivity(), view = requireView()).userRequests.update {
+            runnable?.run()
         }
 
 
