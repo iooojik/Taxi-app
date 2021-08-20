@@ -35,6 +35,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentClientSettingsBinding.inflate(layoutInflater)
+        blockGoBack(requireActivity(), this)
         return binding.root
     }
 
@@ -139,14 +140,14 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
                 if (UserModel.uIsViber && UserModel.uIsWhatsapp) {
                     UserModel.uType = Static.DRIVER_TYPE
                     updateClient{
-                        findNavController().navigate(R.id.driverSettingsActivity)
+                        findNavController().navigate(R.id.driverSettingsFragment)
                     }
                 } else {
                     showSnackbar(requireContext(), resources.getString(R.string.to_become_driver))
                 }
             }
             R.id.fab_back -> {
-                findNavController().navigate(R.id.clientMapActivity)
+                findNavController().navigate(R.id.clientMapFragment)
             }
             R.id.send_logs -> {
                 LogSender().sendLogs(requireActivity())

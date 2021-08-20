@@ -72,12 +72,11 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                 when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
 
                     StaticOrders.ORDER_STATUS_REQUEST -> {
-                        logInfo("order status ${StaticOrders.ORDER_STATUS_REQUEST}")
+                        logInfo("order status ${StaticOrders.ORDER_STATUS_REQUEST} \n ordered: $ordered")
                         if (ordered) {
                             ordered = false
                             DriverAcceptOrderBottomSheet(requireContext(),
-                                requireActivity(),
-                                OrdersModel()).show()
+                                requireActivity(), OrdersModel()).show()
                         }
                     }
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
@@ -212,7 +211,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     }
 
     private fun checkUserType() {
-        if (getSavedUserType() == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientMapActivity)
+        if (getSavedUserType() == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientMapFragment)
     }
 
     private fun getSavedUserType(): String {
@@ -266,7 +265,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
         when (v!!.id) {
             R.id.fab_settings -> {
                 logInfo("go to settings from ${this.javaClass.name}")
-                findNavController().navigate(R.id.driverSettingsActivity)
+                findNavController().navigate(R.id.driverSettingsFragment)
                 //this.activity?.finish()
             }
             R.id.fab_show_order_details -> {

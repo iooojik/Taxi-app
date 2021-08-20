@@ -14,21 +14,17 @@ class RequestsResult(
 
     override fun run() {
         if (success) {
-            getStartLocation(activity)
+            getStartLocation()
             Services(activity, Static.MAIN_SERVICES).start()
-        } else activity.findNavController(R.id.nav_host_fragment)
-            .navigate(R.id.authorizationActivity)
+        } else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.authorizationFragment)
     }
 
-    private fun getStartLocation(callingActivity: Activity) {
+    private fun getStartLocation() {
         val uType = userType
         logError("token : $userToken")
         if (userToken != null) {
-            if (uType == Static.DRIVER_TYPE) activity.findNavController(R.id.nav_host_fragment)
-                .navigate(R.id.driverMapActivity)
-            else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapActivity)
-            callingActivity.finish()
-        } else activity.findNavController(R.id.nav_host_fragment)
-            .navigate(R.id.authorizationActivity)
+            if (uType == Static.DRIVER_TYPE) activity.findNavController(R.id.nav_host_fragment).navigate(R.id.driverMapFragment)
+            else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
+        } else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.authorizationFragment)
     }
 }

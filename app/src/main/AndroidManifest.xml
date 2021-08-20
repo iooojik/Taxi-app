@@ -103,14 +103,10 @@
 
         </receiver>
 
-        <activity
-            android:name="octii.app.taxiapp.ui.auth.AuthorizationActivity"
-            android:exported="true" />
 
         <activity
-            android:name="octii.app.taxiapp.ui.splash.SplashActivity"
-            android:exported="true"
-            android:parentActivityName=".BaseActivity">
+            android:name="octii.app.taxiapp.MainActivity"
+            android:exported="true">
             <nav-graph android:value="@navigation/nav_graph" />
 
             <intent-filter>
@@ -118,32 +114,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="octii.app.taxiapp.ui.maps.client.ClientMapActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            />
-
-        <activity
-            android:name="octii.app.taxiapp.ui.maps.driver.DriverMapActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            />
-        <activity
-            android:name="octii.app.taxiapp.ui.settings.driver.DriverSettingsActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-
-            />
-
-        <activity
-            android:name="octii.app.taxiapp.ui.settings.client.ClientSettingsActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-
-            />
-
     </application>
 
 </manifest>

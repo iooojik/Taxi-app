@@ -28,6 +28,7 @@ class DriverAcceptOrderBottomSheet(
 
     init {
         this.setContentView(binding.root)
+        this.setOnCancelListener { rejectOrder() }
         OrdersModel.isOrdered = false
         binding.rejectOrder.setOnClickListener(this)
         binding.acceptOrder.setOnClickListener(this)
@@ -73,6 +74,11 @@ class DriverAcceptOrderBottomSheet(
     private fun rejectOrder() {
         finishTimer(timer)
         SocketHelper.rejectOrder(order)
+        try {
+            DriverMapFragment.ordered = true
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
         this@DriverAcceptOrderBottomSheet.hide()
     }
 

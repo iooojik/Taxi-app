@@ -36,6 +36,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentDriverSettingsBinding.inflate(inflater)
+        blockGoBack(requireActivity(), this)
         return binding.root
     }
 
@@ -129,11 +130,11 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
             R.id.become_client -> {
                 UserModel.uType = Static.CLIENT_TYPE
                 updateDriver{
-                    findNavController().navigate(R.id.clientSettingsActivity)
+                    findNavController().navigate(R.id.clientSettingsFragment)
                 }
             }
             R.id.fab_back -> {
-                findNavController().navigate(R.id.driverMapActivity)
+                findNavController().navigate(R.id.driverMapFragment)
             }
             R.id.add_photos -> {
                 findNavController().navigate(R.id.editPhotoListFragment)

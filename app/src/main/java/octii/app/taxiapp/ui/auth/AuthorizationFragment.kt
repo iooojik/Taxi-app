@@ -34,6 +34,7 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
         savedInstanceState: Bundle?,
     ): View {
         logInfo("onCreateView AuthorizationFragment")
+        blockGoBack(requireActivity(), this)
         binding = FragmentAuthorizationBinding.inflate(layoutInflater)
         setListeners()
         MyPreferences.clearAll()
@@ -86,8 +87,8 @@ class AuthorizationFragment : Fragment(), View.OnClickListener,
                         LatLng(MyLocationListener.latitude, MyLocationListener.longitude),
                         binding.progressBar) {
                         Services(requireActivity(), Static.MAIN_SERVICES).start()
-                        if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapActivity)
-                        else findNavController().navigate(R.id.clientMapActivity)
+                        if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
+                        else findNavController().navigate(R.id.clientMapFragment)
                     }
                 }
             }

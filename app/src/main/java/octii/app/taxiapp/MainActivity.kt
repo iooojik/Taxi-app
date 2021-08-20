@@ -26,7 +26,7 @@ import octii.app.taxiapp.web.requests.Requests
 import octii.app.taxiapp.web.requests.RequestsResult
 
 
-abstract class BaseActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     private lateinit var requests: Requests
@@ -98,14 +98,9 @@ abstract class BaseActivity : AppCompatActivity() {
         SocketHelper.activity = this
         setLanguage(this)
         setContentView(binding.root)
-
-        if (getFragment() != null) {
-            findNavController(R.id.nav_host_fragment).navigate(getFragment()!!)
-        }
+        findNavController(R.id.nav_host_fragment).navigate(R.id.splashFragment)
         logInfo("on create BaseActivity")
     }
-
-    abstract fun getFragment(id: Int? = R.id.welcomeFragment): Int?
 
     private fun getSharedPrefernces() {
         MyPreferences.userPreferences =
@@ -120,40 +115,7 @@ abstract class BaseActivity : AppCompatActivity() {
         if (context != null) Application.getInstance().initAppLanguage(context)
     }
 
-    fun checkAuth(callingActivity: Activity) {
-        logInfo("checking authorization")
-        val token = getToken()
-        logError("token : ${getToken()}")
-        if (token != null && Permissions(this, this)
-                .checkPermissions() && getUserUUID().trim().isNotEmpty()) {
-            logError("permissions granted")
-            if (token.isNotEmpty()) {
-                logError("token is not empty")
-                Requests(activity = this).userRequests.loginWithToken(token,
-                    RequestsResult(false, this, getSavedUserType(), getToken()))
-            }
-        } else {
-            findNavController(R.id.nav_host_fragment).navigate(R.id.authorizationActivity)
-            callingActivity.finish()
-        }
-    }
 
-    private fun getToken(): String? {
-        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN,
-                "").isNullOrEmpty()
-        ) ""
-        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TOKEN, "")
-    }
-
-    private fun getUserUUID(): String =
-        MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_UUID, "")!!
-
-    private fun getSavedUserType(): String {
-        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")
-                .isNullOrEmpty()
-        ) ""
-        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
-    }
 
     /*private fun getStartLocation(callingActivity: Activity) {
         val uType = getSavedUserType()
