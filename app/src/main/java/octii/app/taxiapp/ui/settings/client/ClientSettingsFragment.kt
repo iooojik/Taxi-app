@@ -14,13 +14,12 @@ import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentClientSettingsBinding
 import octii.app.taxiapp.locale.LocaleUtils
-import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.scripts.showSnackbar
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.settings.SettingsHelper
 import octii.app.taxiapp.web.requests.Requests
 

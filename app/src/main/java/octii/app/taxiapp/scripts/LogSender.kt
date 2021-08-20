@@ -17,7 +17,7 @@ class LogSender {
         printInfo()
         val pid = Process.myPid()
         try {
-            val command = String.format("logcat -d -v -i -e -w threadtime *:*")
+            val command = String.format("logcat -v threadtime *:*")
             val process = Runtime.getRuntime().exec(command)
             val reader = BufferedReader(InputStreamReader(process.inputStream))
             val result = StringBuilder()
@@ -39,6 +39,23 @@ class LogSender {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun getLogs() : String {
+        printInfo()
+        val pid = Process.myPid()
+        val command = String.format("logcat -d threadtime *:*")
+        val process = Runtime.getRuntime().exec(command)
+        val reader = BufferedReader(InputStreamReader(process.inputStream))
+        val result = StringBuilder()
+        var currentLine: String? = null
+        while (reader.readLine().also { currentLine = it } != null) {
+            if (currentLine != null && currentLine!!.contains(pid.toString())) {
+                result.append(currentLine)
+                result.append("\n")
+            }
+        }
+        return result.toString()
     }
 
     private fun log(txt: String) {

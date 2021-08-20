@@ -29,7 +29,7 @@ import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.services.location.MyLocationListener
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import kotlin.concurrent.thread

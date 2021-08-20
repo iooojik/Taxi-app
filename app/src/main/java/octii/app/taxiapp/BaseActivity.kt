@@ -19,7 +19,7 @@ import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
-import octii.app.taxiapp.ui.AdHelper
+import octii.app.taxiapp.ui.utils.AdHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
 import octii.app.taxiapp.web.requests.Requests

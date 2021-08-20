@@ -10,8 +10,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.FragmentClientDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.ui.CallHelper
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.CallHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.maps.OpenMessengerBottomSheet
 
 

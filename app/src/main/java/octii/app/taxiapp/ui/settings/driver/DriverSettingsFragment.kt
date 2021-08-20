@@ -18,8 +18,9 @@ import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
+import octii.app.taxiapp.scripts.sendLogs
 import octii.app.taxiapp.scripts.showSnackbar
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.settings.SettingsHelper
 import octii.app.taxiapp.web.requests.Requests
 
@@ -138,7 +139,8 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
                 findNavController().navigate(R.id.editPhotoListFragment)
             }
             R.id.send_logs -> {
-                LogSender().sendLogs(requireActivity())
+                sendLogs(requireContext())
+                //LogSender().sendLogs(requireActivity())
             }
         }
     }

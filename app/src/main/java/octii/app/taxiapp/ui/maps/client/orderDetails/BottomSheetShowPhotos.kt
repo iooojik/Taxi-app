@@ -13,7 +13,7 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.BottomSheetShowPhotosBinding
 import octii.app.taxiapp.databinding.EditPhotoItemBinding
 import octii.app.taxiapp.models.files.FileModel
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 
 class BottomSheetShowPhotos(context: Context, val activity: Activity, images: List<FileModel>) :
     BottomSheetDialog(context), View.OnClickListener, FragmentHelper {

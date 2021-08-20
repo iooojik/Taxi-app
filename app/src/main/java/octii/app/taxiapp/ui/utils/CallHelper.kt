@@ -1,4 +1,4 @@
-package octii.app.taxiapp.ui
+package octii.app.taxiapp.ui.utils
 
 import android.app.Activity
 import android.content.ClipData

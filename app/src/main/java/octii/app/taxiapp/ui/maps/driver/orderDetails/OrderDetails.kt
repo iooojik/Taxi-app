@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverOrderDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 
 
 class OrderDetails : Fragment(), FragmentHelper, View.OnClickListener {

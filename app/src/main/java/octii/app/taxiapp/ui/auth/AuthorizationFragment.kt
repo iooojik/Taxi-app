@@ -16,11 +16,10 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentAuthorizationBinding
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.services.location.MyLocationListener
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.web.requests.Requests
 
 

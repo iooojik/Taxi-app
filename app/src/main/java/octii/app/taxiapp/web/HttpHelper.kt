@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.constants.StaticWeb
 import octii.app.taxiapp.models.driver.DriverApi
 import octii.app.taxiapp.models.files.FileApi
+import octii.app.taxiapp.models.log.LogApi
 import octii.app.taxiapp.models.orders.OrdersApi
 import octii.app.taxiapp.models.user.UserApi
 import okhttp3.OkHttpClient
@@ -34,12 +35,10 @@ class HttpHelper {
         lateinit var ORDERS_API: OrdersApi
 
         @JvmStatic
-        lateinit var retrofit: Retrofit
+        lateinit var LOG_API: LogApi
 
         @JvmStatic
-        fun prepare() {
-            doRetrofit()
-        }
+        lateinit var retrofit: Retrofit
 
         @JvmStatic
         fun doRetrofit() {
@@ -55,6 +54,7 @@ class HttpHelper {
             driverApi = retrofit.create(DriverApi::class.java)
             FILE_API = retrofit.create(FileApi::class.java)
             ORDERS_API = retrofit.create(OrdersApi::class.java)
+            LOG_API = retrofit.create(LogApi::class.java)
         }
 
 

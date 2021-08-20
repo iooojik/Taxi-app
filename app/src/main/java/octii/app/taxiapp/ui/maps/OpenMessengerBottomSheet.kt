@@ -2,13 +2,11 @@ package octii.app.taxiapp.ui.maps
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.BottomSheetOpenMessengerBinding
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 
 
 class OpenMessengerBottomSheet(context: Context, val activity: Activity, val phone :String) :

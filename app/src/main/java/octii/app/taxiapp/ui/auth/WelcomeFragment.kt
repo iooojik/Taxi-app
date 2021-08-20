@@ -14,8 +14,7 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.scripts.logInfo
-import octii.app.taxiapp.scripts.showSnackbar
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
 
 class WelcomeFragment : Fragment(), View.OnClickListener, FragmentHelper {

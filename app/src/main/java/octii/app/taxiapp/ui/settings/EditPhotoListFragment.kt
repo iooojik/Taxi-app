@@ -8,12 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.squareup.picasso.Picasso
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
@@ -23,7 +19,7 @@ import octii.app.taxiapp.models.files.CountingFileRequestBody
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.showSnackbar
-import octii.app.taxiapp.ui.FragmentHelper
+import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.web.HttpHelper
 import octii.app.taxiapp.web.requests.Requests
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
