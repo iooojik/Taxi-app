@@ -18,6 +18,7 @@ import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.LogSender
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.sendLogs
 import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.settings.SettingsHelper
@@ -150,7 +151,7 @@ class ClientSettingsFragment : Fragment(), View.OnClickListener,
                 findNavController().navigate(R.id.clientMapFragment)
             }
             R.id.send_logs -> {
-                LogSender().sendLogs(requireActivity())
+                sendLogs(requireContext())
             }
         }
     }

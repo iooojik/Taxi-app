@@ -31,12 +31,13 @@ import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.Permissions
+import octii.app.taxiapp.ui.maps.client.recievers.ClientCoordinatesReciever
+import octii.app.taxiapp.ui.maps.client.recievers.ClientOrderReciever
 import octii.app.taxiapp.web.SocketHelper
 import kotlin.concurrent.thread
 
 
-class ClientMapFragment : Fragment(), View.OnClickListener,
-    FragmentHelper {
+class ClientMapFragment : Fragment(), View.OnClickListener, FragmentHelper {
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -55,78 +56,15 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
 
 
     }
+
     private lateinit var binding: FragmentClientMapBinding
     private lateinit var permissions: Permissions
     private var googleMap: GoogleMap? = null
-    private var isMoved = false
+    var isMoved = false
     private var marker: Marker? = null
     private var cameraMoved = false
-    private val EXPAND_MORE_FAB = "expand more"
-    private val EXPAND_LESS_FAB = "expand less"
-
-    private var orderStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null) {
-                when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
-                    StaticOrders.ORDER_STATUS_ACCEPTED -> {
-                        setOrderDetails()
-                        binding.clientMapprogressBar.visibility = View.INVISIBLE
-                    }
-                    StaticOrders.ORDER_STATUS_FINISHED -> {
-                        binding.fabSettings.show()
-                        binding.clientMapprogressBar.visibility = View.INVISIBLE
-                        binding.fabShowOrderDetails.setOnClickListener {
-                            if (it.tag == EXPAND_MORE_FAB) {
-                                synchronized(this) {
-                                    binding.orderDetails.down(requireActivity())
-                                    hideFabOrderDetails(true)
-                                }
-                                binding.callTaxi.show()
-                            } else {
-                                binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-                                binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
-                                binding.orderDetails.up(requireActivity())
-                            }
-                        }
-                        googleMap?.clear()
-                    }
-                    StaticOrders.ORDER_STATUS_NO_ORDERS -> {
-                        binding.fabSettings.show()
-                        binding.callTaxi.show()
-                        //binding.orderDetails.down(requireActivity())
-                        binding.clientMapprogressBar.visibility = View.INVISIBLE
-                        googleMap?.clear()
-                    }
-                }
-            }
-        }
-    }
-
-    private var coordinatesStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null) {
-                when (intent.getStringExtra(StaticCoordinates.COORDINATES_STATUS_UPDATE)) {
-                    StaticCoordinates.COORDINATES_STATUS_UPDATE_ -> {
-                        if (RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
-                            if (googleMap != null) {
-                                val latLng =
-                                    LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
-                                if (marker != null) marker!!.remove()
-                                marker = googleMap!!.addMarker(MarkerOptions()
-                                    .position(latLng).title(resources.getString(R.string.driver))
-                                    .icon(bitmapFromVector(requireContext(), R.drawable.car)))
-
-                                if (!isMoved) {
-                                    googleMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                                    isMoved = true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    private lateinit var clientOrderReciever: ClientOrderReciever
+    private lateinit var clientCoordinatesReciever: ClientCoordinatesReciever
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -142,10 +80,10 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
 
     override fun onResume() {
         super.onResume()
-        requireActivity().registerReceiver(orderStatusReciever,
-            IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
-        requireActivity().registerReceiver(coordinatesStatusReciever,
-            IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
+        clientOrderReciever = ClientOrderReciever(binding, requireActivity(), googleMap, this, requireContext())
+        clientCoordinatesReciever = ClientCoordinatesReciever(requireActivity(), googleMap, this, requireContext(), marker)
+        requireActivity().registerReceiver(clientOrderReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(clientCoordinatesReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
         checkPermissions()
         moveGoogleCameraToMe()
         setOrderDetails()
@@ -161,17 +99,21 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        requireActivity().unregisterReceiver(orderStatusReciever)
-        requireActivity().unregisterReceiver(coordinatesStatusReciever)
+        try {
+            requireActivity().unregisterReceiver(clientOrderReciever)
+            requireActivity().unregisterReceiver(clientCoordinatesReciever)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
-    private fun setOrderDetails() {
+    fun setOrderDetails() {
         if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
             binding.fabShowOrderDetails.setOnClickListener(this)
             binding.callTaxi.hide()
             showFabOrderDetails()
             binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-            binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+            binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
             binding.orderDetails.up(requireActivity())
         } else {
             logError("call taxi shown")
@@ -188,7 +130,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private fun hideFabOrderDetails(fullHide: Boolean = false) {
+    fun hideFabOrderDetails(fullHide: Boolean = false) {
         synchronized(this) {
             binding.fabShowOrderDetails.down(requireActivity(), false, binding.orderDetails)
             if (fullHide)
@@ -256,17 +198,16 @@ class ClientMapFragment : Fragment(), View.OnClickListener,
             }
             R.id.fab_settings -> {
                 findNavController().navigate(R.id.clientSettingsFragment)
-                this.activity?.finish()
             }
             R.id.fab_show_order_details -> {
-                if (v.tag == EXPAND_MORE_FAB) {
+                if (v.tag == Static.EXPAND_MORE_FAB) {
                     hideFabOrderDetails()
                     binding.orderDetails.down(requireActivity())
                     binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_less_24)
-                    binding.fabShowOrderDetails.tag = EXPAND_LESS_FAB
+                    binding.fabShowOrderDetails.tag = Static.EXPAND_LESS_FAB
                 } else {
                     binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-                    binding.fabShowOrderDetails.tag = EXPAND_MORE_FAB
+                    binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
                     binding.orderDetails.up(requireActivity())
                     showFabOrderDetails()
                 }

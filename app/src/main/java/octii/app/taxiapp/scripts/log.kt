@@ -19,6 +19,7 @@ import java.io.FileOutputStream
 import java.lang.Exception
 import java.nio.file.Files
 import java.util.*
+import kotlin.concurrent.thread
 
 const val PROJECT_IDENTIFIER = "IOOOJIK"
 const val SERVICE_IDENTIFIER = "IOOOJIK SERVICE"
@@ -45,31 +46,33 @@ fun logExeption(message: Any) {
 }
 
 fun sendLogs(context : Context){
-    try {
-        HttpHelper.doRetrofit()
-        val fileName = "${UserModel.mUuid}_${Date().toString().replace(" ", "-")}.log"
-        val file = File(context.getExternalFilesDir(null), fileName)
-        file.createNewFile()
-        file.writeBytes(LogSender().getLogs().toByteArray())
-        logError(LogSender().getLogs().length)
-        val requestFile: RequestBody =
-            file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+    thread {
+        try {
+            HttpHelper.doRetrofit()
+            val fileName = "${UserModel.mUuid}_${Date().toString().replace(" ", "-")}.log"
+            val file = File(context.getExternalFilesDir(null), fileName)
+            file.createNewFile()
+            file.writeBytes(LogSender().getLogs().toByteArray())
+            logError(LogSender().getLogs().length)
+            val requestFile: RequestBody =
+                file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-        val body: MultipartBody.Part =
-            MultipartBody.Part.createFormData("file", fileName, requestFile)
+            val body: MultipartBody.Part =
+                MultipartBody.Part.createFormData("file", fileName, requestFile)
 
-        HttpHelper.LOG_API.sendLogs(body, UserModel.mUuid).enqueue(object : Callback<LogModel>{
-            override fun onResponse(call: Call<LogModel>, response: Response<LogModel>) {
-                if (response.isSuccessful) showSnackbar(context, context.resources.getString(R.string.send))
-                else showSnackbar(context, context.resources.getString(R.string.error))
-            }
+            HttpHelper.LOG_API.sendLogs(body, UserModel.mUuid).enqueue(object : Callback<LogModel>{
+                override fun onResponse(call: Call<LogModel>, response: Response<LogModel>) {
+                    if (response.isSuccessful) showSnackbar(context, context.resources.getString(R.string.send))
+                    else showSnackbar(context, context.resources.getString(R.string.error))
+                }
 
-            override fun onFailure(call: Call<LogModel>, t: Throwable) {
-                showSnackbar(context, context.resources.getString(R.string.error))
-            }
-        })
-    }catch (e : Exception){
-        e.printStackTrace()
-        showSnackbar(context, context.resources.getString(R.string.error))
+                override fun onFailure(call: Call<LogModel>, t: Throwable) {
+                    showSnackbar(context, context.resources.getString(R.string.error))
+                }
+            })
+        }catch (e : Exception){
+            e.printStackTrace()
+            showSnackbar(context, context.resources.getString(R.string.error))
+        }
     }
 }

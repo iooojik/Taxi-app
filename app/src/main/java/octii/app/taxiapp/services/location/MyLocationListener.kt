@@ -29,8 +29,7 @@ class MyLocationListener : LocationListener {
 
         prevLocation = loc
         try {
-            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude,
-                longitude = longitude))
+            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
         } catch (e: Exception) {
             logError(e)
             e.printStackTrace()
@@ -59,8 +58,8 @@ class MyLocationListener : LocationListener {
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val locationListener: LocationListener = MyLocationListener()
-            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude,
-                longitude = longitude))
+            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
+
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 10000, 10f,

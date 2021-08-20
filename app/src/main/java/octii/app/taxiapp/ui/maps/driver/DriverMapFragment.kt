@@ -65,22 +65,23 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     private var isMoved = false
     private var marker: Marker? = null
     private var cameraMoved = false
+    private lateinit var driverOrderBottomSheet: DriverOrderBottomSheet
 
     private var orderStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
                 when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
-
                     StaticOrders.ORDER_STATUS_REQUEST -> {
                         logInfo("order status ${StaticOrders.ORDER_STATUS_REQUEST} \n ordered: $ordered")
                         if (ordered) {
                             ordered = false
-                            DriverAcceptOrderBottomSheet(requireContext(),
-                                requireActivity(), OrdersModel()).show()
+                            driverOrderBottomSheet = DriverOrderBottomSheet(requireContext(), requireActivity(), OrdersModel())
+                            driverOrderBottomSheet.show()
                         }
                     }
                     StaticOrders.ORDER_STATUS_ACCEPTED -> {
                         logInfo("order status ${StaticOrders.ORDER_STATUS_ACCEPTED}")
+                        driverOrderBottomSheet.dismiss()
                         setOrderDetails()
                     }
                     StaticOrders.ORDER_STATUS_FINISHED -> {
@@ -100,6 +101,12 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
                             }
                         }
                         googleMap?.clear()
+                    }
+
+                    StaticOrders.ORDER_STATUS_REJECTED -> {
+                        ordered = true
+                        logInfo("order status ${StaticOrders.ORDER_STATUS_REJECTED}")
+                        driverOrderBottomSheet.dismiss()
                     }
                 }
             }
@@ -142,6 +149,7 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     ): View {
         logInfo("onCreateView ${this.javaClass.name}")
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
+        driverOrderBottomSheet = DriverOrderBottomSheet(requireContext(), requireActivity(), OrdersModel())
         setListeners()
         checkUserType()
         //blockGoBack(requireActivity(), this)

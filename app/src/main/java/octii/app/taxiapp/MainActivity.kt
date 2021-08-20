@@ -19,6 +19,7 @@ import octii.app.taxiapp.locale.Application
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.ui.utils.AdHelper
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.web.SocketHelper
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                 val message = intent.getStringExtra(Static.SNACKBAR_MESSAGE)
                 val length = intent.getIntExtra(Static.SNACKBAR_MESSAGE_LENGTH, -1)
                 if (!message?.trim().isNullOrEmpty())
-                    Snackbar.make(findViewById(R.id.drawer), message!!, length).show()
+                    runOnUiThread {Snackbar.make(findViewById(R.id.drawer), message!!, length).show()}
             }
         }
     }
@@ -72,8 +73,7 @@ class MainActivity : AppCompatActivity() {
         val dialogBinding = DialogConnectionLostBinding.inflate(layoutInflater)
         dialog.setView(dialogBinding.root)
         dialogBinding.button.setOnClickListener {
-            SocketHelper.connect()
-            SocketHelper.mStompClient.connect()
+            this.recreate()
         }
         /*
         dialog.setPositiveButton(resources.getString(R.string.try_to_connect)) { _, _ ->

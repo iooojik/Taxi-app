@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import octii.app.taxiapp.R
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.locale.LocaleUtils
 import octii.app.taxiapp.models.SpeakingLanguagesModel
 import octii.app.taxiapp.models.files.FileApi
@@ -31,6 +32,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.log
+import androidx.core.content.ContextCompat.startActivity
+
+
+
 
 
 interface FragmentHelper {
@@ -138,16 +143,20 @@ interface FragmentHelper {
     }
 
     fun callViber(phone : String, context: Context){
-        try {
-            val uri: Uri = Uri.parse("tel:" + Uri.encode(phone))
-            val intent = Intent("android.intent.action.VIEW")
-            intent.setClassName("com.viber.voip", "com.viber.voip.WelcomeActivity")
-            intent.data = uri
-            context.startActivity(intent)
-        } catch (e : Exception){
-            showSnackbar(context, context.resources.getString(R.string.error))
+        if (isInstalled(Static.VIBER_PACKAGE_NAME, context.packageManager)) {
+            try {
+                val uri: Uri = Uri.parse("tel:" + Uri.encode(phone))
+                val intent = Intent("android.intent.action.VIEW")
+                intent.setClassName("com.viber.voip", "com.viber.voip.WelcomeActivity")
+                intent.data = uri
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                showSnackbar(context, context.resources.getString(R.string.error))
+            }
+        } else {
+            context.startActivity(Intent(Intent.ACTION_VIEW,
+                Uri.parse("market://details?id=${Static.VIBER_PACKAGE_NAME}")))
         }
-
     }
 
     fun getZoomLevel(km: Float): Float {

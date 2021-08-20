@@ -59,18 +59,7 @@ class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, 
     }
 
     private fun setMessengersInfo() {
-        if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp) {
-            binding.messengersInfo.text =
-                requireActivity().resources.getString(R.string.user_available_in_viber_and_whatsapp)
-            isViber = true
-            isWhatsApp = true
-        } else if (OrdersModel.mCustomer.isWhatsapp) {
-            binding.messengersInfo.text =
-                requireActivity().resources.getString(R.string.user_available_in_whatsapp)
-            isWhatsApp = true
-        } else if (OrdersModel.mCustomer.isViber) {
-            binding.messengersInfo.text =
-                requireActivity().resources.getString(R.string.user_available_in_viber)
+        if (OrdersModel.mCustomer.isViber) {
             isViber = true
         }
     }
@@ -83,7 +72,7 @@ class ClientDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener, 
                 if (isWhatsApp && isViber) {
                     OpenMessengerBottomSheet(requireContext(), requireActivity(), OrdersModel.mCustomer.phone).show()
                 } else if (isViber) goToApplication("com.viber.voip", requireActivity())
-                else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
+                //else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
                 //else if (isWhatsApp) callToWhatsApp(binding.customerPhone.text.toString(), requireContext(), requireActivity())
                 else {
                     callToCustomer(binding.customerPhone.text.toString(), requireActivity())

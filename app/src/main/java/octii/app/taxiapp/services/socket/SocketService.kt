@@ -111,6 +111,8 @@ class SocketService : Service() {
                         if (responseModel.order != null) {
                             requests.orderRequests.getOrderModel(responseModel.order!!, false)
                         }
+                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_REJECTED)
+                        sendBroadcast(orderIntent)
                     }
 
                     MessageType.ORDER_FINISHED -> {
@@ -136,8 +138,7 @@ class SocketService : Service() {
                                 StaticOrders.SHARED_PREFERENCES_ORDER_IS_WAITING,
                                 false)
                         }
-                        orderIntent.putExtra(StaticOrders.ORDER_STATUS,
-                            StaticOrders.ORDER_STATUS_FINISHED)
+                        orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_FINISHED)
                         sendBroadcast(orderIntent)
                     }
 

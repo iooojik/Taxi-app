@@ -23,7 +23,6 @@ import octii.app.taxiapp.ui.maps.OpenMessengerBottomSheet
 class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
 
     lateinit var binding: FragmentDriverDetailsBinding
-    private var isWhatsApp = false
     private var isViber = false
 
 
@@ -63,18 +62,7 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
     }
 
     private fun setMessengersInfo() {
-        if (OrdersModel.mCustomer.isViber && OrdersModel.mCustomer.isWhatsapp) {
-            binding.messengersInfo.text =
-                requireActivity().resources.getString(R.string.user_available_in_viber_and_whatsapp)
-            isViber = true
-            isWhatsApp = true
-        } else if (OrdersModel.mCustomer.isWhatsapp) {
-            binding.messengersInfo.text =
-                requireActivity().resources.getString(R.string.user_available_in_whatsapp)
-            isWhatsApp = true
-        } else if (OrdersModel.mCustomer.isViber) {
-            binding.messengersInfo.text =
-                requireActivity().resources.getString(R.string.user_available_in_viber)
+        if (OrdersModel.mCustomer.isViber) {
             isViber = true
         }
     }
@@ -99,13 +87,8 @@ class DriverDetailsFragment : Fragment(), FragmentHelper, View.OnClickListener {
         when (v!!.id) {
             R.id.call_to_driver -> {
                 copyToClipBoard(binding.driverPhone.text.toString())
-                if (isWhatsApp && isViber) {
-                    OpenMessengerBottomSheet(requireContext(), requireActivity(), OrdersModel.mDriver.phone).show()
-                } else if (isViber) callViber(OrdersModel.mDriver.phone, requireContext())
-                else if (isWhatsApp) goToApplication("com.whatsapp", requireActivity())
-                else {
-                    callToCustomer(binding.driverPhone.text.toString())
-                }
+                if (isViber) callViber(OrdersModel.mDriver.phone, requireContext())
+                else callToCustomer(binding.driverPhone.text.toString())
             }
             R.id.show_photos -> {
                 BottomSheetShowPhotos(requireContext(),
