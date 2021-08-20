@@ -17,6 +17,7 @@ import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.constants.sockets.MessageType
 import octii.app.taxiapp.constants.sockets.TaximeterType
+import octii.app.taxiapp.models.coordinates.CoordinatesModel
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
@@ -117,7 +118,8 @@ class SocketService : Service() {
 
                     MessageType.ORDER_FINISHED -> {
                         logInfo("order finished")
-
+                        SocketHelper.updateCoordinates(CoordinatesModel(longitude = MyLocationListener.longitude, latitude = MyLocationListener.latitude))
+                        logInfo("${MyLocationListener.longitude} ${MyLocationListener.latitude}")
                         OrdersModel.isOrdered = false
                         OrdersModel.isAccepted = false
                         if (responseModel.order != null) {

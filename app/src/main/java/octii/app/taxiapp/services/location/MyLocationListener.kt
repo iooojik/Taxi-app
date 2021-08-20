@@ -58,11 +58,10 @@ class MyLocationListener : LocationListener {
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val locationListener: LocationListener = MyLocationListener()
-            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
 
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                10000, 10f,
+                1000, 1f,
                 locationListener
             ) // здесь можно указать другие более подходящие вам параметры
 
@@ -71,6 +70,7 @@ class MyLocationListener : LocationListener {
                 longitude = imHere?.longitude!!
                 latitude = imHere?.latitude!!
             }
+            SocketHelper.updateCoordinates(CoordinatesModel(latitude = latitude, longitude = longitude))
         }
     }
 

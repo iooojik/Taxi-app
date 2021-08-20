@@ -18,6 +18,7 @@ import octii.app.taxiapp.databinding.FragmentClientTaximeterDetailsBinding
 import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
 
@@ -28,6 +29,8 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 
     private val taximeterReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
+            if (binding != null && binding.finishOrder.visibility == View.GONE && OrdersModel.isAccepted)
+                binding.finishOrder.visibility = View.VISIBLE
             val time = intent.getLongExtra(StaticTaximeter.TAXIMETER_BUNDLE_TIME, 0L)
             val waitingTime =
                 intent.getLongExtra(StaticTaximeter.TAXIMETER_BUNDLE_WAINTING_TIME, 0L)
@@ -97,13 +100,16 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
         super.onResume()
         requireActivity().registerReceiver(taximeterReceiver,
             IntentFilter(StaticTaximeter.TAXIMETER_INTENT_FILTER))
-        setUiInfo()
         setTaximeter(getOrderTime(), getWaitingTime())
     }
 
     override fun onPause() {
         super.onPause()
-        requireActivity().unregisterReceiver(taximeterReceiver)
+        try {
+            requireActivity().unregisterReceiver(taximeterReceiver)
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun getOrderTime(): Long =
@@ -121,9 +127,9 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
             0L)!!
 
     private fun setUiInfo() {
-        val dealPrice =
-            MyPreferences.taximeterPreferences?.getInt(StaticOrders.SHARED_PREFERENCES_DEAL_PRICE,
-                -1)
+        logInfo(OrdersModel.isAccepted)
+        logInfo(OrdersModel.isOrdered)
+        if (OrdersModel.isAccepted) binding.finishOrder.visibility = View.VISIBLE
     }
 
     override fun onClick(v: View?) {
