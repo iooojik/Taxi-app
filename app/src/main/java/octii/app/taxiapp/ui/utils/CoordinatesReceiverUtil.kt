@@ -12,13 +12,14 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.ui.maps.client.ClientMapFragment
+import octii.app.taxiapp.ui.maps.client.recievers.ClientCoordinatesReciever
 import octii.app.taxiapp.ui.maps.driver.DriverMapFragment
+import octii.app.taxiapp.ui.maps.driver.recivers.DriverCoordinatesReciever
 
 interface CoordinatesReceiverUtil : FragmentHelper {
 	fun updateModelOnMap(
 		accountType: String, googleMap: GoogleMap?, activity: Activity, fragmentContext: Context,
-		clientMapFragment: ClientMapFragment? = null, driverMapFragment: DriverMapFragment? = null,
-	) {
+		clientMapFragment: ClientMapFragment? = null, driverMapFragment: DriverMapFragment? = null,) {
 		if (RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
 			logInfo("${googleMap != null} ${accountType == Static.DRIVER_TYPE} ")
 			if (googleMap != null) {
@@ -37,17 +38,14 @@ interface CoordinatesReceiverUtil : FragmentHelper {
 	
 	private fun drawMarker(
 		googleMap: GoogleMap, name: String, bitmap: BitmapDescriptor?,
-		clientMapFragment: ClientMapFragment? = null, driverMapFragment: DriverMapFragment? = null,
-	) {
+		clientMapFragment: ClientMapFragment? = null, driverMapFragment: DriverMapFragment? = null,) {
 		val latLng = LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
 		googleMap.clear()
 		googleMap.addMarker(MarkerOptions().position(latLng).title(name).icon(bitmap))
-		googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
 		
 		if (clientMapFragment != null && !clientMapFragment.cameraisMoved)
 			clientMapFragment.cameraisMoved = true
 		else if (driverMapFragment != null && !driverMapFragment.cameraisMoved)
 			driverMapFragment.cameraisMoved = true
-		
 	}
 }

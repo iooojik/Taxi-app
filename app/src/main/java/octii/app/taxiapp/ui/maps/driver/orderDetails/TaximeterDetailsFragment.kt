@@ -17,6 +17,7 @@ import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.databinding.FragmentDriverTaximeterDetailsBinding
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.scripts.MyPreferences
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.location.MyLocationListener
 
 
@@ -46,7 +47,7 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 		
 		val totalPriceWaiting = DriverModel.mPrices.priceWaitingMin * waitingTime / 60
 		
-		binding.taximeter.distance.text = distance.toString()
+		binding.taximeter.distance.text = number2digits(distance)
 		binding.taximeter.pricePerKm.text = number2digits(totalPricePerKm)
 		binding.taximeter.pricePerMin.text = number2digits(totalPricePerMin)
 		binding.taximeter.priceWaiting.text = number2digits(totalPriceWaiting)
@@ -68,6 +69,7 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 	
 	override fun onResume() {
 		super.onResume()
+		logInfo("on resume ${this.javaClass.name}")
 		requireActivity().registerReceiver(taximeterReceiver,
 			IntentFilter(StaticTaximeter.TAXIMETER_INTENT_FILTER))
 		setUiInfo()
@@ -77,7 +79,12 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 	
 	override fun onPause() {
 		super.onPause()
-		requireActivity().unregisterReceiver(taximeterReceiver)
+		logInfo("on pause ${this.javaClass.name}")
+		try {
+			requireActivity().unregisterReceiver(taximeterReceiver)
+		} catch (e : Exception){
+			e.printStackTrace()
+		}
 	}
 	
 	private fun setListeners() {

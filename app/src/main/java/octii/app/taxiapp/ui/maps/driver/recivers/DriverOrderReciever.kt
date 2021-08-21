@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.google.android.gms.maps.GoogleMap
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.constants.StaticOrders
@@ -18,11 +17,10 @@ import octii.app.taxiapp.ui.maps.driver.DriverOrderBottomSheet
 import octii.app.taxiapp.ui.utils.FragmentHelper
 
 class DriverOrderReciever(
-    private val binding: FragmentDriverMapBinding,
-    private val activity: Activity,
-    private val googleMap: GoogleMap?,
-    private val driverMapFragment: DriverMapFragment,
-    private val fragmentContext: Context,
+	private val binding: FragmentDriverMapBinding,
+	private val activity: Activity,
+	private val driverMapFragment: DriverMapFragment,
+	private val fragmentContext: Context,
 ) : BroadcastReceiver(), FragmentHelper {
 	
 	private lateinit var driverOrderBottomSheet: DriverOrderBottomSheet
@@ -72,7 +70,7 @@ class DriverOrderReciever(
 							binding.orderDetails.up(activity)
 						}
 					}
-					googleMap?.clear()
+					driverMapFragment.googleMap?.clear()
 				}
 				
 				StaticOrders.ORDER_STATUS_REJECTED -> {
@@ -84,18 +82,18 @@ class DriverOrderReciever(
 		}
 	}
 	
-	private fun hideBottomSheet(){
+	private fun hideBottomSheet() {
 		try {
 			driverOrderBottomSheet.hide()
-		} catch (e : Exception){
+		} catch (e: Exception) {
 			logInfo(e.stackTrace)
 		}
 	}
 	
-	private fun showBottomSheet(){
+	private fun showBottomSheet() {
 		try {
 			driverOrderBottomSheet.show()
-		} catch (e : Exception){
+		} catch (e: Exception) {
 			logInfo(e.stackTrace)
 		}
 	}

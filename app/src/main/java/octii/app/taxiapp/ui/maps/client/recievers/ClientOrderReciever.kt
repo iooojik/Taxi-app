@@ -21,7 +21,6 @@ import octii.app.taxiapp.ui.maps.client.ClientOrderBottomSheet
 class ClientOrderReciever(
 	private val binding: FragmentClientMapBinding,
 	private val activity: Activity,
-	private val googleMap: GoogleMap?,
 	private val clientMapFragment: ClientMapFragment,
 	private val fragmentContext: Context,
 ) : BroadcastReceiver() {
@@ -64,14 +63,14 @@ class ClientOrderReciever(
 							binding.orderDetails.up(activity)
 						}
 					}
-					googleMap?.clear()
+					clientMapFragment.googleMap?.clear()
 				}
 				StaticOrders.ORDER_STATUS_NO_ORDERS -> {
 					binding.fabSettings.show()
 					binding.callTaxi.show()
 					//binding.orderDetails.down(requireActivity())
 					binding.clientMapprogressBar.visibility = View.INVISIBLE
-					googleMap?.clear()
+					clientMapFragment.googleMap?.clear()
 					showSnackbar(fragmentContext,
 						activity.resources.getString(R.string.all_drivers_are_busy))
 				}

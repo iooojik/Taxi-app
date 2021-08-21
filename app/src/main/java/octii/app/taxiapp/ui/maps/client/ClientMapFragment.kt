@@ -97,7 +97,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, MapUtils {
 		checkClientType(requireActivity())
 		//BroadcastReceiver-ы для прослушивания состояния заказа
 		clientOrderReciever =
-			ClientOrderReciever(binding, requireActivity(), googleMap, this, requireContext())
+			ClientOrderReciever(binding, requireActivity(), this, requireContext())
 		clientCoordinatesReciever =
 			ClientCoordinatesReciever(requireActivity(), this, requireContext())
 		//регистрируем слушатели сообщений заказа и координат

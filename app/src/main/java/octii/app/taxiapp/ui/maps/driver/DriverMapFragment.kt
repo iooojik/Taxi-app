@@ -22,6 +22,7 @@ import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.down
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.scripts.up
+import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.ui.maps.driver.recivers.DriverCoordinatesReciever
 import octii.app.taxiapp.ui.maps.driver.recivers.DriverOrderReciever
 import octii.app.taxiapp.ui.utils.MapUtils
@@ -90,7 +91,7 @@ class DriverMapFragment : Fragment(), MapUtils {
 		checkDriverType(requireActivity())
 		//BroadcastReceiver-ы для прослушивания состояния заказа
 		driverOrderReciever =
-			DriverOrderReciever(binding, requireActivity(), googleMap, this, requireContext())
+			DriverOrderReciever(binding, requireActivity(), this, requireContext())
 		driverCoordinatesReciever = DriverCoordinatesReciever(requireActivity(),
 			this,
 			requireContext())

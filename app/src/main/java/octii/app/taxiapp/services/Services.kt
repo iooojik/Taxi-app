@@ -22,6 +22,13 @@ class Services(
 		}
 	}
 	
+	fun restart(){
+		servicesList.forEach {
+			activity?.stopService(Intent(activity, it.java))
+			activity?.startService(Intent(activity, it.java))
+		}
+	}
+	
 	private fun startService(serviceName: KClass<out Service>) {
 		//создание намерения, которое будет запущено
 		val intentService = Intent(activity, serviceName.java)

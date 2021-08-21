@@ -7,6 +7,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import octii.app.taxiapp.R
 import octii.app.taxiapp.databinding.BottomSheetAcceptOrderClientBinding
 import octii.app.taxiapp.models.orders.OrdersModel
+import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.ui.maps.client.orderDetails.BottomSheetShowPhotos
 import octii.app.taxiapp.ui.utils.RequestOrderUtils
 
@@ -28,6 +29,7 @@ class ClientOrderBottomSheet(
 	
 	
 	override fun setInformation() {
+		MyPreferences.clearTaximeter()
 		binding.clientInfo.driverName.text = OrdersModel.mDriver.userName
 		binding.clientInfo.driverPhone.text = OrdersModel.mDriver.phone
 		binding.clientInfo.callToDriver.setOnClickListener(this)

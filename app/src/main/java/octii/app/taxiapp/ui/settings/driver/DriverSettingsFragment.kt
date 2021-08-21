@@ -92,6 +92,11 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 		//убираем или показываем кнопку для изменения типа аккаунта
 		if (OrdersModel.mIsAccepted) {
 			binding.becomeClient.isEnabled = false
+			binding.priceWaiting.isEnabled = false
+			binding.pricePerMin.isEnabled = false
+			binding.pricePerKm.isEnabled = false
+			binding.maxDistance.isEnabled = false
+			binding.addPhotos.isEnabled = false
 			binding.becomeClient.setBackgroundColor(ContextCompat.getColor(requireContext(),
 				R.color.colorGrey))
 			binding.becomeClient.setOnClickListener {

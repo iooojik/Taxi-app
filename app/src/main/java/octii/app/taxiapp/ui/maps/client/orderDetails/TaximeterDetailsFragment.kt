@@ -19,6 +19,7 @@ import octii.app.taxiapp.databinding.FragmentClientTaximeterDetailsBinding
 import octii.app.taxiapp.models.TaximeterUpdate
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.web.SocketHelper
 
@@ -101,13 +102,14 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 	
 	override fun onResume() {
 		super.onResume()
-		requireActivity().registerReceiver(taximeterReceiver,
-			IntentFilter(StaticTaximeter.TAXIMETER_INTENT_FILTER))
+		logInfo("on resume ${this.javaClass.name}")
+		requireActivity().registerReceiver(taximeterReceiver, IntentFilter(StaticTaximeter.TAXIMETER_INTENT_FILTER))
 		setTaximeter(getOrderTime(), getWaitingTime())
 	}
 	
 	override fun onPause() {
 		super.onPause()
+		logInfo("on pause ${this.javaClass.name}")
 		try {
 			requireActivity().unregisterReceiver(taximeterReceiver)
 		} catch (e: Exception) {

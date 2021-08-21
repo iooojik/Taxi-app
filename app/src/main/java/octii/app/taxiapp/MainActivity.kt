@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity(), SharedPrefsUtil {
 		super.onResumeFragments()
 		logInfo("onResumeFragments")
 		if (getToken()?.trim()?.isNotEmpty() == true) {
-			Services(this).start()
+			Services(this).restart()
 		}
 	}
 	
