@@ -38,7 +38,6 @@ class SocketHelper {
 		
 		fun connect() {
 			mStompClient.withClientHeartbeat(3000).withServerHeartbeat(3000)
-			mStompClient.connect()
 			resetSubscriptions()
 			
 			val disposableLifecycle: Disposable? =
@@ -60,7 +59,6 @@ class SocketHelper {
 									logInfo("Stomp connection closed")
 									activity?.sendBroadcast(Intent(Static.CONNECTION_INTENT_FILTER)
 										.putExtra(Static.CONNECTION_STATUS, Static.CONNECTION_LOST))
-									connect()
 								}
 								
 								LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> logError("Stomp failed server heartbeat")
@@ -70,8 +68,10 @@ class SocketHelper {
 					}, { throwable ->
 						logError("STOMP REQUEST ERROR :$throwable")
 						throwable.printStackTrace()
-						connect()
+						activity?.sendBroadcast(Intent(Static.CONNECTION_INTENT_FILTER)
+							.putExtra(Static.CONNECTION_STATUS, Static.CONNECTION_LOST))
 					})
+			//mStompClient.connect()
 			logError("isConnected: ${mStompClient.isConnected}")
 			compositeDisposable.add(disposableLifecycle!!)
 		}

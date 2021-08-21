@@ -61,7 +61,7 @@ class MyLocationListener : LocationListener {
 			
 			locationManager.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
-				1000, 1f,
+				5000, 5f,
 				locationListener
 			) // здесь можно указать другие более подходящие вам параметры
 			

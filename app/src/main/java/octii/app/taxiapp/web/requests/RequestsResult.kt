@@ -5,7 +5,6 @@ import androidx.navigation.findNavController
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.scripts.logError
-import octii.app.taxiapp.services.Services
 
 class RequestsResult(
 	var success: Boolean,
@@ -15,7 +14,6 @@ class RequestsResult(
 	override fun run() {
 		if (success) {
 			getStartLocation()
-			Services(activity, Static.MAIN_SERVICES).start()
 		} else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
 	}
 	
