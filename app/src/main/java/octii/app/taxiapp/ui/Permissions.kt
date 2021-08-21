@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 
-class Permissions(val context: Context, val activity: Activity) {
+class Permissions(val context: Context, val activity: Activity? = null) {
 	
 	var permissionsGranted = false
 	
@@ -23,7 +23,7 @@ class Permissions(val context: Context, val activity: Activity) {
 			) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
 				context,
 				Manifest.permission.WRITE_EXTERNAL_STORAGE
-			) != PackageManager.PERMISSION_GRANTED
+			) != PackageManager.PERMISSION_GRANTED && activity != null
 		) {
 			ActivityCompat.requestPermissions(
 				activity,

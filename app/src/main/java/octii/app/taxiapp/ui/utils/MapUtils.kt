@@ -16,10 +16,7 @@ import octii.app.taxiapp.databinding.FragmentDriverMapBinding
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
-import octii.app.taxiapp.scripts.MyPreferences
-import octii.app.taxiapp.scripts.down
-import octii.app.taxiapp.scripts.showSnackbar
-import octii.app.taxiapp.scripts.up
+import octii.app.taxiapp.scripts.*
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.Permissions
 import octii.app.taxiapp.ui.maps.client.ClientMapFragment
@@ -142,6 +139,7 @@ interface MapUtils : View.OnClickListener, FragmentHelper {
 				) {
 					//координаты текущего пользователя
 					val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
+					logInfo(lt)
 					activity.runOnUiThread {
 						//перемещаем камеру
 						googleMap.moveCamera(CameraUpdateFactory.newLatLng(lt))

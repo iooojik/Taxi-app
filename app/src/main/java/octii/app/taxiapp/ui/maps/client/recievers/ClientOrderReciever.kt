@@ -39,6 +39,7 @@ class ClientOrderReciever(
 					}
 				}
 				StaticOrders.ORDER_STATUS_ACCEPTED -> {
+					binding.fabSettings.show()
 					clientMapFragment.setOrderDetails()
 					if (!OrdersModel.mIsAccepted && !OrdersModel.isOrdered && OrdersModel.mId > 0) {
 						showDialog()

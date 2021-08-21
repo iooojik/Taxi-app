@@ -90,7 +90,7 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 		binding.driverPhone.text = UserModel.uPhoneNumber
 		
 		//убираем или показываем кнопку для изменения типа аккаунта
-		if (OrdersModel.mIsAccepted) {
+		if (OrdersModel.mIsAccepted && OrdersModel.mId > 0 && !OrdersModel.mIsFinished) {
 			binding.becomeClient.isEnabled = false
 			binding.priceWaiting.isEnabled = false
 			binding.pricePerMin.isEnabled = false
