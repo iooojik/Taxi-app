@@ -18,7 +18,8 @@
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/montserrat_medium</item>
         <item name="textInputStyle">@style/custom_text_input_layout</item>
-        <item name="materialButtonStyle">@style/custom_outlined_button</item>
+        <item name="materialButtonStyle">@style/custom_button</item>
+        <item name="materialButtonOutlinedStyle">@style/custom_outlined_button</item>
         <item name="floatingActionButtonStyle">@style/floatingActionButtonStyle</item>
         <item name="colorControlNormal">@color/dark_blue</item>
     </style>
@@ -35,6 +36,16 @@
     </style>
 
     <style name="custom_outlined_button" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_marginTop">@dimen/fab_margin</item>
+        <item name="android:layout_marginStart">@dimen/fab_margin</item>
+        <item name="android:layout_marginEnd">@dimen/fab_margin</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="cornerRadius">@dimen/buttons_corner_radius</item>
+        <item name="android:padding">@dimen/buttons_text_padding</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+    </style>
+
+    <style name="custom_button" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:layout_margin">@dimen/fab_margin</item>
         <item name="strokeWidth">@dimen/buttons_border_width</item>
         <item name="strokeColor">@color/white</item>

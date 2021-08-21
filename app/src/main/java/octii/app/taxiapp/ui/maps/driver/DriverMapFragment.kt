@@ -1,42 +1,34 @@
 package octii.app.taxiapp.ui.maps.driver
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
-import octii.app.taxiapp.constants.StaticCoordinates
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverMapBinding
-import octii.app.taxiapp.models.coordinates.RemoteCoordinates
-import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.scripts.*
-import octii.app.taxiapp.services.location.MyLocationListener
-import octii.app.taxiapp.ui.utils.FragmentHelper
-import octii.app.taxiapp.ui.Permissions
-import kotlin.concurrent.thread
+import octii.app.taxiapp.models.user.UserModel
+import octii.app.taxiapp.scripts.down
+import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.up
+import octii.app.taxiapp.ui.maps.driver.recivers.DriverCoordinatesReciever
+import octii.app.taxiapp.ui.maps.driver.recivers.DriverOrderReciever
+import octii.app.taxiapp.ui.utils.MapUtils
+import octii.app.taxiapp.web.requests.Requests
 
 
-class DriverMapFragment : Fragment(), View.OnClickListener,
-    FragmentHelper {
+class DriverMapFragment : Fragment(), MapUtils {
 
     companion object {
         @JvmStatic
@@ -56,91 +48,17 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
          */
         googleMap.isMyLocationEnabled = true
         this.googleMap = googleMap
+        //перемещаем камеру на пользователя
+        locateMe(activity = requireActivity(), context = requireContext(), driverMapFragment = this, clientMapFragment = null)
         logInfo("google map ready callback")
     }
 
     private lateinit var binding: FragmentDriverMapBinding
-    private lateinit var permissions: Permissions
-    private var googleMap: GoogleMap? = null
-    private var isMoved = false
-    private var marker: Marker? = null
-    private var cameraMoved = false
-    private lateinit var driverOrderBottomSheet: DriverOrderBottomSheet
-
-    private var orderStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null) {
-                when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
-                    StaticOrders.ORDER_STATUS_REQUEST -> {
-                        logInfo("order status ${StaticOrders.ORDER_STATUS_REQUEST} \n ordered: $ordered")
-                        if (ordered) {
-                            ordered = false
-                            driverOrderBottomSheet = DriverOrderBottomSheet(requireContext(), requireActivity(), OrdersModel())
-                            driverOrderBottomSheet.show()
-                        }
-                    }
-                    StaticOrders.ORDER_STATUS_ACCEPTED -> {
-                        logInfo("order status ${StaticOrders.ORDER_STATUS_ACCEPTED}")
-                        driverOrderBottomSheet.dismiss()
-                        setOrderDetails()
-                    }
-                    StaticOrders.ORDER_STATUS_FINISHED -> {
-                        logInfo("order status ${StaticOrders.ORDER_STATUS_FINISHED}")
-                        ordered = true
-                        binding.fabSettings.show()
-                        binding.fabShowOrderDetails.setOnClickListener {
-                            if (it.tag == Static.EXPAND_MORE_FAB) {
-                                synchronized(this) {
-                                    binding.orderDetails.down(requireActivity())
-                                    hideFabOrderDetails(true)
-                                }
-                            } else {
-                                binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-                                binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
-                                binding.orderDetails.up(requireActivity())
-                            }
-                        }
-                        googleMap?.clear()
-                    }
-
-                    StaticOrders.ORDER_STATUS_REJECTED -> {
-                        ordered = true
-                        logInfo("order status ${StaticOrders.ORDER_STATUS_REJECTED}")
-                        driverOrderBottomSheet.dismiss()
-                    }
-                }
-            }
-        }
-    }
-
-    private var coordinatesStatusReciever: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null) {
-                when (intent.getStringExtra(StaticCoordinates.COORDINATES_STATUS_UPDATE)) {
-                    StaticCoordinates.COORDINATES_STATUS_UPDATE_ -> {
-                        logInfo("order status ${StaticCoordinates.COORDINATES_STATUS_UPDATE_}")
-                        logInfo("${RemoteCoordinates.remoteLat} ${RemoteCoordinates.remoteLon}")
-
-                        if (RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
-                            if (googleMap != null) {
-                                val latLng =
-                                    LatLng(RemoteCoordinates.remoteLat, RemoteCoordinates.remoteLon)
-                                if (marker != null) marker!!.remove()
-                                marker = googleMap!!.addMarker(MarkerOptions()
-                                    .position(latLng).title(resources.getString(R.string.customer))
-                                    .icon(bitmapFromVector(requireContext(), R.drawable.user)))
-
-                                if (!isMoved) {
-                                    googleMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                                    isMoved = true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    private lateinit var driverOrderReciever: DriverOrderReciever
+    private lateinit var driverCoordinatesReciever: DriverCoordinatesReciever
+    var googleMap: GoogleMap? = null
+    var cameraisMoved = false
+    var marker: Marker? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -149,124 +67,84 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
     ): View {
         logInfo("onCreateView ${this.javaClass.name}")
         binding = FragmentDriverMapBinding.inflate(layoutInflater)
-        driverOrderBottomSheet = DriverOrderBottomSheet(requireContext(), requireActivity(), OrdersModel())
+        //слушатели на кнопки
         setListeners()
-        checkUserType()
-        //blockGoBack(requireActivity(), this)
+        //блокируем кнопку "назад"
+        blockGoBack(requireActivity(), this)
         return binding.root
-    }
-
-    private fun setUi() {
-        thread {
-            while (!cameraMoved) {
-                if (!cameraMoved && googleMap != null &&
-                    MyLocationListener.latitude != 0.0 && MyLocationListener.longitude != 0.0) {
-                    val lt = LatLng(MyLocationListener.latitude, MyLocationListener.longitude)
-                    activity?.runOnUiThread {
-                        googleMap?.moveCamera(CameraUpdateFactory.newLatLng(lt))
-
-                        if (googleMap != null && OrdersModel.isOrdered) {
-                            val latLng =
-                                LatLng(OrdersModel.mCustomer.coordinates!!.latitude,
-                                    OrdersModel.mCustomer.coordinates!!.longitude)
-                            if (marker != null) marker!!.remove()
-                            marker = googleMap!!.addMarker(MarkerOptions()
-                                .position(latLng).title(resources.getString(R.string.customer))
-                                .icon(bitmapFromVector(requireContext(), R.drawable.user)))
-
-                            if (!isMoved) {
-                                googleMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                                isMoved = true
-                            }
-                        }
-                        Log.i(Static.LOG_TAG,"zoom level: ${getZoomLevel(DriverModel.mRideDistance)}")
-                        Log.i(Static.LOG_TAG,"rideDistance: ${DriverModel.mRideDistance}")
-                        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(getZoomLevel(DriverModel.mRideDistance)))
-                    }
-
-                    cameraMoved = true
-                }
-            }
-        }
     }
 
     override fun onResume() {
         super.onResume()
         logInfo("onResume ${this.javaClass.name}")
+        //проверяем, установлен ли viber
+        checkViber(requireContext(), requireActivity())
+        //убираем клавиатуру
+        hideKeyBoard(requireActivity(), requireView())
+        //проверка на наличие заказов
+        Requests().orderRequests.orderCheck(UserModel())
+        //проверяем соответствует ли тип аккаунта типу карты
+        checkDriverType(requireActivity())
+        //BroadcastReceiver-ы для прослушивания состояния заказа
+        driverOrderReciever = DriverOrderReciever(binding, requireActivity(), googleMap, this, requireContext())
+        driverCoordinatesReciever = DriverCoordinatesReciever(requireActivity(),
+            googleMap,
+            this,
+            requireContext())
+        //проверяем действующие заказы
         setOrderDetails()
-        checkPermissions()
-        requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
-        requireActivity().registerReceiver(coordinatesStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
-        setUi()
-
+        //проверяем разрешения
+        checkPermissions(context = requireContext(), activity = requireActivity())
+        //регистрируем слушатели сообщений заказа и координат
+        requireActivity().registerReceiver(driverOrderReciever,
+            IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+        requireActivity().registerReceiver(driverCoordinatesReciever,
+            IntentFilter(StaticOrders.ORDER_STATUS_COORDINATES_STATUS))
+        //пробуем показать карту
         try {
             setMap()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            Snackbar.make(requireView(), resources.getString(R.string.check_permissions), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(requireView(),
+                resources.getString(R.string.check_permissions),
+                Snackbar.LENGTH_SHORT).show()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         logInfo("onDestroy ${this.javaClass.name}")
+        //убираем слушатели сообщений заказа
         try {
-            requireActivity().unregisterReceiver(orderStatusReciever)
-            requireActivity().unregisterReceiver(coordinatesStatusReciever)
+            requireActivity().unregisterReceiver(driverOrderReciever)
+            requireActivity().unregisterReceiver(driverCoordinatesReciever)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun checkUserType() {
-        if (getSavedUserType() == Static.CLIENT_TYPE) findNavController().navigate(R.id.clientMapFragment)
-    }
-
-    private fun getSavedUserType(): String {
-        return if (MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "").isNullOrEmpty()) ""
-        else MyPreferences.userPreferences?.getString(Static.SHARED_PREFERENCES_USER_TYPE, "")!!
-    }
-
-    private fun setOrderDetails() {
-        logInfo("${OrdersModel.isAccepted && OrdersModel.mId > 0} ${OrdersModel.isAccepted} ${OrdersModel.mId > 0}")
-        if (OrdersModel.isAccepted && OrdersModel.mId > 0) {
+    override fun setOrderDetails() {
+        //проверяем действующие заказы
+        logInfo("order id: ${OrdersModel.mId}")
+        //если заказ принят, но не закончен, то показываем меню с таксиметром
+        if (OrdersModel.mIsAccepted && OrdersModel.mId > 0 && !OrdersModel.mIsFinished) {
             binding.fabShowOrderDetails.setOnClickListener(this)
-            showFabOrderDetails()
             binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
             binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
+            showDriverFabOrderDetails(binding, requireActivity())
             binding.orderDetails.up(requireActivity())
-        } else {
-            binding.fabSettings.show()
         }
     }
 
-    private fun showFabOrderDetails() {
-        synchronized(this) {
-            binding.fabShowOrderDetails.show()
-            binding.fabShowOrderDetails.up(requireActivity(), binding.orderDetails)
-        }
-    }
-
-    private fun hideFabOrderDetails(fullHide: Boolean = false) {
-        synchronized(this) {
-            binding.fabShowOrderDetails.down(requireActivity(), false, binding.orderDetails)
-            if (fullHide)
-                binding.fabShowOrderDetails.hide()
-        }
-    }
-
-    private fun setListeners() {
+    override fun setListeners() {
+        //слушатели на кнопки
         binding.fabSettings.setOnClickListener(this)
     }
 
-    private fun setMap() {
+    override fun setMap() {
+        //пробуем показать карту
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-    }
-
-    private fun checkPermissions() {
-        permissions = Permissions(requireContext(), requireActivity())
-        permissions.requestPermissions()
     }
 
     override fun onClick(v: View?) {
@@ -274,19 +152,20 @@ class DriverMapFragment : Fragment(), View.OnClickListener,
             R.id.fab_settings -> {
                 logInfo("go to settings from ${this.javaClass.name}")
                 findNavController().navigate(R.id.driverSettingsFragment)
-                //this.activity?.finish()
             }
             R.id.fab_show_order_details -> {
+                //скрыть меню заказа
                 if (v.tag == Static.EXPAND_MORE_FAB) {
-                    hideFabOrderDetails()
                     binding.orderDetails.down(requireActivity())
                     binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_less_24)
                     binding.fabShowOrderDetails.tag = Static.EXPAND_LESS_FAB
+                    hideDriverFabOrderDetails(binding = binding, activity = requireActivity())
                 } else {
+                    //показать меню заказа
                     binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
                     binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
                     binding.orderDetails.up(requireActivity())
-                    showFabOrderDetails()
+                    showDriverFabOrderDetails(binding = binding, activity = requireActivity())
                 }
             }
         }

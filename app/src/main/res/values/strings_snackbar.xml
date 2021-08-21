@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whatsapp_or_viber_not_chosen">У вас должен быть установлен WhatsApp или Viber</string>
     <string name="viber_not_chosen">У вас должен быть установлен Viber</string>
     <string name="no_phone">Вы указали неверный номер телефона</string>
     <string name="no_name">Вы не указали ваше имя</string>
@@ -10,7 +9,6 @@
     <string name="copied">Скопировано</string>
     <string name="check_permissions">Проверьте разрешения</string>
     <string name="check_photos">Чтобы работать водителем, у вас должны быть загружены все фотографии.</string>
-    <string name="not_installed_whatsapp">У вас не установлен WhatsApp</string>
     <string name="not_installed_viber">У вас не установлен Viber</string>
     <string name="you_cannot_change_type">Нельзя изменить тип аккаунта в процессе поездки</string>
     <string name="send">Отправлено</string>

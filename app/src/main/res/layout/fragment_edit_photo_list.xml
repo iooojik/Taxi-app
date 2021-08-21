@@ -8,9 +8,9 @@
         android:id="@+id/nestedScrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/fab_margin"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/main_layout_margin"
+        android:layout_marginTop="@dimen/main_layout_margin"
+        android:layout_marginEnd="@dimen/main_layout_margin"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,22 +22,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--<TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
-                android:text="@string/only_one_photo_upload"
-                android:textAlignment="center"
-                android:textColor="@color/colorWarning"
-                android:textSize="20sp"
-                android:textStyle="bold" />-->
-
             <LinearLayout
                 android:id="@+id/photos_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -46,8 +35,8 @@
         android:id="@+id/fab_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
         android:contentDescription="@string/back_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -3,6 +3,9 @@
     <string name="russian_language" translatable="false">Русский</string>
     <string name="english_language" translatable="false">English</string>
     <string name="serbian_language" translatable="false">Српски</string>
+    <string name="russian_language_selector" translatable="false">RU 🇷🇺 \t\t\t Русский</string>
+    <string name="english_language_selector" translatable="false">UK 🇬🇧 \t\t\t English</string>
+    <string name="serbian_language_selector" translatable="false">RS 🇷🇸 \t\t\t Српски</string>
     <string name="russian_language_icon" translatable="false">🇷🇺</string>
     <string name="english_language_icon" translatable="false">🇬🇧</string>
     <string name="serbian_language_icon" translatable="false">🇷🇸</string>

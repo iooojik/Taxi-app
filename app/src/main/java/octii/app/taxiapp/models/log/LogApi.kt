@@ -1,6 +1,5 @@
 package octii.app.taxiapp.models.log
 
-import octii.app.taxiapp.models.files.FileModel
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Multipart

@@ -1,4 +1,4 @@
-package octii.app.taxiapp.ui.maps.client.recievers
+package octii.app.taxiapp.ui.maps.driver.recivers
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -9,13 +9,13 @@ import octii.app.taxiapp.constants.StaticCoordinates
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logInfo
-import octii.app.taxiapp.ui.maps.client.ClientMapFragment
+import octii.app.taxiapp.ui.maps.driver.DriverMapFragment
 import octii.app.taxiapp.ui.utils.CoordinatesReceiverUtil
 
-class ClientCoordinatesReciever(
+class DriverCoordinatesReciever(
     private val activity: Activity,
     private val googleMap: GoogleMap?,
-    private val clientMapFragment: ClientMapFragment,
+    private val driverMapFragment: DriverMapFragment,
     private val fragmentContext: Context,
 ) : BroadcastReceiver(), CoordinatesReceiverUtil {
 	
@@ -29,9 +29,10 @@ class ClientCoordinatesReciever(
 						googleMap,
 						activity,
 						fragmentContext,
-						clientMapFragment = clientMapFragment)
+						driverMapFragment = driverMapFragment)
 				}
 			}
 		}
 	}
+	
 }

@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="download_messengers">Чтобы пользоваться нашим приложением вам необходимо иметь установленный Whatsapp или Viber.</string>
-    <string name="to_download_messengers">Нажмите на логотип ниже,         если у вас не установлен один из мессенджеров.</string>
+    <string name="to_download_messengers">Нажмите на логотип ниже, если у вас не установлен Viber.</string>
     <string name="welcome">Добро пожаловать</string>
     <string name="let_us_meet">Давайте познакомимся</string>
     <string name="timer_zero" translatable="false">00</string>
     <string name="speak_on_following_languages">Я говорю на следующих языках:</string>
     <string name="app_language">Язык приложения</string>
-    <string name="taximeter_price" translatable="false">km: %1$s | min: %2$s</string>
-    <string name="taximeter_distance" translatable="false">%1$s km</string>
-
     <string name="avatar_type">Фотография водителя</string>
     <string name="car_type">Фотография машины</string>
     <string name="car_number_type">Фотография номера машины</string>
     <string name="license_type">Фотография лицензии</string>
-    <string name="user_available_in_whatsapp">Пользователь доступен в Whatsapp</string>
     <string name="user_available_in_viber">Пользователь доступен в Viber</string>
     <string name="user_available_in_viber_and_whatsapp">Пользователь доступен в Whatsapp и Viber</string>
     <string name="driver">Водитель</string>
@@ -33,4 +29,6 @@
     <string name="try_to_connect">Повторить попытку подключения</string>
     <string name="only_one_photo_upload">Фотографии можно загрузить только один раз! Пожалуйста, проверяйте их перед загрузкой!</string>
     <string name="not_uploaded_photos">Отсутствует фотография</string>
+    <string name="trip_distance">Расстояние:</string>
+    <string name="trip_time">Время в пути:</string>
 </resources>

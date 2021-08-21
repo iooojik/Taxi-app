@@ -7,7 +7,9 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:paddingStart="@dimen/main_layout_margin"
+    android:paddingEnd="@dimen/main_layout_margin"
+    >
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -36,6 +38,7 @@
                     android:layout_marginTop="16dp"
                     android:contentDescription="@string/avatar_description"
                     app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                    tools:ignore="ImageContrastCheck"
                     tools:src="@tools:sample/avatars" />
 
                 <LinearLayout
@@ -72,52 +75,39 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/i_am_in_whatsapp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/fab_margin"
-                    android:checked="false"
-                    android:text="@string/i_am_in_whatsapp" />
-
-                <CheckBox
-                    android:id="@+id/i_am_in_viber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="@string/i_am_in_viber" />
-            </LinearLayout>
-
             <include
                 android:id="@+id/language_selectors"
                 layout="@layout/language_selectors"
+                android:layout_marginTop="@dimen/fab_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/send_logs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/send_logs" />
 
                 <Button
                     android:id="@+id/become_driver"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="80dp"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_marginEnd="@dimen/fab_margin"
                     android:text="@string/become_driver"
                     android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/send_logs"
+                    style="@style/custom_outlined_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_marginEnd="@dimen/fab_margin"
+                    android:layout_marginBottom="80dp"
+                    android:text="@string/send_logs"
+                    android:textColor="#A1887F" />
 
             </LinearLayout>
 
@@ -128,10 +118,10 @@
         android:id="@+id/fab_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:contentDescription="@string/back_description"
         android:src="@drawable/outline_arrow_back_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ImageContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

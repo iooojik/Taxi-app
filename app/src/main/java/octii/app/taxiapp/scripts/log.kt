@@ -3,7 +3,7 @@ package octii.app.taxiapp.scripts
 import android.content.Context
 import android.util.Log
 import octii.app.taxiapp.R
-import octii.app.taxiapp.models.files.CountingFileRequestBody
+import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.log.LogModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.web.HttpHelper
@@ -15,13 +15,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
-import java.io.FileOutputStream
-import java.lang.Exception
-import java.nio.file.Files
 import java.util.*
 import kotlin.concurrent.thread
 
-const val PROJECT_IDENTIFIER = "IOOOJIK"
+const val PROJECT_IDENTIFIER = Static.LOG_TAG
 const val SERVICE_IDENTIFIER = "IOOOJIK SERVICE"
 const val ERROR_IDENTIFIER = "IOOOJIK EXEPTION"
 

@@ -16,89 +16,88 @@ import com.google.android.material.tabs.TabLayoutMediator
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverOrderDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
-import octii.app.taxiapp.ui.utils.FragmentHelper
+import octii.app.taxiapp.ui.utils.RequestOrderUtils
 
 
-class OrderDetails : Fragment(), FragmentHelper, View.OnClickListener {
-
-    private lateinit var binding: FragmentDriverOrderDetailsBinding
-    private var orderStatusReciever = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null) {
-                when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
-                    StaticOrders.ORDER_STATUS_ACCEPTED -> {
-                        binding.pages.currentItem = 2
-                        binding.pages.isEnabled = false
-                    }
-                    StaticOrders.ORDER_STATUS_FINISHED -> {
-                        binding.pages.currentItem = 1
-                        binding.pages.isEnabled = false
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentDriverOrderDetailsBinding.inflate(layoutInflater)
-        binding.pages.adapter =
-            FragmentsAdapter(requireActivity().supportFragmentManager, lifecycle)
-        TabLayoutMediator(binding.indicator, binding.pages) { _, _ -> }.attach()
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        requireActivity().registerReceiver(orderStatusReciever,
-            IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        try {
-            requireActivity().unregisterReceiver(orderStatusReciever)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-
-        }
-    }
-
-    inner class FragmentsAdapter internal constructor(fm: FragmentManager, lifecycle: Lifecycle) :
-        FragmentStateAdapter(fm, lifecycle) {
-
-        private val fragments = listOf<Fragment>(ClientDetailsFragment(),
-            TaximeterDetailsFragment(),
-            StartStopWaitFragment())
-
-        override fun getItemCount(): Int {
-            return fragments.size
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            var pos = position
-            if (position == 2 && !OrdersModel.isAccepted) {
-                pos -= 1
-            }
-            return super.getItemViewType(pos)
-        }
-
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> fragments[position]
-                1 -> fragments[position]
-                2 -> fragments[position]
-                else -> fragments[position]
-            }
-        }
-    }
-
+class OrderDetails : Fragment(), RequestOrderUtils {
+	
+	private lateinit var binding: FragmentDriverOrderDetailsBinding
+	private var orderStatusReciever = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			if (intent != null) {
+				when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
+					StaticOrders.ORDER_STATUS_ACCEPTED -> {
+						binding.pages.currentItem = 2
+						binding.pages.isEnabled = false
+					}
+					StaticOrders.ORDER_STATUS_FINISHED -> {
+						binding.pages.currentItem = 1
+						binding.pages.isEnabled = false
+					}
+				}
+			}
+		}
+	}
+	
+	override fun onCreateView(
+		inflater: LayoutInflater, container: ViewGroup?,
+		savedInstanceState: Bundle?,
+	): View {
+		binding = FragmentDriverOrderDetailsBinding.inflate(layoutInflater)
+		setInformation()
+		return binding.root
+	}
+	
+	override fun onResume() {
+		super.onResume()
+		requireActivity().registerReceiver(orderStatusReciever,
+			IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+	}
+	
+	override fun onDestroy() {
+		super.onDestroy()
+		try {
+			requireActivity().unregisterReceiver(orderStatusReciever)
+		} catch (e: Exception) {
+			e.printStackTrace()
+		}
+	}
+	
+	override fun setInformation() {
+		binding.pages.adapter =
+			FragmentsAdapter(requireActivity().supportFragmentManager, lifecycle)
+		TabLayoutMediator(binding.indicator, binding.pages) { _, _ -> }.attach()
+	}
+	
+	override fun onClick(v: View?) {}
+	
+	inner class FragmentsAdapter internal constructor(fm: FragmentManager, lifecycle: Lifecycle) :
+		FragmentStateAdapter(fm, lifecycle) {
+		
+		private val fragments = listOf<Fragment>(ClientDetailsFragment(),
+			TaximeterDetailsFragment(),
+			StartStopWaitFragment())
+		
+		override fun getItemCount(): Int {
+			return fragments.size
+		}
+		
+		override fun getItemViewType(position: Int): Int {
+			var pos = position
+			if (position == 2 && !OrdersModel.mIsAccepted) {
+				pos -= 1
+			}
+			return super.getItemViewType(pos)
+		}
+		
+		override fun createFragment(position: Int): Fragment {
+			return when (position) {
+				0 -> fragments[position]
+				1 -> fragments[position]
+				2 -> fragments[position]
+				else -> fragments[position]
+			}
+		}
+	}
+	
 }

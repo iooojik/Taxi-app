@@ -14,16 +14,6 @@
         android:layout_margin="16dp"
         android:text="@string/button_waiting" />
 
-    <Button
-        android:id="@+id/finish_order"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/colorWarning"
-        android:text="@string/button_finish"
-        android:textColor="@color/white"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/start_order_layout"
         android:layout_width="match_parent"
@@ -41,12 +31,22 @@
             android:textColor="@color/white" />
 
         <TextView
-            android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/fab_margin"
-            android:text="@string/taximeter_starts_working" />
+            android:text="@string/taximeter_starts_working"
+            android:textAlignment="center" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/finish_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorWarning"
+        android:text="@string/button_finish"
+        android:textColor="@color/white"
+        android:visibility="invisible" />
 
 
 </LinearLayout>
