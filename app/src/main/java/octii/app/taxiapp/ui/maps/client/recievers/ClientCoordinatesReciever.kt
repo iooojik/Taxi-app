@@ -14,7 +14,6 @@ import octii.app.taxiapp.ui.utils.CoordinatesReceiverUtil
 
 class ClientCoordinatesReciever(
     private val activity: Activity,
-    private val googleMap: GoogleMap?,
     private val clientMapFragment: ClientMapFragment,
     private val fragmentContext: Context,
 ) : BroadcastReceiver(), CoordinatesReceiverUtil {
@@ -26,7 +25,7 @@ class ClientCoordinatesReciever(
 					logInfo("order status ${StaticCoordinates.COORDINATES_STATUS_UPDATE_}")
 					logInfo("${RemoteCoordinates.remoteLat} ${RemoteCoordinates.remoteLon}")
 					updateModelOnMap(UserModel.uType,
-						googleMap,
+						clientMapFragment.googleMap,
 						activity,
 						fragmentContext,
 						clientMapFragment = clientMapFragment)

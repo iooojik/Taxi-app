@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
+import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.ui.maps.client.ClientMapFragment
 import octii.app.taxiapp.ui.maps.driver.DriverMapFragment
 
@@ -19,15 +20,16 @@ interface CoordinatesReceiverUtil : FragmentHelper {
 		clientMapFragment: ClientMapFragment? = null, driverMapFragment: DriverMapFragment? = null,
 	) {
 		if (RemoteCoordinates.remoteLat != 0.0 && RemoteCoordinates.remoteLon != 0.0) {
+			logInfo("${googleMap != null} ${accountType == Static.DRIVER_TYPE} ")
 			if (googleMap != null) {
-				if (accountType == Static.DRIVER_TYPE && clientMapFragment != null) {
+				if (accountType == Static.CLIENT_TYPE && clientMapFragment != null) {
 					
 					drawMarker(googleMap, activity.resources.getString(R.string.driver),
 						bitmapFromVector(fragmentContext, R.drawable.car), clientMapFragment)
-				} else if (accountType == Static.CLIENT_TYPE && driverMapFragment != null) {
+				} else if (accountType == Static.DRIVER_TYPE && driverMapFragment != null) {
 					
 					drawMarker(googleMap, activity.resources.getString(R.string.customer),
-						bitmapFromVector(fragmentContext, R.drawable.user), clientMapFragment)
+						bitmapFromVector(fragmentContext, R.drawable.user),null, driverMapFragment)
 				}
 			}
 		}

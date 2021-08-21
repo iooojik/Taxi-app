@@ -99,7 +99,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, MapUtils {
 		clientOrderReciever =
 			ClientOrderReciever(binding, requireActivity(), googleMap, this, requireContext())
 		clientCoordinatesReciever =
-			ClientCoordinatesReciever(requireActivity(), googleMap, this, requireContext())
+			ClientCoordinatesReciever(requireActivity(), this, requireContext())
 		//регистрируем слушатели сообщений заказа и координат
 		requireActivity().registerReceiver(clientOrderReciever,
 			IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))

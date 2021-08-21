@@ -27,7 +27,10 @@ import ua.naiksoftware.stomp.dto.LifecycleEvent
 class SocketHelper {
 	companion object {
 		
-		val mStompClient: StompClient =
+		val orderStompClient: StompClient =
+			Stomp.over(Stomp.ConnectionProvider.OKHTTP, StaticWeb.WEB_SOCKET_URL)
+		
+		val taximeterStompClient: StompClient =
 			Stomp.over(Stomp.ConnectionProvider.OKHTTP, StaticWeb.WEB_SOCKET_URL)
 		private val gson = Gson()
 		var activity: Activity? = null
@@ -37,11 +40,16 @@ class SocketHelper {
 		
 		
 		fun connect() {
-			mStompClient.withClientHeartbeat(3000).withServerHeartbeat(3000)
+			orderStompClient.withClientHeartbeat(3000).withServerHeartbeat(3000)
+			taximeterStompClient.withClientHeartbeat(3000).withServerHeartbeat(3000)
 			resetSubscriptions()
-			
+			stompLifecycle(orderStompClient)
+			stompLifecycle(taximeterStompClient)
+		}
+		
+		private fun stompLifecycle(stomp : StompClient){
 			val disposableLifecycle: Disposable? =
-				mStompClient.lifecycle()
+				stomp.lifecycle()
 					.subscribeOn(Schedulers.io())
 					.observeOn(AndroidSchedulers.mainThread())
 					.subscribe({ lifecycleEvent ->
@@ -72,7 +80,7 @@ class SocketHelper {
 							.putExtra(Static.CONNECTION_STATUS, Static.CONNECTION_LOST))
 					})
 			//mStompClient.connect()
-			logError("isConnected: ${mStompClient.isConnected}")
+			logError("isConnected: ${stomp.isConnected}")
 			compositeDisposable.add(disposableLifecycle!!)
 		}
 		
@@ -83,7 +91,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun makeOrder() {
-			mStompClient.send("/requests/order.make.${UserModel.mUuid}", toJSON(UserModel()))
+			orderStompClient.send("/requests/order.make.${UserModel.mUuid}", toJSON(UserModel()))
 				.compose(
 					applySchedulers()).subscribe({
 					logInfo("success")
@@ -96,7 +104,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun acceptOrder(order: OrdersModel) {
-			mStompClient.send("/requests/order.accept.${UserModel.mUuid}", toJSON(order))
+			orderStompClient.send("/requests/order.accept.${UserModel.mUuid}", toJSON(order))
 				.compose(applySchedulers()).subscribe({
 					logInfo("success")
 				}, { throwable ->
@@ -107,7 +115,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun rejectOrder(order: OrdersModel) {
-			mStompClient.send("/requests/order.reject.${UserModel.mUuid}", toJSON(order))
+			orderStompClient.send("/requests/order.reject.${UserModel.mUuid}", toJSON(order))
 				.compose(applySchedulers()).subscribe({
 					logInfo("success")
 				}, { throwable ->
@@ -118,7 +126,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun finishOrder(order: OrdersModel) {
-			mStompClient.send("/requests/order.finish.${UserModel.mUuid}", toJSON(order))
+			orderStompClient.send("/requests/order.finish.${UserModel.mUuid}", toJSON(order))
 				.compose(applySchedulers()).subscribe({
 					logInfo("success")
 				}, { throwable ->
@@ -131,7 +139,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun updateCoordinates(coordinatesModel: CoordinatesModel) {
-			mStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
+			orderStompClient.send("/requests/navigation.coordinates.update.${UserModel.mUuid}",
 				toJSON(coordinatesModel)).compose(applySchedulers()).subscribe({
 				logInfo("success")
 			}, { throwable ->
@@ -142,7 +150,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun taximeterUpdateCoordinates(taximeterUpdate: TaximeterUpdate) {
-			mStompClient.send("/requests/taximeter.update.coordinates.${UserModel.mUuid}",
+			taximeterStompClient.send("/requests/taximeter.update.coordinates.${UserModel.mUuid}",
 				toJSON(taximeterUpdate)).compose(applySchedulers()).subscribe({
 			}, { throwable ->
 				logError("STOMP REQUEST ERROR :$throwable")
@@ -152,7 +160,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun taximeterStart(taximeterUpdate: TaximeterUpdate) {
-			mStompClient.send("/requests/taximeter.start.${UserModel.mUuid}",
+			taximeterStompClient.send("/requests/taximeter.start.${UserModel.mUuid}",
 				toJSON(taximeterUpdate)).compose(applySchedulers()).subscribe({
 			}, { throwable ->
 				logError("STOMP REQUEST ERROR :$throwable")
@@ -162,7 +170,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun taximeterStop(taximeterUpdate: TaximeterUpdate) {
-			mStompClient.send("/requests/taximeter.stop.${UserModel.mUuid}",
+			taximeterStompClient.send("/requests/taximeter.stop.${UserModel.mUuid}",
 				toJSON(taximeterUpdate)).compose(applySchedulers()).subscribe({
 			}, { throwable ->
 				logError("STOMP REQUEST ERROR :$throwable")
@@ -172,7 +180,7 @@ class SocketHelper {
 		
 		@SuppressLint("CheckResult")
 		fun taximeterWaiting(taximeterUpdate: TaximeterUpdate, isWaiting: Boolean) {
-			mStompClient.send("/requests/taximeter.waiting.${UserModel.mUuid}.$isWaiting",
+			taximeterStompClient.send("/requests/taximeter.waiting.${UserModel.mUuid}.$isWaiting",
 				toJSON(taximeterUpdate)).compose(applySchedulers()).subscribe({
 			}, { throwable ->
 				logError("STOMP REQUEST ERROR :$throwable")

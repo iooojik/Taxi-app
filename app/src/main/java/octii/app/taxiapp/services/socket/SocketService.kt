@@ -72,13 +72,14 @@ class SocketService : Service() {
 			val mainTopicURL = "/topic/$userUUUID"
 			orderTopic(mainTopicURL)
 			taximeterTopic("$mainTopicURL/taximeter")
-			SocketHelper.mStompClient.connect()
+			SocketHelper.orderStompClient.connect()
+			SocketHelper.taximeterStompClient.connect()
 			logInfo(mainTopicURL)
 		}
 	}
 	
 	private fun orderTopic(path: String) {
-		val topic = SocketHelper.mStompClient.topic(path)
+		val topic = SocketHelper.orderStompClient.topic(path)
 			.subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe({ topicMessage: StompMessage ->
@@ -179,7 +180,7 @@ class SocketService : Service() {
 	}
 	
 	private fun taximeterTopic(path: String) {
-		val topic = SocketHelper.mStompClient.topic(path)
+		val topic = SocketHelper.taximeterStompClient.topic(path)
 			.subscribeOn(Schedulers.io())
 			.observeOn(AndroidSchedulers.mainThread())
 			.subscribe({ topicMessage: StompMessage ->
