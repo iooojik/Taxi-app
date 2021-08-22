@@ -79,6 +79,7 @@ interface FragmentHelper {
 			val pi: PackageInfo? = pm.getPackageInfo(packageName, 0)
 			pi != null
 		} catch (e: Exception) {
+			e.printStackTrace()
 			false
 		}
 	}

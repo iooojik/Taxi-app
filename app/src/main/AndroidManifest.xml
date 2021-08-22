@@ -1,3 +1,10 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2021. Created by iooojik.                                   ~
+  ~ Telegram: @iooojik                                                        ~
+  ~ Email: sbobrov760@gmail.com                                               ~
+  ~ All rights reserved. Last modified 22.08.2021, 11:41                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="octii.app.taxiapp">
@@ -17,6 +24,9 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
+    <queries>
+        <package android:name="com.viber.voip" />
+    </queries>
 
     <application
         android:name=".locale.Application"

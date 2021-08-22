@@ -136,15 +136,17 @@ class ClientMapFragment : Fragment(), View.OnClickListener, MapUtils {
 		//проверяем действующие заказы
 		logInfo("order id: ${OrdersModel.mId}")
 		//если заказ принят, но не закончен, то показываем меню с таксиметром
-		if (OrdersModel.mIsAccepted && OrdersModel.mId > 0 && !OrdersModel.mIsFinished) {
-			binding.fabShowOrderDetails.setOnClickListener(this)
-			showClientFabOrderDetails(binding = binding, activity = requireActivity())
-			binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
-			binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
-			binding.orderDetails.up(requireActivity())
-		} else {
-			logError("button call taxi shown")
-			binding.callTaxi.show()
+		if (binding.root.isAttachedToWindow) {
+			if (OrdersModel.mIsAccepted && OrdersModel.mId > 0 && !OrdersModel.mIsFinished) {
+				binding.fabShowOrderDetails.setOnClickListener(this)
+				showClientFabOrderDetails(binding = binding, activity = requireActivity())
+				binding.fabShowOrderDetails.setImageResource(R.drawable.outline_expand_more_24)
+				binding.fabShowOrderDetails.tag = Static.EXPAND_MORE_FAB
+				binding.orderDetails.up(requireActivity())
+			} else {
+				logError("button call taxi shown")
+				binding.callTaxi.show()
+			}
 		}
 	}
 	
