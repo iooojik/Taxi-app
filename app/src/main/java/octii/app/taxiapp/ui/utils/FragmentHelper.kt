@@ -126,9 +126,13 @@ interface FragmentHelper {
 		if (isInstalled(Static.VIBER_PACKAGE_NAME, context.packageManager)) {
 			try {
 				val uri: Uri = Uri.parse("tel:" + Uri.encode(phone))
+				/*
 				val intent = Intent("android.intent.action.VIEW")
 				intent.setClassName("com.viber.voip", "com.viber.voip.WelcomeActivity")
 				intent.data = uri
+				context.startActivity(intent)*/
+				val intent = context.packageManager.getLaunchIntentForPackage(Static.VIBER_PACKAGE_NAME)
+				intent?.data = uri
 				context.startActivity(intent)
 			} catch (e: Exception) {
 				showSnackbar(context, context.resources.getString(R.string.error))

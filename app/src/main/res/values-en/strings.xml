@@ -49,7 +49,7 @@
     <string name="per_waiting">For waiting:</string>
     <string name="per_trip">Per trip:</string>
     <string name="finish_order_dialog">Are you sure you want to complete the order?</string>
-    <string name="open_in">Open in ...</string>
+    <string name="open_in">Open in …</string>
     <string name="deal_price">Negotiated price</string>
     <string name="deal_price_helper_text">The price can only be changed once</string>
     <string name="check_photos">To work as a driver, you must have all the photos uploaded.</string>

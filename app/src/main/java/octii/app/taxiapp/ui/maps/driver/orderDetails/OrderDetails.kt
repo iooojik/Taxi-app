@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverOrderDetailsBinding
 import octii.app.taxiapp.models.orders.OrdersModel
@@ -45,7 +46,13 @@ class OrderDetails : Fragment(), RequestOrderUtils {
 	): View {
 		binding = FragmentDriverOrderDetailsBinding.inflate(layoutInflater)
 		setInformation()
+		setListeners()
 		return binding.root
+	}
+	
+	private fun setListeners() {
+		binding.goBack.setOnClickListener(this)
+		binding.goNext.setOnClickListener(this)
 	}
 	
 	override fun onResume() {
@@ -69,7 +76,12 @@ class OrderDetails : Fragment(), RequestOrderUtils {
 		TabLayoutMediator(binding.indicator, binding.pages) { _, _ -> }.attach()
 	}
 	
-	override fun onClick(v: View?) {}
+	override fun onClick(v: View?) {
+		when(v!!.id){
+			R.id.go_back -> binding.pages.currentItem = binding.pages.currentItem - 1
+			R.id.go_next -> binding.pages.currentItem = binding.pages.currentItem + 1
+		}
+	}
 	
 	inner class FragmentsAdapter internal constructor(fm: FragmentManager, lifecycle: Lifecycle) :
 		FragmentStateAdapter(fm, lifecycle) {

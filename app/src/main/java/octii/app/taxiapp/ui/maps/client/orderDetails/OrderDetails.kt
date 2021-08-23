@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.constants.sockets.TaximeterType
@@ -21,9 +22,10 @@ import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.location.MyLocationListener
 import octii.app.taxiapp.ui.utils.FragmentHelper
+import octii.app.taxiapp.ui.utils.RequestOrderUtils
 
 
-class OrderDetails : Fragment(), FragmentHelper {
+class OrderDetails : Fragment(), RequestOrderUtils {
 	
 	private lateinit var binding: FragmentClientOrderDetailsBinding
 	
@@ -85,6 +87,7 @@ class OrderDetails : Fragment(), FragmentHelper {
 		binding.pages.adapter =
 			FragmentsAdapter(requireActivity().supportFragmentManager, lifecycle)
 		TabLayoutMediator(binding.indicator, binding.pages) { _, _ -> }.attach()
+		setListeners()
 		return binding.root
 	}
 	
@@ -103,6 +106,20 @@ class OrderDetails : Fragment(), FragmentHelper {
 			requireActivity().unregisterReceiver(taximeterBroadcastReceiver)
 		} catch (e: Exception) {
 			e.printStackTrace()
+		}
+	}
+	
+	private fun setListeners() {
+		binding.goBack.setOnClickListener(this)
+		binding.goNext.setOnClickListener(this)
+	}
+	
+	override fun setInformation() {}
+	
+	override fun onClick(v: View?) {
+		when(v!!.id){
+			R.id.go_back -> binding.pages.currentItem = binding.pages.currentItem - 1
+			R.id.go_next -> binding.pages.currentItem = binding.pages.currentItem + 1
 		}
 	}
 	
@@ -131,5 +148,6 @@ class OrderDetails : Fragment(), FragmentHelper {
 			}
 		}
 	}
+	
 	
 }

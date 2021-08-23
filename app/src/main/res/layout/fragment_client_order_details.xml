@@ -8,18 +8,37 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pages"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/indicator"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabBackground="@drawable/tab_selector"
-        app:tabGravity="center"
-        app:tabIndicatorHeight="0dp" />
+        android:orientation="horizontal">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/go_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/outline_navigate_before_24" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/indicator"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/go_next"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/outline_navigate_next_24" />
+
+    </LinearLayout>
 
 </LinearLayout>

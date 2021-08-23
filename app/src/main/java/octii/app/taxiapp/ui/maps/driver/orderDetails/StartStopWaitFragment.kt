@@ -34,6 +34,9 @@ class StartStopWaitFragment : Fragment(), RequestOrderUtils {
 					StaticOrders.ORDER_STATUS_ACCEPTED -> {
 						setInformation()
 					}
+					StaticOrders.ORDER_STATUS_FINISHED -> {
+						setInformation()
+					}
 				}
 			}
 		}
@@ -124,7 +127,7 @@ class StartStopWaitFragment : Fragment(), RequestOrderUtils {
 		binding.startOrder.isEnabled = true
 		binding.waitingOrder.isEnabled = true
 		
-		if (!OrdersModel.mIsAccepted || OrdersModel.mId <= 0) {
+		if (OrdersModel.mIsAccepted && OrdersModel.mId > 0 && OrdersModel.mIsFinished) {
 			binding.finishOrder.isEnabled = false
 			binding.waitingOrder.isEnabled = false
 			binding.startOrder.isEnabled = false

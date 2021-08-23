@@ -64,7 +64,7 @@ class ClientSettingsFragment : Fragment(), SettingsHelper {
 		binding.clientName.text = UserModel.nUserName
 		binding.clientPhone.text = UserModel.uPhoneNumber
 		//убираем или показываем кнопку для изменения типа аккаунта
-		if (OrdersModel.mIsAccepted) {
+		if (OrdersModel.mIsAccepted && OrdersModel.mId > 0 && !OrdersModel.mIsFinished) {
 			binding.becomeDriver.isEnabled = false
 			binding.becomeDriver.setBackgroundColor(ContextCompat.getColor(requireContext(),
 				R.color.colorGrey))

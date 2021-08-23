@@ -30,14 +30,25 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 	
 	private val taximeterReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent) {
-			if (binding != null && binding.finishOrder.visibility == View.GONE
-				&& OrdersModel.mIsAccepted && !OrdersModel.mIsFinished
-			)
-				binding.finishOrder.visibility = View.VISIBLE
 			val time = intent.getLongExtra(StaticTaximeter.TAXIMETER_BUNDLE_TIME, 0L)
 			val waitingTime =
 				intent.getLongExtra(StaticTaximeter.TAXIMETER_BUNDLE_WAINTING_TIME, 0L)
 			setTaximeter(time, waitingTime)
+		}
+	}
+	
+	private var orderStatusReciever = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			if (intent != null) {
+				when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
+					StaticOrders.ORDER_STATUS_ACCEPTED -> {
+						binding.finishOrder.visibility = View.VISIBLE
+					}
+					StaticOrders.ORDER_STATUS_FINISHED -> {
+						binding.finishOrder.visibility = View.GONE
+					}
+				}
+			}
 		}
 	}
 	
@@ -97,13 +108,13 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 		SocketHelper.finishOrder(OrdersModel())
 		SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null,
 			recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
-		binding.finishOrder.visibility = View.GONE
 	}
 	
 	override fun onResume() {
 		super.onResume()
 		logInfo("on resume ${this.javaClass.name}")
 		requireActivity().registerReceiver(taximeterReceiver, IntentFilter(StaticTaximeter.TAXIMETER_INTENT_FILTER))
+		requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
 		setTaximeter(getOrderTime(), getWaitingTime())
 	}
 	
@@ -112,6 +123,7 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 		logInfo("on pause ${this.javaClass.name}")
 		try {
 			requireActivity().unregisterReceiver(taximeterReceiver)
+			requireActivity().unregisterReceiver(orderStatusReciever)
 		} catch (e: Exception) {
 			e.printStackTrace()
 		}
