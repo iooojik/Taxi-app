@@ -16,9 +16,11 @@ import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.constants.StaticTaximeter
 import octii.app.taxiapp.databinding.FragmentDriverTaximeterDetailsBinding
 import octii.app.taxiapp.models.driver.DriverModel
+import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.services.location.MyLocationListener
+import octii.app.taxiapp.web.SocketHelper
 
 
 class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
@@ -82,7 +84,7 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 		logInfo("on pause ${this.javaClass.name}")
 		try {
 			requireActivity().unregisterReceiver(taximeterReceiver)
-		} catch (e : Exception){
+		} catch (e: Exception) {
 			e.printStackTrace()
 		}
 	}
@@ -107,11 +109,11 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 	
 	private fun setUiInfo() {
 		val dealPrice =
-			MyPreferences.taximeterPreferences?.getInt(StaticOrders.SHARED_PREFERENCES_DEAL_PRICE,
-				-1)
+			MyPreferences.taximeterPreferences?.getFloat(StaticOrders.SHARED_PREFERENCES_DEAL_PRICE,
+				-1f)
 		if (dealPrice != null) {
 			when (dealPrice) {
-				-1 -> binding.dealPriceLayout.editText?.setText("0")
+				-1f -> binding.dealPriceLayout.editText?.setText(OrdersModel.mDealPrice.toString())
 				else -> {
 					binding.dealPriceLayout.editText?.setText(dealPrice.toString())
 					binding.dealPriceLayout.isEnabled = false
@@ -126,8 +128,9 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 			R.id.ok_button -> {
 				if (binding.dealPriceLayout.editText != null) {
 					val price = if (binding.dealPriceLayout.editText!!.text.trim().isNotEmpty())
-						binding.dealPriceLayout.editText!!.text.trim().toString().toInt()
-					else 0
+						binding.dealPriceLayout.editText!!.text.trim().toString().toFloat()
+					else 0f
+					SocketHelper.orderUpdate(price)
 					binding.dealPriceLayout.isEnabled = false
 					binding.dealPriceLayout.editText!!.setText(price.toString())
 					MyPreferences.taximeterPreferences?.let {

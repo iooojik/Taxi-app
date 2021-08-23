@@ -107,7 +107,7 @@ class StartStopWaitFragment : Fragment(), RequestOrderUtils {
 				false)
 		}
 		MyPreferences.taximeterPreferences?.let {
-			MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1)
+			MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1f)
 		}
 		SocketHelper.finishOrder(OrdersModel())
 		SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null,

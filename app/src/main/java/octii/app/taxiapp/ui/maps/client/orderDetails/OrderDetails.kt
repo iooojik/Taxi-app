@@ -21,7 +21,6 @@ import octii.app.taxiapp.databinding.FragmentClientOrderDetailsBinding
 import octii.app.taxiapp.scripts.MyPreferences
 import octii.app.taxiapp.scripts.logError
 import octii.app.taxiapp.services.location.MyLocationListener
-import octii.app.taxiapp.ui.utils.FragmentHelper
 import octii.app.taxiapp.ui.utils.RequestOrderUtils
 
 

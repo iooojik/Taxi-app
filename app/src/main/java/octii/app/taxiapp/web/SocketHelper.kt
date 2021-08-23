@@ -90,6 +90,21 @@ class SocketHelper {
 		}
 		
 		@SuppressLint("CheckResult")
+		fun orderUpdate(dealPrice : Float) {
+			logInfo("order update")
+			
+			orderStompClient.send("/requests/order.update.${UserModel.mUuid}",
+				toJSON(OrdersModel(uuid = OrdersModel.mUuid, dealPrice = dealPrice)))
+				.compose(
+					applySchedulers()).subscribe({
+					logInfo("success")
+				}, { throwable ->
+					logError("STOMP REQUEST ERROR :$throwable")
+					throwable.printStackTrace()
+				})
+		}
+		
+		@SuppressLint("CheckResult")
 		fun makeOrder() {
 			orderStompClient.send("/requests/order.make.${UserModel.mUuid}", toJSON(UserModel()))
 				.compose(

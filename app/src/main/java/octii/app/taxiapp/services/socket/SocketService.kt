@@ -150,7 +150,8 @@ class SocketService : Service() {
 					MessageType.NO_ORDERS -> {
 						logInfo("no orders")
 						OrdersModel.isOrdered = false
-						orderIntent.putExtra(StaticOrders.ORDER_STATUS, StaticOrders.ORDER_STATUS_NO_ORDERS)
+						orderIntent.putExtra(StaticOrders.ORDER_STATUS,
+							StaticOrders.ORDER_STATUS_NO_ORDERS)
 						sendBroadcast(orderIntent)
 					}
 					
@@ -163,6 +164,14 @@ class SocketService : Service() {
 						logInfo(responseModel.order != null)
 						if (responseModel.order != null) {
 							requests.orderRequests.getOrderModel(responseModel.order!!, true)
+						}
+					}
+					
+					MessageType.ORDER_UPDATE -> {
+						logInfo("order update")
+						logInfo("order update model $responseModel")
+						if (responseModel.order != null) {
+							requests.orderRequests.getOrderModel(responseModel.order!!)
 						}
 					}
 					

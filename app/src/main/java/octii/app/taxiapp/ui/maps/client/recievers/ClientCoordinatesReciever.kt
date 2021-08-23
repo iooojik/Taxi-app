@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.google.android.gms.maps.GoogleMap
 import octii.app.taxiapp.constants.StaticCoordinates
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.models.user.UserModel

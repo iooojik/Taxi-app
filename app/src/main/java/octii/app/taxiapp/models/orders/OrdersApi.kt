@@ -10,4 +10,7 @@ interface OrdersApi {
 	//@POST("/orders/check")
 	@POST("/taxi/orders/check")
 	fun ordersCheck(@Body userModel: UserModel): Call<OrdersModel>
+	
+	@POST("/taxi/orders/update")
+	fun orderUpdate(@Body ordersModel: OrdersModel): Call<OrdersModel>
 }

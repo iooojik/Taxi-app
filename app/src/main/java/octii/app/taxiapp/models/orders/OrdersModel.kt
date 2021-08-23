@@ -22,6 +22,8 @@ class OrdersModel(
 	var isAccepted: Boolean = mIsAccepted,
 	@ColumnInfo(name = "is_new")
 	var isNew: Boolean = mIsNew,
+	@ColumnInfo(name = "deal_price")
+	var dealPrice: Float = mDealPrice,
 	var driver: UserModel? = mDriver,
 	var customer: UserModel? = mCustomer,
 ) {
@@ -55,5 +57,8 @@ class OrdersModel(
         
         @JvmStatic
         var mIsNew = false
+		
+		@JvmStatic
+		var mDealPrice: Float = 0f
 	}
 }

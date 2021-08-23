@@ -2,7 +2,6 @@ package octii.app.taxiapp.ui.utils
 
 import android.app.Activity
 import android.content.Context
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
@@ -12,9 +11,7 @@ import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.models.coordinates.RemoteCoordinates
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.ui.maps.client.ClientMapFragment
-import octii.app.taxiapp.ui.maps.client.recievers.ClientCoordinatesReciever
 import octii.app.taxiapp.ui.maps.driver.DriverMapFragment
-import octii.app.taxiapp.ui.maps.driver.recivers.DriverCoordinatesReciever
 
 interface CoordinatesReceiverUtil : FragmentHelper {
 	fun updateModelOnMap(

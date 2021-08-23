@@ -2,11 +2,13 @@ package octii.app.taxiapp.web.requests
 
 import android.app.Activity
 import android.content.Intent
+import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.models.driver.DriverModel
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.logInfo
+import octii.app.taxiapp.scripts.showSnackbar
 import octii.app.taxiapp.web.HttpHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,7 +18,7 @@ class OrderRequests(private val activity: Activity? = null) {
 	
 	fun getOrderModel(
 		order: OrdersModel,
-		isOrdered: Boolean = false,
+		isOrdered: Boolean? = null,
 	): OrdersModel {
 		logInfo("order $order")
 		OrdersModel.mId = order.id
@@ -37,11 +39,29 @@ class OrderRequests(private val activity: Activity? = null) {
 		if (order.customer != null)
 			OrdersModel.mCustomer = order.customer!!
 		
-		OrdersModel.isOrdered = isOrdered
+		if (isOrdered != null)
+			OrdersModel.isOrdered = isOrdered
 		
 		OrdersModel.mIsAccepted = order.isAccepted
 		
 		return OrdersModel()
+	}
+	
+	fun currentOrderUpdate(dealPrice : Float){
+		HttpHelper.ORDERS_API.orderUpdate(OrdersModel(uuid = OrdersModel.mUuid, dealPrice = dealPrice))
+			.enqueue(object : Callback<OrdersModel>{
+			override fun onResponse(call: Call<OrdersModel>, response: Response<OrdersModel>) {
+				if (response.isSuccessful) OrdersModel.mDealPrice = if (response.body() != null)
+					response.body()!!.dealPrice else 0f
+				else throw Exception()
+			}
+			
+			override fun onFailure(call: Call<OrdersModel>, t: Throwable) {
+				t.printStackTrace()
+				if (activity != null)
+					showSnackbar(activity.applicationContext, activity.resources.getString(R.string.error))
+			}
+		})
 	}
 	
 	fun orderCheck(model: UserModel) {

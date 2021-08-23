@@ -76,6 +76,14 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 			"${number2digits(totalPriceKm)}/${number2digits(totalPriceMin)}"
 		
 		binding.taximeter.time.text = formatDuration(time)
+		val dealPrice =
+			MyPreferences.taximeterPreferences?.
+			getFloat(StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1f)
+		if (dealPrice != null && dealPrice >= 0f) {
+			binding.taximeter.priceDeal.text = dealPrice.toString()
+			binding.taximeter.priceDealLayout.visibility = View.VISIBLE
+		}
+		else binding.taximeter.priceDeal.text = (0.0).toString()
 	}
 	
 	override fun onCreateView(
@@ -103,7 +111,7 @@ class TaximeterDetailsFragment : Fragment(), View.OnClickListener {
 				false)
 		}
 		MyPreferences.taximeterPreferences?.let {
-			MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1)
+			MyPreferences.saveToPreferences(it, StaticOrders.SHARED_PREFERENCES_DEAL_PRICE, -1f)
 		}
 		SocketHelper.finishOrder(OrdersModel())
 		SocketHelper.taximeterStop(TaximeterUpdate(coordinates = null,

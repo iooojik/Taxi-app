@@ -22,7 +22,6 @@ import octii.app.taxiapp.models.user.UserModel
 import octii.app.taxiapp.scripts.down
 import octii.app.taxiapp.scripts.logInfo
 import octii.app.taxiapp.scripts.up
-import octii.app.taxiapp.services.Services
 import octii.app.taxiapp.ui.maps.driver.recivers.DriverCoordinatesReciever
 import octii.app.taxiapp.ui.maps.driver.recivers.DriverOrderReciever
 import octii.app.taxiapp.ui.utils.MapUtils
