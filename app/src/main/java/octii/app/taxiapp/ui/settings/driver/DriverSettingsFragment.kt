@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 23:20                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.settings.driver
 
 import android.os.Bundle
@@ -121,14 +128,14 @@ class DriverSettingsFragment : Fragment(), View.OnClickListener,
 			R.id.become_client -> {
 				UserModel.uType = Static.CLIENT_TYPE
 				updateDriver {
-					findNavController().navigate(R.id.clientSettingsFragment)
+					findNavController().navigate(R.id.action_driverSettingsFragment_to_clientSettingsFragment)
 				}
 			}
 			R.id.fab_back -> {
-				findNavController().navigate(R.id.driverMapFragment)
+				findNavController().navigate(R.id.action_driverSettingsFragment_to_driverMapFragment)
 			}
 			R.id.add_photos -> {
-				findNavController().navigate(R.id.editPhotoListFragment)
+				findNavController().navigate(R.id.action_driverSettingsFragment_to_editPhotoListFragment)
 			}
 			R.id.send_logs -> {
 				sendLogs(requireContext())

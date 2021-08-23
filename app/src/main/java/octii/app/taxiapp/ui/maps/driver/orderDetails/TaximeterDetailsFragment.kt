@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 23.08.2021, 11:57                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.maps.driver.orderDetails
 
 import android.annotation.SuppressLint

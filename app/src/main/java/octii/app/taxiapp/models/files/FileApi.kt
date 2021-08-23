@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 23.08.2021, 21:34                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.models.files
 
 import okhttp3.MultipartBody

@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 23:00                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.services
 
 import android.app.Activity

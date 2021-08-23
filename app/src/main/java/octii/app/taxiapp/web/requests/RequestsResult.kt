@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 18:58                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.web.requests
 
 import android.app.Activity
@@ -14,7 +21,7 @@ class RequestsResult(
 	override fun run() {
 		if (success) {
 			getStartLocation()
-		} else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
+		} else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.action_splashFragment_to_welcomeFragment)
 	}
 	
 	private fun getStartLocation() {
@@ -22,8 +29,8 @@ class RequestsResult(
 		logError("token : $userToken")
 		if (userToken != null) {
 			if (uType == Static.DRIVER_TYPE) activity.findNavController(R.id.nav_host_fragment)
-				.navigate(R.id.driverMapFragment)
-			else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.clientMapFragment)
-		} else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.welcomeFragment)
+				.navigate(R.id.action_splashFragment_to_driverMapFragment)
+			else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.action_splashFragment_to_clientMapFragment)
+		} else activity.findNavController(R.id.nav_host_fragment).navigate(R.id.action_splashFragment_to_welcomeFragment)
 	}
 }

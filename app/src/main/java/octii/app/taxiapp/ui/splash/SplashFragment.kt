@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 16:56                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.splash
 
 import android.os.Bundle
@@ -47,7 +54,7 @@ class SplashFragment : Fragment(), SharedPrefsUtil {
 			}
 		} else {
 			requireActivity().findNavController(R.id.nav_host_fragment)
-				.navigate(R.id.welcomeFragment)
+				.navigate(R.id.action_splashFragment_to_welcomeFragment)
 		}
 	}
 }

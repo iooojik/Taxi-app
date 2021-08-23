@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 17:34                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.web.requests
 
 import android.app.Activity
@@ -95,7 +102,6 @@ class UserRequests(private val view: View? = null, private val activity: Activit
 						runnable.success = true
 					} else {
 						runnable.success = false
-						//activity?.runOnUiThread { activity.findNavController(R.id.nav_host_fragment).navigate(R.id.authorizationActivity) }
 						showSnackBarError()
 					}
 					logInfo("success: ${runnable.success}")

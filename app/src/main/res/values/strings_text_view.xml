@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2021. Created by iooojik.                                   ~
+  ~ Telegram: @iooojik                                                        ~
+  ~ Email: sbobrov760@gmail.com                                               ~
+  ~ All rights reserved. Last modified 23.08.2021, 22:54                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <resources>
     <string name="download_messengers">Чтобы пользоваться нашим приложением вам необходимо иметь установленный Whatsapp или Viber.</string>
     <string name="to_download_messengers">Нажмите на логотип ниже, если у вас не установлен Viber.</string>
@@ -31,4 +38,6 @@
     <string name="not_uploaded_photos">Отсутствует фотография</string>
     <string name="trip_distance">Расстояние:</string>
     <string name="trip_time">Время в пути:</string>
+    <string name="privacy_terms">Авторизуясь, вы соглашаетесь с нашей Политикой конфиденциальности и Правилами использования.</string>
+    <string name="driver_notif">При выходе из приложения вы перестанете принимать заказы - надо будет снова изменить статус.</string>
 </resources>

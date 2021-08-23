@@ -1,3 +1,10 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2021. Created by iooojik.                                   ~
+  ~ Telegram: @iooojik                                                        ~
+  ~ Email: sbobrov760@gmail.com                                               ~
+  ~ All rights reserved. Last modified 23.08.2021, 22:41                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <resources>
     <string name="app_name" translatable="false">Taxi app</string>
     <string name="download_whatsapp" translatable="false">download whatsapp</string>
@@ -5,4 +12,6 @@
     <string name="title_activity_splash" translatable="false">SplashActivity</string>
     <string name="next" translatable="false">Next</string>
     <string name="previous" translatable="false">Previous</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

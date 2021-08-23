@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity(), SharedPrefsUtil {
 		}
 	}
 	
-	override fun onDestroy() {
+	override fun onPause() {
 		try {
 			if (getSavedUserType() == Static.DRIVER_TYPE) {
 				Retrofit.Builder()
@@ -162,6 +162,7 @@ class MainActivity : AppCompatActivity(), SharedPrefsUtil {
 		} catch (e: Exception) {
 			e.printStackTrace()
 		}
-		super.onDestroy()
+		super.onPause()
 	}
+	
 }

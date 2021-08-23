@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 2:09                        *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.utils
 
 import octii.app.taxiapp.constants.Static

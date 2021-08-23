@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 18.08.2021, 19:34                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.scripts
 
 import android.animation.ValueAnimator

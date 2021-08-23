@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 19.08.2021, 22:51                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.models.driver
 
 import androidx.room.ColumnInfo

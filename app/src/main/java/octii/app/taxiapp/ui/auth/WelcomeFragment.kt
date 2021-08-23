@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 12:42                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.auth
 
 import android.content.Intent
@@ -8,7 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.Static
 import octii.app.taxiapp.databinding.FragmentWelcomeBinding
@@ -66,9 +74,10 @@ class WelcomeFragment : Fragment(), AuthUtils {
 			R.id.next_button -> {
 				if (permissions.permissionsGranted && isInstalled(Static.VIBER_PACKAGE_NAME,
 						requireActivity().packageManager)
-				)
-					requireView().findNavController().navigate(R.id.authorizationFragment)
-				else showSnackbar(requireContext(),
+				) {
+					findNavController()
+						.navigate(R.id.action_welcomeFragment_to_authorizationFragment)
+				} else showSnackbar(requireContext(),
 					resources.getString(R.string.not_installed_viber))
 				
 				if (!permissions.permissionsGranted)

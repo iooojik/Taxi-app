@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 16.08.2021, 21:59                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.models.files;
 
 import java.io.IOException;

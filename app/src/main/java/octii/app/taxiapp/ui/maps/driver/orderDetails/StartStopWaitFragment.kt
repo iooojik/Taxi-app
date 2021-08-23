@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 23.08.2021, 13:09                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.maps.driver.orderDetails
 
 import android.content.BroadcastReceiver
@@ -118,9 +125,9 @@ class StartStopWaitFragment : Fragment(), RequestOrderUtils {
 		if (isWaiting()) binding.waitingOrder.setBackgroundColor(Color.parseColor("#99d98c"))
 		if (isRunning()) {
 			binding.finishOrder.visibility = View.VISIBLE
-			binding.startOrderLayout.visibility = View.GONE
+			binding.startOrderLayout.visibility = View.INVISIBLE
 		} else {
-			binding.finishOrder.visibility = View.GONE
+			binding.finishOrder.visibility = View.INVISIBLE
 			binding.startOrderLayout.visibility = View.VISIBLE
 		}
 		binding.finishOrder.isEnabled = true
@@ -164,7 +171,7 @@ class StartStopWaitFragment : Fragment(), RequestOrderUtils {
 					recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
 				
 				binding.finishOrder.visibility = View.VISIBLE
-				binding.startOrderLayout.visibility = View.GONE
+				binding.startOrderLayout.visibility = View.INVISIBLE
 			}
 			R.id.waiting_order -> {
 				if (isWaiting() && OrdersModel.mIsAccepted) {

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2021. Created by iooojik.                                   ~
+  ~ Telegram: @iooojik                                                        ~
+  ~ Email: sbobrov760@gmail.com                                               ~
+  ~ All rights reserved. Last modified 23.08.2021, 23:35                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,8 +22,9 @@
             app:destination="@id/authorizationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_exit_anim"
-            app:popExitAnim="@anim/nav_default_pop_enter_anim" />
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/authorizationFragment" />
     </fragment>
     <fragment
         android:id="@+id/authorizationFragment"
@@ -37,6 +45,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_exit_anim"
             app:popExitAnim="@anim/nav_default_pop_enter_anim" />
+        <action
+            android:id="@+id/action_authorizationFragment_to_lawFragment"
+            app:destination="@id/lawFragment" />
     </fragment>
     <fragment
         android:id="@+id/clientMapFragment"
@@ -62,7 +73,9 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_exit_anim"
-            app:popExitAnim="@anim/nav_default_pop_enter_anim" />
+            app:popExitAnim="@anim/nav_default_pop_enter_anim"
+            app:popUpTo="@id/driverSettingsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/driverSettingsFragment"
@@ -72,12 +85,25 @@
         <action
             android:id="@+id/action_driverSettingsFragment_to_editPhotoListFragment"
             app:destination="@id/editPhotoListFragment" />
+        <action
+            android:id="@+id/action_driverSettingsFragment_to_clientSettingsFragment"
+            app:destination="@id/clientSettingsFragment" />
+        <action
+            android:id="@+id/action_driverSettingsFragment_to_driverMapFragment"
+            app:destination="@id/driverMapFragment" />
     </fragment>
     <fragment
         android:id="@+id/clientSettingsFragment"
         android:name="octii.app.taxiapp.ui.settings.client.ClientSettingsFragment"
         android:label="fragment_client_settings"
-        tools:layout="@layout/fragment_client_settings" />
+        tools:layout="@layout/fragment_client_settings" >
+        <action
+            android:id="@+id/action_clientSettingsFragment_to_driverSettingsFragment"
+            app:destination="@id/driverSettingsFragment" />
+        <action
+            android:id="@+id/action_clientSettingsFragment_to_clientMapFragment"
+            app:destination="@id/clientMapFragment" />
+    </fragment>
     <fragment
         android:id="@+id/editPhotoListFragment"
         android:name="octii.app.taxiapp.ui.settings.driver.EditPhotoListFragment"
@@ -103,4 +129,9 @@
             android:id="@+id/action_splashFragment_to_driverMapFragment"
             app:destination="@id/driverMapFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/lawFragment"
+        android:name="octii.app.taxiapp.ui.law.LawFragment"
+        android:label="fragment_law"
+        tools:layout="@layout/fragment_law" />
 </navigation>

@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 22.08.2021, 11:49                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.maps.client
 
 import android.annotation.SuppressLint
@@ -178,7 +185,7 @@ class ClientMapFragment : Fragment(), View.OnClickListener, MapUtils {
 			}
 			R.id.fab_settings -> {
 				logInfo("go to settings from ${this.javaClass.name}")
-				findNavController().navigate(R.id.clientSettingsFragment)
+				findNavController().navigate(R.id.action_clientMapFragment_to_clientSettingsFragment)
 			}
 			R.id.fab_show_order_details -> {
 				//скрыть меню заказа

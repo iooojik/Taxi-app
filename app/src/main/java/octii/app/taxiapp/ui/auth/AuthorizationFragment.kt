@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (c) 2021. Created by iooojik.                                    *
+ * Telegram: @iooojik                                                         *
+ * Email: sbobrov760@gmail.com                                                *
+ * All rights reserved. Last modified 21.08.2021, 16:54                       *
+ ******************************************************************************/
+
 package octii.app.taxiapp.ui.auth
 
 import android.os.Bundle
@@ -76,6 +83,7 @@ class AuthorizationFragment : Fragment(), AuthUtils {
 	private fun setListeners() {
 		binding.loginButton.setOnClickListener(this)
 		binding.iAmDriver.setOnCheckedChangeListener(this)
+		binding.privacyTerms.setOnClickListener(this)
 		if (!isInstalled(Static.VIBER_PACKAGE_NAME,
 				requireActivity().packageManager) && binding.iAmDriver.isChecked
 		) {
@@ -121,8 +129,8 @@ class AuthorizationFragment : Fragment(), AuthUtils {
 						LatLng(MyLocationListener.latitude, MyLocationListener.longitude),
 						binding.progressBar) {
 						Services(requireActivity(), Static.MAIN_SERVICES).start()
-						if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.driverMapFragment)
-						else findNavController().navigate(R.id.clientMapFragment)
+						if (UserModel.uType == Static.DRIVER_TYPE) findNavController().navigate(R.id.action_authorizationFragment_to_driverMapFragment)
+						else findNavController().navigate(R.id.action_authorizationFragment_to_clientMapFragment)
 					}
 				}
 			}
@@ -131,7 +139,8 @@ class AuthorizationFragment : Fragment(), AuthUtils {
 				binding.phoneNumberLayout.clearFocus()
 				binding.nameLayout.clearFocus()
 			}
-			R.id.fab_back -> findNavController().navigateUp()
+			R.id.fab_back -> findNavController().popBackStack()
+			R.id.privacy_terms -> findNavController().navigate(R.id.action_authorizationFragment_to_lawFragment)
 		}
 	}
 	
