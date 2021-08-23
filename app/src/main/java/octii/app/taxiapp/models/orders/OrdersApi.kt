@@ -7,10 +7,11 @@ import retrofit2.http.POST
 
 
 interface OrdersApi {
-	//@POST("/orders/check")
-	@POST("/taxi/orders/check")
+	@POST("/orders/check")
+	//@POST("/taxi/orders/check")
 	fun ordersCheck(@Body userModel: UserModel): Call<OrdersModel>
 	
-	@POST("/taxi/orders/update")
+	@POST("/orders/update")
+	//@POST("/taxi/orders/update")
 	fun orderUpdate(@Body ordersModel: OrdersModel): Call<OrdersModel>
 }

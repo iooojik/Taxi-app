@@ -40,8 +40,8 @@ class SocketHelper {
 		
 		
 		fun connect() {
-			orderStompClient.withClientHeartbeat(3000).withServerHeartbeat(3000)
-			taximeterStompClient.withClientHeartbeat(3000).withServerHeartbeat(3000)
+			orderStompClient.withClientHeartbeat(StaticWeb.SERVER_HEARTBEAT).withServerHeartbeat(StaticWeb.SERVER_HEARTBEAT)
+			taximeterStompClient.withClientHeartbeat(StaticWeb.SERVER_HEARTBEAT).withServerHeartbeat(StaticWeb.SERVER_HEARTBEAT)
 			resetSubscriptions()
 			stompLifecycle(orderStompClient)
 			stompLifecycle(taximeterStompClient)

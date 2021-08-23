@@ -9,8 +9,8 @@ import retrofit2.http.Query
 
 interface FileApi {
     @Multipart
-    //@POST("/files/uploadImage?")
-    @POST("/taxi/files/uploadImage?")
+    @POST("/files/uploadImage?")
+    //@POST("/taxi/files/uploadImage?")
     fun uploadImage(
         @Part file: MultipartBody.Part, @Query("type") type: String,
         @Query("userUUID") uuid: String,

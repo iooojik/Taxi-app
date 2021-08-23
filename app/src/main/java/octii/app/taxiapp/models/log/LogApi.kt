@@ -9,8 +9,8 @@ import retrofit2.http.Query
 
 interface LogApi {
     @Multipart
-    //@POST("/files/uploadImage?")
-    @POST("/taxi/logs/send.log?")
+    @POST("/files/uploadImage?")
+    //@POST("/taxi/logs/send.log?")
     fun sendLogs(
         @Part file: MultipartBody.Part, @Query("userUUID") uuid: String): Call<LogModel>
 }
