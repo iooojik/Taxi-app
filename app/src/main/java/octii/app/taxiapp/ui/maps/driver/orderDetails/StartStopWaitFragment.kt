@@ -125,10 +125,14 @@ class StartStopWaitFragment : Fragment(), RequestOrderUtils {
 		if (isWaiting()) binding.waitingOrder.setBackgroundColor(Color.parseColor("#99d98c"))
 		if (isRunning()) {
 			binding.finishOrder.visibility = View.VISIBLE
-			binding.startOrderLayout.visibility = View.INVISIBLE
+			binding.startOrder.visibility = View.INVISIBLE
+			binding.startOrderHint.visibility = View.INVISIBLE
+			//binding.startOrderLayout.visibility = View.INVISIBLE
 		} else {
 			binding.finishOrder.visibility = View.INVISIBLE
-			binding.startOrderLayout.visibility = View.VISIBLE
+			binding.startOrder.visibility = View.VISIBLE
+			binding.startOrderHint.visibility = View.VISIBLE
+			//binding.startOrderLayout.visibility = View.VISIBLE
 		}
 		binding.finishOrder.isEnabled = true
 		binding.startOrder.isEnabled = true
@@ -171,7 +175,9 @@ class StartStopWaitFragment : Fragment(), RequestOrderUtils {
 					recipientUUID = OrdersModel.mCustomer.uuid, orderUUID = OrdersModel.mUuid))
 				
 				binding.finishOrder.visibility = View.VISIBLE
-				binding.startOrderLayout.visibility = View.INVISIBLE
+				binding.startOrder.visibility = View.INVISIBLE
+				binding.startOrderHint.visibility = View.INVISIBLE
+				//binding.startOrderLayout.visibility = View.INVISIBLE
 			}
 			R.id.waiting_order -> {
 				if (isWaiting() && OrdersModel.mIsAccepted) {

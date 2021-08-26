@@ -34,7 +34,8 @@ import octii.app.taxiapp.ui.utils.RequestOrderUtils
 class OrderDetails : Fragment(), RequestOrderUtils {
 	
 	private lateinit var binding: FragmentClientOrderDetailsBinding
-	
+	private val fragments =
+		listOf<Fragment>(DriverDetailsFragment(), TaximeterDetailsFragment())
 	private var orderStatusReciever = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			if (intent != null) {
@@ -124,8 +125,16 @@ class OrderDetails : Fragment(), RequestOrderUtils {
 	
 	override fun onClick(v: View?) {
 		when(v!!.id){
-			R.id.go_back -> binding.pages.currentItem = binding.pages.currentItem - 1
-			R.id.go_next -> binding.pages.currentItem = binding.pages.currentItem + 1
+			R.id.go_back -> {
+				if (binding.pages.currentItem == 0)
+					binding.pages.currentItem = (fragments.size - 1)
+				else binding.pages.currentItem = binding.pages.currentItem - 1
+			}
+			R.id.go_next -> {
+				if (binding.pages.currentItem == (fragments.size-1))
+					binding.pages.currentItem = 0
+				else binding.pages.currentItem = binding.pages.currentItem + 1
+			}
 		}
 	}
 	
@@ -139,8 +148,6 @@ class OrderDetails : Fragment(), RequestOrderUtils {
 	inner class FragmentsAdapter internal constructor(fm: FragmentManager, lifecycle: Lifecycle) :
 		FragmentStateAdapter(fm, lifecycle) {
 		
-		private val fragments =
-			listOf<Fragment>(DriverDetailsFragment(), TaximeterDetailsFragment())
 		
 		override fun getItemCount(): Int {
 			return fragments.size

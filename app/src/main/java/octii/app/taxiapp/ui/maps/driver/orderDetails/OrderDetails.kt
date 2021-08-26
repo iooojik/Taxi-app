@@ -18,29 +18,32 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import octii.app.taxiapp.R
 import octii.app.taxiapp.constants.StaticOrders
 import octii.app.taxiapp.databinding.FragmentDriverOrderDetailsBinding
+import octii.app.taxiapp.databinding.FragmentStartStopBinding
 import octii.app.taxiapp.models.orders.OrdersModel
 import octii.app.taxiapp.ui.utils.RequestOrderUtils
 
 
-class OrderDetails : Fragment(), RequestOrderUtils {
+class OrderDetails : BottomSheetDialogFragment(), RequestOrderUtils {
 	
 	private lateinit var binding: FragmentDriverOrderDetailsBinding
+	private val fragments = listOf<Fragment>(ClientDetailsFragment(),
+		TaximeterDetailsFragment(),
+		StartStopWaitFragment())
 	private var orderStatusReciever = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			if (intent != null) {
 				when (intent.getStringExtra(StaticOrders.ORDER_STATUS)) {
-					StaticOrders.ORDER_STATUS_ACCEPTED -> {
-						binding.pages.currentItem = 2
-						binding.pages.isEnabled = false
-					}
 					StaticOrders.ORDER_STATUS_FINISHED -> {
 						binding.pages.currentItem = 1
-						binding.pages.isEnabled = false
+						//binding.pages.isEnabled = false
 					}
 				}
 			}
@@ -64,8 +67,7 @@ class OrderDetails : Fragment(), RequestOrderUtils {
 	
 	override fun onResume() {
 		super.onResume()
-		requireActivity().registerReceiver(orderStatusReciever,
-			IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
+		requireActivity().registerReceiver(orderStatusReciever, IntentFilter(StaticOrders.ORDER_STATUS_INTENT_FILTER))
 	}
 	
 	override fun onDestroy() {
@@ -85,28 +87,24 @@ class OrderDetails : Fragment(), RequestOrderUtils {
 	
 	override fun onClick(v: View?) {
 		when(v!!.id){
-			R.id.go_back -> binding.pages.currentItem = binding.pages.currentItem - 1
-			R.id.go_next -> binding.pages.currentItem = binding.pages.currentItem + 1
+			R.id.go_back -> {
+				if (binding.pages.currentItem == 0)
+					binding.pages.currentItem = (fragments.size - 1)
+				else binding.pages.currentItem = binding.pages.currentItem - 1
+			}
+			R.id.go_next -> {
+				if (binding.pages.currentItem == (fragments.size-1))
+					binding.pages.currentItem = 0
+				else binding.pages.currentItem = binding.pages.currentItem + 1
+			}
 		}
 	}
 	
 	inner class FragmentsAdapter internal constructor(fm: FragmentManager, lifecycle: Lifecycle) :
 		FragmentStateAdapter(fm, lifecycle) {
 		
-		private val fragments = listOf<Fragment>(ClientDetailsFragment(),
-			TaximeterDetailsFragment(),
-			StartStopWaitFragment())
-		
 		override fun getItemCount(): Int {
 			return fragments.size
-		}
-		
-		override fun getItemViewType(position: Int): Int {
-			var pos = position
-			if (position == 2 && !OrdersModel.mIsAccepted) {
-				pos -= 1
-			}
-			return super.getItemViewType(pos)
 		}
 		
 		override fun createFragment(position: Int): Fragment {
@@ -117,6 +115,7 @@ class OrderDetails : Fragment(), RequestOrderUtils {
 				else -> fragments[position]
 			}
 		}
+		
 	}
 	
 }

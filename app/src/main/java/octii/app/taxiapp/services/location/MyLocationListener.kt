@@ -66,12 +66,13 @@ class MyLocationListener : LocationListener {
 				context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 			val locationListener: LocationListener = MyLocationListener()
 			
-			locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER,
-				5000, 5f,
-				locationListener
-			) // здесь можно указать другие более подходящие вам параметры
-			
+			if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+				locationManager.requestLocationUpdates(
+					LocationManager.GPS_PROVIDER,
+					5000, 15f,
+					locationListener
+				)
+			}
 			imHere = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 			if (imHere != null) {
 				longitude = imHere?.longitude!!

@@ -179,7 +179,6 @@ class UserRequests(private val view: View? = null, private val activity: Activit
 	}
 	
 	fun update(runnable: Runnable): UserModel {
-		logInfo(UserModel())
 		HttpHelper.USER_API.update(UserModel()).enqueue(object : Callback<UserModel> {
 			override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
 				logInfo("user update ${response.raw()}")
